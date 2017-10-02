@@ -41,7 +41,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     genesis.vtx.push_back(MakeTransactionRef(std::move(txNew)));
     genesis.hashPrevBlock.SetNull();
     genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
-    genesis.hashStateRoot = uint256(h256Touint(dev::h256("e965ffd002cd6ad0e2dc402b8044de833e06b23127ea8c3d80aec91410771495"))); // qtum
+    genesis.hashStateRoot = uint256(h256Touint(dev::h256("e965ffd002cd6ad0e2dc402b8044de833e06b23127ea8c3d80aec91410771495")));
     genesis.hashUTXORoot = uint256(h256Touint(dev::sha3(dev::rlp("")))); // qtum
     return genesis;
 }
@@ -162,15 +162,22 @@ public:
         nPruneAfterHeight = 100000;
         startNewChain = false;
 
-        genesis = CreateGenesisBlock(1506211200, 212467, 0x1f00ffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1506211200, 94371, 0x1f00ffff, 1, 1 * COIN);
 
         if (startNewChain)
             MineGenesis(genesis, consensus.powLimit, false);
 
-        genesis = CreateGenesisBlock(1504695029, 8026361, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d"));
+        
+        LogPrintf("Main Genesis nTime = %u \n", genesis.nTime);
+        LogPrintf("Main Genesis nNonce = %u \n", genesis.nNonce);
+        LogPrintf("Main Genesis nBits: %08x\n", genesis.nBits);
+        LogPrintf("Main Genesis Hash = %s\n", genesis.GetHash().ToString().c_str());
+        LogPrintf("Main Genesis hashStateRoot = %s\n", genesis.hashStateRoot.ToString().c_str());
+        LogPrintf("Main Genesis Hash Merkle Root = %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        
+        assert(consensus.hashGenesisBlock == uint256S("0x0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0"));
+        assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
         vSeeds.push_back(CDNSSeedData("qtum3.dynu.net", "qtum3.dynu.net", false)); // Qtum mainnet
@@ -191,8 +198,7 @@ public:
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            ( 0, uint256S("000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c"))
-            ( 5000, uint256S("00006a5338e5647872bd91de1d291365e941e14dff1939b5f16d1804d1ce61cd")) //last PoW block
+            ( 0, uint256S("0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0"))
         };
 
         chainTxData = ChainTxData{
@@ -261,15 +267,21 @@ public:
         nPruneAfterHeight = 1000;
         startNewChain = false;
 
-        genesis = CreateGenesisBlock(1506212200, 3716420, 0x1f00ffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1506212200, 102232, 0x1f00ffff, 1, 1 * COIN);
 
         if (startNewChain)
             MineGenesis(genesis, consensus.powLimit, false);
 
-        genesis = CreateGenesisBlock(1504695029, 7349697, 0x1f00ffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d"));
+        
+        LogPrintf("Test Genesis nTime = %u \n", genesis.nTime);
+        LogPrintf("Test Genesis nNonce = %u \n", genesis.nNonce);
+        LogPrintf("Test Genesis nBits: %08x\n", genesis.nBits);
+        LogPrintf("Test Genesis Hash = %s\n", genesis.GetHash().ToString().c_str());
+        LogPrintf("Test Genesis hashStateRoot = %s\n", genesis.hashStateRoot.ToString().c_str());
+        LogPrintf("Test Genesis Hash Merkle Root = %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        
+        assert(consensus.hashGenesisBlock == uint256S("0x000013694772f8aeb88efeb2829fe5d71fbca3e23d5043baa770726f204f528c"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -293,7 +305,7 @@ public:
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
-            ( 0, uint256S("0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222")),
+            ( 0, uint256S("000013694772f8aeb88efeb2829fe5d71fbca3e23d5043baa770726f204f528c")),
         };
 
         chainTxData = ChainTxData{
@@ -357,15 +369,21 @@ public:
         nPruneAfterHeight = 1000;
         startNewChain = false;
 
-        genesis = CreateGenesisBlock(1506213200, 1, 0x207fffff, 1, 1 * COIN);
+        genesis = CreateGenesisBlock(1506213200, 2, 0x207fffff, 1, 1 * COIN);
 
         if (startNewChain)
             MineGenesis(genesis, consensus.powLimit, false);
 
-        genesis = CreateGenesisBlock(1504695029, 17, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d"));
+        
+        LogPrintf("Reg Genesis nTime = %u \n", genesis.nTime);
+        LogPrintf("Reg Genesis nNonce = %u \n", genesis.nNonce);
+        LogPrintf("Reg Genesis nBits: %08x\n", genesis.nBits);
+        LogPrintf("Reg Genesis Hash = %s\n", genesis.GetHash().ToString().c_str());
+        LogPrintf("Reg Genesis hashStateRoot = %s\n", genesis.hashStateRoot.ToString().c_str());
+        LogPrintf("Reg Genesis Hash Merkle Root = %s\n", genesis.hashMerkleRoot.ToString().c_str());
+        
+        assert(consensus.hashGenesisBlock == uint256S("0x03c80d2399e1fe481a51e122ac55159a4e5fe635494a7fd368f3e440241fccb2"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -377,7 +395,7 @@ public:
 
         checkpointData = (CCheckpointData){
             boost::assign::map_list_of
-            ( 0, uint256S("665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943"))
+            ( 0, uint256S("03c80d2399e1fe481a51e122ac55159a4e5fe635494a7fd368f3e440241fccb2"))
         };
 
         chainTxData = ChainTxData{
