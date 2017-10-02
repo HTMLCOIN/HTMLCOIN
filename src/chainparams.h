@@ -93,6 +93,7 @@ protected:
     bool fDefaultConsistencyChecks;
     bool fRequireStandard;
     bool fMineBlocksOnDemand;
+    bool startNewChain;
     CCheckpointData checkpointData;
     ChainTxData chainTxData;
 };
