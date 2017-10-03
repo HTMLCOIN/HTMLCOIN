@@ -1,14 +1,14 @@
 *.tar.gz
 
 *.exe
-src/qtum-cli
-src/qtum-tx
-src/qtumd
+src/htmlcoin-cli
+src/htmlcoin-tx
+src/htmlcoind
 src/bench/bench_qtum
-src/qt/qtum-qt
-src/qt/test/test_qtum-qt
-src/test/test_qtum
-src/test/test_qtum_fuzzy
+src/qt/htmlcoin-qt
+src/qt/test/test_htmlcoin-qt
+src/test/test_htmlcoin
+src/test/test_htmlcoin_fuzzy
 
 # autoreconf
 Makefile.in
@@ -77,12 +77,12 @@ Makefile.am.user
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-bitcoin-qt
-Bitcoin-Qt.app
+htmlcoin-qt
+HTMLCOIN-Qt.app
 
 # Unit-tests
 Makefile.test
-bitcoin-qt_test
+htmlcoin-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -96,7 +96,7 @@ build
 *.gcno
 *.gcda
 /*.info
-test_bitcoin.coverage/
+test_htmlcoin.coverage/
 total.coverage/
 coverage_percent.txt
 
