@@ -11,13 +11,13 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>qtum.icns</string>
+  <string>bitcoin.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ @COPYRIGHT_HOLDERS_FINAL@</string>
+  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2017-@COPYRIGHT_YEAR@ @COPYRIGHT_HOLDERS_FINAL@</string>
 
   <key>CFBundleShortVersionString</key>
   <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Qtum-Qt</string>
+  <string>HTMLCOIN-Qt</string>
   
   <key>CFBundleName</key>
-  <string>Qtum-Qt</string>
+  <string>HTMLCOIN-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.qtumproject.Qtum-Qt</string>
+  <string>com.htmlcoin.HTMLCOIN-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.qtum.QtumPayment</string>
+      <string>com.htmlcoin.HTMLCOINPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>qtum</string>
+        <string>htmlcoin</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.qtum.paymentrequest</string>
+      <string>com.htmlcoin.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>Qtum payment request</string>
+      <string>HTMLCOIN payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-qtum-payment-request</string>
+        <string>application/x-htmlcoin-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>qtumpaymentrequest</string>
+          <string>htmlcoinpaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.qtum.paymentrequest</string>
+        <string>com.htmlcoin.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>
