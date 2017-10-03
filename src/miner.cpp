@@ -1067,7 +1067,7 @@ void ThreadStakeMiner(CWallet *pwallet)
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
 
     // Make this thread recognisable as the mining thread
-    RenameThread("qtumcoin-miner");
+    RenameThread("bitcoin-miner");
 
     CReserveKey reservekey(pwallet);
 

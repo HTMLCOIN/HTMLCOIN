@@ -52,7 +52,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Qtum cannot be compiled without assertions."
+# error "HTMLCOIN cannot be compiled without assertions."
 #endif
 
 /**
@@ -109,7 +109,7 @@ static bool UpdateHashProof(const CBlock& block, CValidationState& state, const 
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "Qtum Signed Message:\n";
+const std::string strMessageMagic = "HTMLCOIN Signed Message:\n";
 
 // Internal stuff
 namespace {
@@ -1086,7 +1086,7 @@ bool AcceptToMemoryPoolWorker(CTxMemPool& pool, CValidationState& state, const C
         // Remove conflicting transactions from the mempool
         BOOST_FOREACH(const CTxMemPool::txiter it, allConflicting)
         {
-            LogPrint("mempool", "replacing tx %s with %s for %s QTUM additional fees, %d delta bytes\n",
+            LogPrint("mempool", "replacing tx %s with %s for %s HTM additional fees, %d delta bytes\n",
                     it->GetTx().GetHash().ToString(),
                     hash.ToString(),
                     FormatMoney(nModifiedFees - nConflictingFees),
@@ -1858,7 +1858,7 @@ bool DisconnectBlock(const CBlock& block, CValidationState& state, const CBlockI
     globalState->setRootUTXO(uintToh256(pindex->pprev->hashUTXORoot)); // qtum
 
     if(pfClean == NULL && fLogEvents){
-        boost::filesystem::path stateDir = GetDataDir() / "stateQtum";
+        boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
         StorageResults storageRes(stateDir.string());
         storageRes.deleteResults(block.vtx);
         pblocktree->EraseHeightIndex(pindex->nHeight);
@@ -2405,7 +2405,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     CBlock checkBlock(block.GetBlockHeader());
     std::vector<CTxOut> checkVouts;
 
-    boost::filesystem::path stateDir = GetDataDir() / "stateQtum";
+    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
     StorageResults storageRes(stateDir.string());
     uint64_t countCumulativeGasUsed = 0;
     /////////////////////////////////////////////////

@@ -369,8 +369,8 @@ UniValue waitforblock(const JSONRPCRequest& request)
             "  \"height\" : {     (int) Block height\n"
             "}\n"
             "\nExamples:\n"
-            + HelpExampleCli("waitforblock", "\"0000000000079f8ef3d2c688c244eb7a4570b24c9ed7b4a8c619eb02596f8862\", 1000")
-            + HelpExampleRpc("waitforblock", "\"0000000000079f8ef3d2c688c244eb7a4570b24c9ed7b4a8c619eb02596f8862\", 1000")
+            + HelpExampleCli("waitforblock", "\"0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0\", 1000")
+            + HelpExampleRpc("waitforblock", "\"0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0\", 1000")
         );
     int timeout = 0;
 
@@ -907,8 +907,8 @@ UniValue getblockheader(const JSONRPCRequest& request)
             "\nResult (for verbose=false):\n"
             "\"data\"             (string) A string that is serialized, hex-encoded data for block 'hash'.\n"
             "\nExamples:\n"
-            + HelpExampleCli("getblockheader", "\"00000000c937983704a73af28acdec37b049d214adbda81d7e2a3dd146f6ed09\"")
-            + HelpExampleRpc("getblockheader", "\"00000000c937983704a73af28acdec37b049d214adbda81d7e2a3dd146f6ed09\"")
+            + HelpExampleCli("getblockheader", "\"0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0\"")
+            + HelpExampleRpc("getblockheader", "\"0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0\"")
         );
 
     LOCK(cs_main);
@@ -1205,7 +1205,7 @@ UniValue searchlogs(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_INVALID_PARAMS, "Could not read tx height index");
 
     UniValue result(UniValue::VARR);
-    boost::filesystem::path stateDir = GetDataDir() / "stateQtum";
+    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
     StorageResults storageRes(stateDir.string());
 
     for(const auto& hashesTx : hashesToBlock)
@@ -1267,7 +1267,7 @@ UniValue gettransactionreceipt(const JSONRPCRequest& request)
     
     uint256 hash(uint256S(hashTemp));
 
-    boost::filesystem::path stateDir = GetDataDir() / "stateQtum";
+    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
     StorageResults storageRes(stateDir.string());
 
     std::vector<TransactionReceiptInfo> transactionReceiptInfo = storageRes.getResult(uintToh256(hash));
@@ -1492,8 +1492,8 @@ UniValue gettxout(const JSONRPCRequest& request)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
-            "     \"addresses\" : [          (array of string) array of qtum addresses\n"
-            "        \"address\"     (string) qtum address\n"
+            "     \"addresses\" : [          (array of string) array of HTMLCOIN addresses\n"
+            "        \"address\"     (string) HTMLCOIN address\n"
             "        ,...\n"
             "     ]\n"
             "  },\n"

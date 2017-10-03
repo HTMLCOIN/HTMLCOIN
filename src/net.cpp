@@ -1466,7 +1466,7 @@ void ThreadMapPort()
             }
         }
 
-        std::string strDesc = "Qtum " + FormatFullVersion();
+        std::string strDesc = "HTMLCOIN " + FormatFullVersion();
 
         try {
             while (true) {
