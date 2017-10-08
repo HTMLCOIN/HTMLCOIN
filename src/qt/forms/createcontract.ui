@@ -71,9 +71,6 @@
            </property>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
-             <property name="spacing">
-              <number>15</number>
-             </property>
              <property name="leftMargin">
               <number>12</number>
              </property>
@@ -124,9 +121,6 @@
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_4">
-             <property name="spacing">
-              <number>15</number>
-             </property>
              <property name="leftMargin">
               <number>12</number>
              </property>
@@ -197,8 +191,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>589</width>
-                   <height>73</height>
+                   <width>591</width>
+                   <height>68</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_5"/>
