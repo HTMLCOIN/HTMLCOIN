@@ -121,17 +121,16 @@ public:
         consensus.BIP66Height = 0; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
-        consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetTimespan = 60;
+        consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = true;
+        consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 16128; // 95% of 2016
+        consensus.nMinerConfirmationWindow = 20160; // nPowTargetTimespan / nPowTargetSpacing
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
-
 
         // Deployment of BIP68, BIP112, and BIP113.
         consensus.vDeployments[Consensus::DEPLOYMENT_CSV].bit = 0;
@@ -168,20 +167,11 @@ public:
             MineGenesis(genesis, consensus.powLimit, false);
 
         consensus.hashGenesisBlock = genesis.GetHash();
-        
-        LogPrintf("Main Genesis nTime = %u \n", genesis.nTime);
-        LogPrintf("Main Genesis nNonce = %u \n", genesis.nNonce);
-        LogPrintf("Main Genesis nBits: %08x\n", genesis.nBits);
-        LogPrintf("Main Genesis Hash = %s\n", genesis.GetHash().ToString().c_str());
-        LogPrintf("Main Genesis hashStateRoot = %s\n", genesis.hashStateRoot.ToString().c_str());
-        LogPrintf("Main Genesis Hash Merkle Root = %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        
         assert(consensus.hashGenesisBlock == uint256S("0x0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0"));
         assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
         vSeeds.push_back(CDNSSeedData("qtum3.dynu.net", "qtum3.dynu.net", false)); // Qtum mainnet
-
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,58);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,50);
@@ -231,10 +221,10 @@ public:
         consensus.BIP66Height = 0; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
-        consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetTimespan = 60; // 16 minutes
+        consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = true;
+        consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -273,21 +263,12 @@ public:
             MineGenesis(genesis, consensus.powLimit, false);
 
         consensus.hashGenesisBlock = genesis.GetHash();
-        
-        LogPrintf("Test Genesis nTime = %u \n", genesis.nTime);
-        LogPrintf("Test Genesis nNonce = %u \n", genesis.nNonce);
-        LogPrintf("Test Genesis nBits: %08x\n", genesis.nBits);
-        LogPrintf("Test Genesis Hash = %s\n", genesis.GetHash().ToString().c_str());
-        LogPrintf("Test Genesis hashStateRoot = %s\n", genesis.hashStateRoot.ToString().c_str());
-        LogPrintf("Test Genesis Hash Merkle Root = %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        
         assert(consensus.hashGenesisBlock == uint256S("0x000013694772f8aeb88efeb2829fe5d71fbca3e23d5043baa770726f204f528c"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
         //vSeeds.push_back(CDNSSeedData("testnetbitcoin.jonasschnelli.ch", "testnet-seed.bitcoin.jonasschnelli.ch", true));
-
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
@@ -301,7 +282,6 @@ public:
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         fMineBlocksOnDemand = false;
-
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
@@ -338,8 +318,8 @@ public:
         consensus.BIP66Height = 0; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
-        consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetTimespan = 60; // 16 minutes
+        consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.fPoSNoRetargeting = true;
@@ -375,14 +355,6 @@ public:
             MineGenesis(genesis, consensus.powLimit, false);
 
         consensus.hashGenesisBlock = genesis.GetHash();
-        
-        LogPrintf("Reg Genesis nTime = %u \n", genesis.nTime);
-        LogPrintf("Reg Genesis nNonce = %u \n", genesis.nNonce);
-        LogPrintf("Reg Genesis nBits: %08x\n", genesis.nBits);
-        LogPrintf("Reg Genesis Hash = %s\n", genesis.GetHash().ToString().c_str());
-        LogPrintf("Reg Genesis hashStateRoot = %s\n", genesis.hashStateRoot.ToString().c_str());
-        LogPrintf("Reg Genesis Hash Merkle Root = %s\n", genesis.hashMerkleRoot.ToString().c_str());
-        
         assert(consensus.hashGenesisBlock == uint256S("0x03c80d2399e1fe481a51e122ac55159a4e5fe635494a7fd368f3e440241fccb2"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
@@ -452,4 +424,3 @@ void UpdateRegtestBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime,
 {
     regTestParams.UpdateBIP9Parameters(d, nStartTime, nTimeout);
 }
- 
