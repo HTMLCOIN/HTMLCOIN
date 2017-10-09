@@ -9,6 +9,7 @@
 #include "chain.h"
 #include "primitives/block.h"
 #include "uint256.h"
+#include "util.h"
 
 // ppcoin: find last block index up to pindex
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake)
@@ -27,7 +28,7 @@ inline arith_uint256 GetLimit(const Consensus::Params& params, bool fProofOfStak
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, bool fProofOfStake)
 {
 
-    unsigned int  nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
+    unsigned int nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
 
     // genesis block
     if (pindexLast == NULL)
@@ -61,39 +62,66 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         }
     }
 
-    return CalculateNextWorkRequired(pindexPrev, pindexPrevPrev->GetBlockTime(), params, fProofOfStake);
+    return CalculateNextWorkRequired(pindexPrev, params, fProofOfStake);
 }
 
-unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params, bool fProofOfStake)
+/**
+ * eHRC (enhanced Hash Rate Compensation)
+ * Short, medium and long samples averaged together and compared against the target time span.
+ * Adjust every block but limted to 9% change maximum.
+ */
+unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params, bool fProofOfStake)
 {
+    if (fProofOfStake && params.fPoSNoRetargeting)
+        return pindexLast->nBits;
+    else if (params.fPowNoRetargeting)
+        return pindexLast->nBits;
 
-    if(fProofOfStake){
-        if (params.fPoSNoRetargeting)
-            return pindexLast->nBits;
-    }else{
-        if (params.fPowNoRetargeting)
-            return pindexLast->nBits;
+    unsigned int nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
+    int nHeight = pindexLast->nHeight + 1;
+    int nTargetTimespan = params.nPowTargetTimespan;
+    int shortSample = 15;
+    int mediumSample = 200;
+    int longSample = 1000;
+    int pindexFirstShortTime = 0;
+    int pindexFirstMediumTime = 0;
+
+    // New chain
+    if (nHeight <= longSample)
+        return nTargetLimit;
+
+    const CBlockIndex* pindexFirstLong = pindexLast;
+    for(int i = 0; pindexFirstLong && i < longSample; i++) {
+        pindexFirstLong = pindexFirstLong->pprev;
+        if (i == shortSample - 1)
+            pindexFirstShortTime = pindexFirstLong->GetBlockTime();
+
+        if (i == mediumSample - 1)
+            pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
     }
-    // Limit adjustment step
-    int64_t nTargetSpacing = params.nPowTargetSpacing;
-    int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
-    if (nActualSpacing < 0)
-        nActualSpacing = nTargetSpacing;
-    if (nActualSpacing > nTargetSpacing * 10)
-        nActualSpacing = nTargetSpacing * 10;
 
-	// Retarget
-    const arith_uint256 bnTargetLimit = GetLimit(params, fProofOfStake);
-    // ppcoin: target change every block
-    // ppcoin: retarget with exponential moving toward target spacing
+    int nActualTimespanShort = (pindexLast->GetBlockTime() - pindexFirstShortTime) / shortSample;
+    int nActualTimespanMedium = (pindexLast->GetBlockTime() - pindexFirstMediumTime)/ mediumSample;
+    int nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime()) / longSample;
+    int nActualTimespan = (nActualTimespanShort + nActualTimespanMedium + nActualTimespanLong) / 3;
+
+    // 9% difficulty limiter
+    int nActualTimespanMax = nTargetTimespan * 494 / 453;
+    int nActualTimespanMin = nTargetTimespan * 453 / 494;
+
+    if(nActualTimespan < nActualTimespanMin)
+        nActualTimespan = nActualTimespanMin;
+
+    if(nActualTimespan > nActualTimespanMax)
+        nActualTimespan = nActualTimespanMax;
+
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
-    int64_t nInterval = params.DifficultyAdjustmentInterval();
-    bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
-    bnNew /= ((nInterval + 1) * nTargetSpacing);
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
 
-    if (bnNew <= 0 || bnNew > bnTargetLimit)
-        bnNew = bnTargetLimit;
+    if (bnNew <= 0 || bnNew > nTargetLimit)
+        bnNew = nTargetLimit;
 
     return bnNew.GetCompact();
 }
