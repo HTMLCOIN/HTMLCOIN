@@ -198,10 +198,9 @@ public:
                         //   (the tx=... number in the SetBestChain debug.log lines)
             0         // * estimated number of transactions per second after that timestamp
         };
-        consensus.nLastPOWBlock = 5000;
         consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                    consensus.nMPoSRewardRecipients + 
+        // 708 is the number of premine blocks
+        consensus.nFirstMPoSBlock = 708 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
     }
 };
@@ -295,10 +294,9 @@ public:
         	0
         };
 
-        consensus.nLastPOWBlock = 5000;
         consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                    consensus.nMPoSRewardRecipients + 
+        // 708 is the number of premine blocks
+        consensus.nFirstMPoSBlock = 708 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
     }
 };
@@ -376,7 +374,6 @@ public:
             0
         };
 
-        consensus.nLastPOWBlock = 0x7fffffff;
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 5000;
 
