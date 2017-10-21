@@ -77,7 +77,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     else if (params.fPowNoRetargeting)
         return pindexLast->nBits;
 
-    unsigned int nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
+    arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
     int nHeight = pindexLast->nHeight + 1;
     int nTargetTimespan = params.nPowTargetTimespan;
     int shortSample = 15;
@@ -88,7 +88,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
 
     // New chain
     if (nHeight <= longSample + 1)
-        return nTargetLimit;
+        return nTargetLimit.GetCompact();
 
     const CBlockIndex* pindexFirstLong = pindexLast;
     for(int i = 0; pindexFirstLong && i < longSample; i++) {
