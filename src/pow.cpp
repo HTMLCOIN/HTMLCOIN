@@ -87,7 +87,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     int pindexFirstMediumTime = 0;
 
     // New chain
-    if (nHeight <= longSample)
+    if (nHeight <= longSample + 1)
         return nTargetLimit;
 
     const CBlockIndex* pindexFirstLong = pindexLast;
