@@ -72,10 +72,13 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
  */
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params, bool fProofOfStake)
 {
-    if (fProofOfStake && params.fPoSNoRetargeting)
-        return pindexLast->nBits;
-    else if (params.fPowNoRetargeting)
-        return pindexLast->nBits;
+    if (fProofOfStake){
+        if (params.fPoSNoRetargeting)
+            return pindexLast->nBits;
+    } else {
+        if (params.fPowNoRetargeting)
+            return pindexLast->nBits;
+    }
 
     arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
     int nHeight = pindexLast->nHeight + 1;
