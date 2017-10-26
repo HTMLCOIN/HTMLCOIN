@@ -1164,8 +1164,15 @@ void ThreadStakeMiner(CWallet *pwallet)
                                 break; //timestamp too late, so ignore
                             }
                             if (pblockfilled->GetBlockTime() > FutureDrift(GetAdjustedTime())) {
-                                //too early, so wait a second and try again
-                                MilliSleep(1000);
+                                if (IsArgSet("-aggressive-staking")) {
+                                    //if being agressive, then check more often to publish immediately when valid. This might allow you to find more blocks, 
+                                    //but also increases the chance of broadcasting invalid blocks and getting DoS banned by nodes,
+                                    //or receiving more stale/orphan blocks than normal. Use at your own risk.
+                                    MilliSleep(100);
+                                }else{
+                                    //too early, so wait 2 seconds and try again
+                                    MilliSleep(2000);
+                                }
                                 continue;
                             }
                             validBlock=true;
