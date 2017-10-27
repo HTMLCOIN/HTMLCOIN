@@ -117,13 +117,12 @@ public:
         consensus.nSubsidyHalvingInterval = 7680000; // Halving every 14.6 years
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 60;
-        consensus.nPowTargetSpacing = 60;
+        consensus.nTargetTimespan = 120;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 16128; // 80% of 2016
-        consensus.nMinerConfirmationWindow = 20160; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 15120; // 75% of 2016
+        consensus.nMinerConfirmationWindow = 20160;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -196,7 +195,7 @@ public:
         };
         consensus.nMPoSRewardRecipients = 10;
         // 708 is the number of premine blocks
-        consensus.nFirstMPoSBlock = 708 + consensus.nMPoSRewardRecipients +
+        consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
     }
 };
@@ -211,14 +210,13 @@ public:
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 7680000; // Halving every 14.6 years
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 60; // 16 minutes
-        consensus.nPowTargetSpacing = 60;
+        consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.nTargetTimespan = 10;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nMinerConfirmationWindow = 2016;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -288,7 +286,7 @@ public:
 
         consensus.nMPoSRewardRecipients = 10;
         // 708 is the number of premine blocks
-        consensus.nFirstMPoSBlock = 708 + consensus.nMPoSRewardRecipients +
+        consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
     }
 };
@@ -304,8 +302,7 @@ public:
         consensus.nSubsidyHalvingInterval = 150;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-        consensus.nPowTargetTimespan = 60; // 16 minutes
-        consensus.nPowTargetSpacing = 60;
+        consensus.nTargetTimespan = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.fPoSNoRetargeting = true;
