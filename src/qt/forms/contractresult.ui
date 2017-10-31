@@ -26,9 +26,6 @@ background: transparent;
    <layout class="QVBoxLayout" name="verticalLayout_3">
     <item>
      <widget class="QGroupBox" name="groupBoxCreateOrSendTo">
-      <property name="title">
-       <string>Contract Summary</string>
-      </property>
       <layout class="QGridLayout" name="gridLayout_2">
        <property name="leftMargin">
         <number>15</number>
@@ -200,9 +197,6 @@ background: transparent;
      <widget class="QGroupBox" name="groupBoxCallContract">
       <property name="styleSheet">
        <string notr="true"/>
-      </property>
-      <property name="title">
-       <string>Contract Summary</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
        <property name="leftMargin">
