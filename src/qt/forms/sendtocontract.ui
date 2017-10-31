@@ -148,9 +148,6 @@
        </item>
        <item>
         <widget class="QGroupBox" name="groupBoxOptional">
-         <property name="title">
-          <string>Optional</string>
-         </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <property name="leftMargin">
            <number>15</number>
