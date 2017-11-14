@@ -8,6 +8,7 @@
 #include "arith_uint256.h"
 #include "chainparams.h"
 #include "checkpoints.h"
+#include "checkpointsync.h"
 #include "checkqueue.h"
 #include "consensus/consensus.h"
 #include "consensus/merkle.h"
@@ -4181,6 +4182,11 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
         }
     }
 
+    // Check that the block satisfies synchronized checkpoint
+    if (!IsInitialBlockDownload() && !CheckSyncCheckpoint(block.GetHash(), pindexPrev))
+        return state.Invalid(error("%s : rejected by synchronized checkpoint", __func__),
+                             REJECT_OBSOLETE, "bad-version");
+
     return true;
 }
 
@@ -4400,6 +4406,8 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
     if (fCheckForPruning)
         FlushStateToDisk(state, FLUSH_STATE_NONE); // we just allocated more disk space for block files
 
+    AcceptPendingSyncCheckpoint();
+
     return true;
 }
 
@@ -4451,6 +4459,10 @@ bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<cons
     CValidationState state; // Only used to report errors, not invalidity - ignore it
     if (!ActivateBestChain(state, chainparams, pblock))
         return error("%s: ActivateBestChain failed", __func__);
+
+    // If responsible for sync-checkpoint send it
+    if (!CSyncCheckpoint::strMasterPrivKey.empty() && (int)GetArg("-checkpointdepth", -1) >= 0)
+        SendSyncCheckpoint(AutoSelectSyncCheckpoint());
 
     return true;
 }
@@ -4752,6 +4764,12 @@ bool static LoadBlockIndexDB(const CChainParams& chainparams)
             break;
         }
     }
+
+    // Load hashSyncCheckpoint
+    if (!pblocktree->ReadSyncCheckpoint(hashSyncCheckpoint))
+         LogPrintf("LoadBlockIndexDB(): synchronized checkpoint not read\n");
+    else
+         LogPrintf("LoadBlockIndexDB(): synchronized checkpoint %s\n", hashSyncCheckpoint.ToString().c_str());
 
     // Check presence of blk files
     LogPrintf("Checking all blk files are present...\n");
@@ -5091,12 +5109,17 @@ bool InitBlockIndex(const CChainParams& chainparams)
             pindex->hashProof = chainparams.GetConsensus().hashGenesisBlock;
             if (!ReceivedBlockTransactions(block, state, pindex, blockPos))
                 return error("LoadBlockIndex(): genesis block not accepted");
+            if (!WriteSyncCheckpoint(chainparams.GetConsensus().hashGenesisBlock))
+                return error("LoadBlockIndex() : failed to init sync checkpoint");
             // Force a chainstate write so that when we VerifyDB in a moment, it doesn't check stale data
             return FlushStateToDisk(state, FLUSH_STATE_ALWAYS);
         } catch (const std::runtime_error& e) {
             return error("LoadBlockIndex(): failed to initialize block database: %s", e.what());
         }
     }
+
+    if (!CheckCheckpointPubKey())
+        return error("LoadBlockIndex() : failed to reset checkpoint master pubkey");
 
     return true;
 }

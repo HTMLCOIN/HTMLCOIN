@@ -53,5 +53,37 @@ namespace Checkpoints {
             return false;
         return true;
     }
+
+    int GetTotalBlocksEstimate(const CCheckpointData& data)
+    {
+        const MapCheckpoints& checkpoints = data.mapCheckpoints;
+
+        if (checkpoints.empty())
+            return 0;
+
+        return checkpoints.rbegin()->first;
+    }
 	
+    uint256 GetLastAvailableCheckpoint(const CCheckpointData& data)
+    {
+        const MapCheckpoints& checkpoints = data.mapCheckpoints;
+
+        BOOST_REVERSE_FOREACH(const MapCheckpoints::value_type& i, checkpoints)
+        {
+            const uint256& hash = i.second;
+            if(mapBlockIndex.count(hash) && chainActive.Contains(mapBlockIndex[hash]))
+                return(hash);
+        }
+        return(Params().GetConsensus().hashGenesisBlock);
+    }
+
+    uint256 GetLatestHardenedCheckpoint(const CCheckpointData& data)
+    {
+        const MapCheckpoints& checkpoints = data.mapCheckpoints;
+
+        if (checkpoints.empty())
+            return Params().GetConsensus().hashGenesisBlock;
+
+        return (checkpoints.rbegin()->second);
+    }
 } // namespace Checkpoints

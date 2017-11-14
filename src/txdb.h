@@ -127,6 +127,11 @@ public:
     bool WriteFlag(const std::string &name, bool fValue);
     bool ReadFlag(const std::string &name, bool &fValue);
     bool LoadBlockIndexGuts(boost::function<CBlockIndex*(const uint256&)> insertBlockIndex);
+
+    bool ReadSyncCheckpoint(uint256& hashCheckpoint);
+    bool WriteSyncCheckpoint(uint256 hashCheckpoint);
+    bool ReadCheckpointPubKey(std::string& strPubKey);
+    bool WriteCheckpointPubKey(const std::string& strPubKey);
     
     ////////////////////////////////////////////////////////////////////////////// // qtum
     bool WriteHeightIndex(const CHeightTxIndexKey &heightIndex, const std::vector<uint256>& hash);

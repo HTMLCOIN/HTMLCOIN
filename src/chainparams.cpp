@@ -117,6 +117,7 @@ public:
         consensus.nSubsidyHalvingInterval = 7680000; // Halving every 14.6 years
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.checkpointPubKey = "044bc117790972b27ec7e1086491da8148f5c7aa346bc89ebcce306a4682a19a759fd057200dd912f966fb7b1b7c0b1226c1948a12bed831f43096d2a3c6570ae4";
         consensus.nTargetTimespan = 120;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -211,6 +212,7 @@ public:
         consensus.nSubsidyHalvingInterval = 7680000; // Halving every 14.6 years
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.checkpointPubKey = "04c7617702e41c0da3a6af3e6a3aa5305e1df312308637abaa86775bb09d3ed797a02351a298a464940a7460c0833ba7ead0ff45c8a735e9b46e0862e56bb79f98";
         consensus.nTargetTimespan = 10;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;

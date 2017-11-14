@@ -14,6 +14,7 @@
 #include "chain.h"
 #include "chainparams.h"
 #include "checkpoints.h"
+#include "checkpointsync.h"
 #include "compat/sanity.h"
 #include "consensus/validation.h"
 #include "httpserver.h"
@@ -1118,6 +1119,12 @@ bool AppInitParameterInteraction()
                 return InitError(strprintf("Invalid deployment (%s)", vDeploymentParams[0]));
             }
         }
+    }
+
+    if (mapMultiArgs.count("-checkpointkey")) // Checkpoint master priv key
+    {
+        if (!SetCheckpointPrivKey(GetArg("-checkpointkey", "")))
+            return InitError(_("Unable to sign checkpoint, wrong checkpointkey?"));
     }
     return true;
 }
