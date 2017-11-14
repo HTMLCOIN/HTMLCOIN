@@ -1370,7 +1370,7 @@ bool ReadFromDisk(CMutableTransaction& tx, CDiskTxPos& txindex, CBlockTreeDB& tx
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
     // 70.8 billion coins to cover existing coins, developer fund and exchange reimbursement
-    if (nHeight <= 708)
+    if (nHeight <= 798)
         return 100000000 * COIN;
 
     int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
