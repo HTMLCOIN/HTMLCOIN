@@ -167,7 +167,7 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        vSeeds.push_back(CDNSSeedData("html1.bushstar.co.uk", "html2.bushstar.co.uk", false)); // Qtum mainnet
+        vSeeds.push_back(CDNSSeedData("seed1.htmlcoin.com", "seed2.htmlcoin.co.uk", false)); // Qtum mainnet
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,41);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,100);
@@ -260,7 +260,7 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.push_back(CDNSSeedData("html1-testnet.bushstar.co.uk", "html2-testnet.bushstar.co.uk", true));
+        vSeeds.push_back(CDNSSeedData("testnet-seed1.htmlcoin.com", "testnet-seed2.htmlcoin.com", true));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
