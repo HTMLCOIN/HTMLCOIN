@@ -167,7 +167,7 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        vSeeds.push_back(CDNSSeedData("seed1.htmlcoin.com", "seed2.htmlcoin.co.uk", false)); // Qtum mainnet
+        vSeeds.push_back(CDNSSeedData("seed1.htmlcoin.com", "seed2.htmlcoin.com", false)); // Qtum mainnet
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,41);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,100);
