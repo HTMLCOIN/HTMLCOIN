@@ -358,8 +358,8 @@ void BitcoinGUI::createActions()
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
     tabGroup->addAction(historyAction);
 
-    QRCTokenAction = new QAction(platformStyle->SingleColorIcon(":/icons/qrctoken"), tr("&QRC Token"), this);
-    QRCTokenAction->setStatusTip(tr("QRC Token (send, receive or add Token in list)"));
+    QRCTokenAction = new QAction(platformStyle->SingleColorIcon(":/icons/qrctoken"), tr("&HRC Token"), this);
+    QRCTokenAction->setStatusTip(tr("HRC Token (send, receive or add Token in list)"));
     QRCTokenAction->setToolTip(QRCTokenAction->statusTip());
     QRCTokenAction->setCheckable(true);
     QRCTokenAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
