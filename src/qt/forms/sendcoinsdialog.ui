@@ -19,9 +19,6 @@
    </property>
    <item>
     <widget class="QGroupBox" name="groupBoxCoinControl">
-     <property name="title">
-      <string>Coin Control Features</string>
-     </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
       <property name="bottomMargin">
        <number>6</number>
@@ -60,9 +57,6 @@
           </item>
           <item>
            <widget class="QLabel" name="labelCoinControlAutomaticallySelected">
-            <property name="text">
-             <string>automatically selected</string>
-            </property>
             <property name="margin">
              <number>5</number>
             </property>
@@ -268,7 +262,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string notr="true">0.00 HTM</string>
+                  <string notr="true">0.00 HTML</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -348,7 +342,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string notr="true">0.00 HTM</string>
+                  <string notr="true">0.00 HTML</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -399,7 +393,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string notr="true">0.00 HTM</string>
+                  <string notr="true">0.00 HTML</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -428,7 +422,7 @@
                   <enum>Qt::ActionsContextMenu</enum>
                  </property>
                  <property name="text">
-                  <string notr="true">0.00 HTM</string>
+                  <string notr="true">0.00 HTML</string>
                  </property>
                  <property name="textInteractionFlags">
                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -622,9 +616,6 @@
    </item>
    <item>
     <widget class="QGroupBox" name="groupBoxFee">
-     <property name="title">
-      <string>Transaction Fee:</string>
-     </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <property name="spacing">
        <number>0</number>
@@ -1308,7 +1299,7 @@
           <cursorShape>IBeamCursor</cursorShape>
          </property>
          <property name="text">
-          <string notr="true">123.456 HTM</string>
+          <string notr="true">123.456 HTML</string>
          </property>
          <property name="textInteractionFlags">
           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
