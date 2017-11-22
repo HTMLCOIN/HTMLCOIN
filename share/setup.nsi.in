@@ -1,4 +1,4 @@
-Name "@PACKAGE_NAME@ (@WINDOWS_BITS@-bit)"
+Name "@PACKAGE_NAME@ 2.0 (@WINDOWS_BITS@-bit)"
 
 RequestExecutionLevel highest
 SetCompressor /SOLID lzma
@@ -50,9 +50,9 @@ Var StartMenuGroup
 # Installer attributes
 OutFile @PACKAGE_TARNAME@-${VERSION}-win@WINDOWS_BITS@-setup.exe
 !if "@WINDOWS_BITS@" == "64"
-InstallDir $PROGRAMFILES64\HTMLCOIN
+InstallDir $PROGRAMFILES64\HTMLCOIN2
 !else
-InstallDir $PROGRAMFILES\HTMLCOIN
+InstallDir $PROGRAMFILES\HTMLCOIN2
 !endif
 CRCCheck on
 XPStyle on
