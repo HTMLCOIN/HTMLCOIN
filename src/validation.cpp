@@ -2035,6 +2035,9 @@ bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, cons
                                    nActualStakeReward, blockReward),
                              REJECT_INVALID, "bad-cs-amount");
 
+        // MPoS not enabled so the rest can be skipped
+        return true;
+
         // The first proof-of-stake blocks get full reward, the rest of them are split between recipients
         int rewardRecipients = 1;
         int nPrevHeight = nHeight -1;
@@ -4098,7 +4101,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     // Check timestamp
     if (block.IsProofOfStake() && block.GetBlockTime() > FutureDrift(nAdjustedTime))
-        return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
+        return state.Invalid(false, REJECT_INVALID, "time-too-new", "PoS block timestamp too far in the future");
 
     // Limit block in future accepted in chain to only a time window of 15 min
     if (block.GetBlockTime() > GetAdjustedTime() + 15 * 60)
@@ -4106,7 +4109,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     // Check timestamp against prev it should not be more then 15 minutes outside blockchain time
     if (block.GetBlockTime() <= pindexPrev->GetBlockTime() - 15 * 60)
-        return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
+        return state.Invalid(false, REJECT_INVALID, "time-too-old", "block timestamp is too early");
 
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades

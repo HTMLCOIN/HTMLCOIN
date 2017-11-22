@@ -45,6 +45,7 @@ struct Params {
     /** Proof of work parameters */
     uint256 powLimit;
     uint256 posLimit;
+    int nDiffAdjustChange;
     std::string checkpointPubKey;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;

@@ -124,6 +124,7 @@ public:
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 15120; // 75% of 2016
         consensus.nMinerConfirmationWindow = 20160;
+        consensus.nDiffAdjustChange = 10000;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -196,7 +197,6 @@ public:
             7200         // * estimated number of transactions per second after that timestamp
         };
         consensus.nMPoSRewardRecipients = 10;
-        // 708 is the number of premine blocks
         consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
     }
@@ -220,6 +220,7 @@ public:
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016;
+        consensus.nDiffAdjustChange = 1000;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -288,8 +289,7 @@ public:
         };
 
         consensus.nMPoSRewardRecipients = 10;
-        // 708 is the number of premine blocks
-        consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
+        consensus.nFirstMPoSBlock = 450 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
     }
 };
@@ -363,7 +363,7 @@ public:
         };
 
         consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = 5000;
+        consensus.nFirstMPoSBlock = 1325;
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
