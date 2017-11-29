@@ -181,6 +181,11 @@ bool CheckSyncCheckpoint(const uint256& hashBlock, const CBlockIndex* pindexPrev
 {
     int nHeight = pindexPrev->nHeight + 1;
 
+    if (hashSyncCheckpoint == ArithToUint256(arith_uint256(0))) {
+        LogPrintf("%s: hashSyncCheckpoint not initialised, setting to genesis block: %s\n",__func__, Params().GetConsensus().hashGenesisBlock.ToString().c_str());
+        WriteSyncCheckpoint(Params().GetConsensus().hashGenesisBlock);
+    }
+
     LOCK(cs_hashSyncCheckpoint);
     // sync-checkpoint should always be accepted block
     assert(mapBlockIndex.count(hashSyncCheckpoint));
