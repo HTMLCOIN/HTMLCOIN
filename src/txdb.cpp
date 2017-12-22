@@ -384,6 +384,38 @@ bool CBlockTreeDB::WipeHeightIndex() {
     return WriteBatch(batch);
 }
 
+bool CBlockTreeDB::WriteTimestampIndex(const CTimestampIndexKey &timestampIndex) {
+    CDBBatch batch(*this);
+    batch.Write(std::make_pair(DB_TIMESTAMPINDEX, timestampIndex), 0);
+    return WriteBatch(batch);
+}
+
+bool CBlockTreeDB::ReadTimestampIndex(const unsigned int &high, const unsigned int &low, const bool fActiveOnly, std::vector<std::pair<uint256, unsigned int> > &hashes) {
+
+    boost::scoped_ptr<CDBIterator> pcursor(NewIterator());
+
+    pcursor->Seek(std::make_pair(DB_TIMESTAMPINDEX, CTimestampIndexIteratorKey(low)));
+
+    while (pcursor->Valid()) {
+        boost::this_thread::interruption_point();
+        std::pair<char, CTimestampIndexKey> key;
+        if (pcursor->GetKey(key) && key.first == DB_TIMESTAMPINDEX && key.second.timestamp < high) {
+            if (fActiveOnly) {
+                if (blockOnchainActive(key.second.blockHash)) {
+                    hashes.push_back(std::make_pair(key.second.blockHash, key.second.timestamp));
+                }
+            } else {
+                hashes.push_back(std::make_pair(key.second.blockHash, key.second.timestamp));
+            }
+
+            pcursor->Next();
+        } else {
+            break;
+        }
+    }
+
+    return true;
+}
 
 bool CBlockTreeDB::WriteStakeIndex(unsigned int height, uint160 address) {
     CDBBatch batch(*this);
