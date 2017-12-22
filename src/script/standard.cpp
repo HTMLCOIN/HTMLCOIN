@@ -24,6 +24,10 @@ unsigned nMaxDatacarrierBytes = MAX_OP_RETURN_RELAY;
 
 CScriptID::CScriptID(const CScript& in) : uint160(Hash160(in.begin(), in.end())) {}
 
+valtype DataVisitor::operator()(const CNoDestination& noDest) const { return valtype(); }
+valtype DataVisitor::operator()(const CKeyID& keyID) const { return valtype(keyID.begin(), keyID.end()); }
+valtype DataVisitor::operator()(const CScriptID& scriptID) const { return valtype(scriptID.begin(), scriptID.end()); }
+
 const char* GetTxnOutputType(txnouttype t)
 {
     switch (t)
@@ -207,7 +211,7 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsi
                         if (version.rootVM != 0 && val < 1) {
                             return false;
                         }
-                        if (val > MAX_BLOCK_GAS_LIMIT_DGP) {
+                        if (val > MAX_BLOCK_GAS_LIMIT_DGP / 2) {
                             //do not allow transactions that could use more gas than is in a block
                             return false;
                         }
@@ -215,10 +219,6 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsi
                         //standard mempool rules for contracts
                         //consensus rules for contracts
                         if (version.rootVM != 0 && val < STANDARD_MINIMUM_GAS_LIMIT) {
-                            return false;
-                        }
-                        if (val > DEFAULT_BLOCK_GAS_LIMIT_DGP / 2) {
-                            //don't allow transactions that use more than 1/2 block of gas to be broadcast on the mempool
                             return false;
                         }
 
@@ -269,6 +269,24 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsi
     return false;
 }
 
+#include "base58.h"
+
+
+bool ExtractDestination(const COutPoint out, const CScript& script, CTxDestination& addressRet, txnouttype* typeRet) {
+    if (!typeRet) {
+        txnouttype type;
+        typeRet = &type;
+    }
+    if (ExtractDestination(script, addressRet, typeRet))
+        return true;
+    if (*typeRet == TX_CREATE) {
+        addressRet = CKeyID(uint160(QtumState::createQtumAddress(uintToh256(out.hash), out.n).asBytes()));
+        // std::cout << CBitcoinAddress(addressRet).ToString()<< " " << out.hash.GetHex() << " " << out.n << std::endl;
+        return true;
+    }
+    return false;
+}
+
 bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet, txnouttype *typeRet)
 {
     vector<valtype> vSolutions;
@@ -299,6 +317,22 @@ bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet,
         addressRet = CScriptID(uint160(vSolutions[0]));
         return true;
     }
+    /////////////////////////////////////////////////////////////// // qtum
+    else if(whichType == TX_CALL){
+        addressRet = CKeyID(uint160(vSolutions[0]));
+        return true;
+    }
+    else if(whichType == TX_WITNESS_V0_KEYHASH)
+    {
+        addressRet = CKeyID(uint160(vSolutions[0]));
+        return true;
+    }
+    else if(whichType == TX_WITNESS_V0_SCRIPTHASH)
+    {
+        addressRet = CScriptID(Hash160(vSolutions[0]));
+        return true;
+    }
+    ///////////////////////////////////////////////////////////////
     // Multisig txns have more than one address...
     return false;
 }
