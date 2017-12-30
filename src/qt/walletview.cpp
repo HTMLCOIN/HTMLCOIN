@@ -24,6 +24,7 @@
 #include "sendtocontract.h"
 #include "callcontract.h"
 #include "qrctoken.h"
+#include "restoredialog.h"
 
 #include "ui_interface.h"
 
@@ -150,6 +151,7 @@ void WalletView::setWalletModel(WalletModel *_walletModel)
     sendCoinsPage->setModel(_walletModel);
     createContractPage->setModel(_walletModel);
     sendToContractPage->setModel(_walletModel);
+    callContractPage->setModel(_walletModel);
     QRCTokenPage->setModel(_walletModel);
     usedReceivingAddressesPage->setModel(_walletModel->getAddressTableModel());
     usedSendingAddressesPage->setModel(_walletModel->getAddressTableModel());
@@ -345,6 +347,13 @@ void WalletView::backupWallet()
         Q_EMIT message(tr("Backup Successful"), tr("The wallet data was successfully saved to %1.").arg(filename),
             CClientUIInterface::MSG_INFORMATION);
     }
+}
+
+void WalletView::restoreWallet()
+{
+    RestoreDialog dlg(this);
+    dlg.setModel(walletModel);
+    dlg.exec();
 }
 
 void WalletView::changePassphrase()

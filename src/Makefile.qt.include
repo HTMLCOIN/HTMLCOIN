@@ -100,9 +100,11 @@ QT_FORMS_UI = \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/callcontract.ui \
   qt/forms/coincontroldialog.ui \
+  qt/forms/contractbookpage.ui \
   qt/forms/contractresult.ui \
   qt/forms/createcontract.ui \
   qt/forms/editaddressdialog.ui \
+  qt/forms/editcontractinfodialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
   qt/forms/modaloverlay.ui \
@@ -113,6 +115,7 @@ QT_FORMS_UI = \
   qt/forms/receivecoinsdialog.ui \
   qt/forms/receiverequestdialog.ui \
   qt/forms/receivetokenpage.ui \
+  qt/forms/restoredialog.ui \
   qt/forms/debugwindow.ui \
   qt/forms/sendcoinsdialog.ui \
   qt/forms/sendcoinsentry.ui \
@@ -142,10 +145,13 @@ QT_MOC_CPP = \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
+  qt/moc_contractbookpage.cpp \
   qt/moc_contractresult.cpp \
+  qt/moc_contracttablemodel.cpp \
   qt/moc_createcontract.cpp \
   qt/moc_csvmodelwriter.cpp \
   qt/moc_editaddressdialog.cpp \
+  qt/moc_editcontractinfodialog.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
@@ -167,6 +173,7 @@ QT_MOC_CPP = \
   qt/moc_receiverequestdialog.cpp \
   qt/moc_receivetokenpage.cpp \
   qt/moc_recentrequeststablemodel.cpp \
+  qt/moc_restoredialog.cpp \
   qt/moc_rpcconsole.cpp \
   qt/moc_sendcoinsdialog.cpp \
   qt/moc_sendcoinsentry.cpp \
@@ -236,10 +243,13 @@ BITCOIN_QT_H = \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
   qt/contractabi.h \
+  qt/contractbookpage.h \
   qt/contractresult.h \
+  qt/contracttablemodel.h \
   qt/createcontract.h \
   qt/csvmodelwriter.h \
   qt/editaddressdialog.h \
+  qt/editcontractinfodialog.h \
   qt/eventlog.h \
   qt/execrpccommand.h \
   qt/guiconstants.h \
@@ -267,6 +277,7 @@ BITCOIN_QT_H = \
   qt/receiverequestdialog.h \
   qt/receivetokenpage.h \
   qt/recentrequeststablemodel.h \
+  qt/restoredialog.h \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
@@ -412,11 +423,14 @@ BITCOIN_QT_WALLET_CPP = \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
   qt/contractabi.cpp \
+  qt/contractbookpage.cpp \
   qt/contractresult.cpp \
+  qt/contracttablemodel.cpp \
   qt/createcontract.cpp \
   qt/eventlog.cpp \
   qt/execrpccommand.cpp \
   qt/editaddressdialog.cpp \
+  qt/editcontractinfodialog.cpp \
   qt/openuridialog.cpp \
   qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
@@ -426,6 +440,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/receiverequestdialog.cpp \
   qt/receivetokenpage.cpp \
   qt/recentrequeststablemodel.cpp \
+  qt/restoredialog.cpp \
   qt/sendcoinsdialog.cpp \
   qt/sendcoinsentry.cpp \
   qt/sendtocontract.cpp \
@@ -507,9 +522,9 @@ endif
 if ENABLE_ZMQ
 qt_htmlcoin_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-qt_htmlcoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBMEMENV) \
+qt_htmlcoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
   $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) \
-  $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(LIBLEVELDB) $(LIBMEMENV) $(LIBETHEREUM) $(LIBETHASHSEAL) $(LIBETHASH) \
+  $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(LIBETHEREUM) $(LIBETHASHSEAL) $(LIBETHASH) \
   $(LIBETHCORE) $(LIBDEVCORE) $(LIBJSONCPP) $(LIBEVM) $(LIBEVMCORE) $(LIBDEVCRYPTO) $(LIBCRYPTOPP) $(BOOST_LIBS) $(LIBSECP256K1) $(LIBSCRYIPT)
 qt_htmlcoin_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 qt_htmlcoin_qt_LIBTOOLFLAGS = --tag CXX

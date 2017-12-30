@@ -23,6 +23,7 @@ class TransactionTableModel;
 class WalletModelTransaction;
 class TokenItemModel;
 class TokenTransactionTableModel;
+class ContractTableModel;
 
 class CCoinControl;
 class CKeyID;
@@ -130,6 +131,7 @@ public:
 
     OptionsModel *getOptionsModel();
     AddressTableModel *getAddressTableModel();
+    ContractTableModel *getContractTableModel();
     TransactionTableModel *getTransactionTableModel();
     RecentRequestsTableModel *getRecentRequestsTableModel();
     TokenItemModel *getTokenItemModel();
@@ -174,6 +176,8 @@ public:
     bool changePassphrase(const SecureString &oldPass, const SecureString &newPass);
     // Wallet backup
     bool backupWallet(const QString &filename);
+    // Restore backup
+    bool restoreWallet(const QString &filename, const QString &param);
 
     // RAI object for unlocking wallet, returned by requestUnlock()
     class UnlockContext
@@ -231,6 +235,9 @@ public:
 
     bool removeTokenEntry(const std::string& sHash);
 
+    QString getRestorePath();
+    QString getRestoreParam();
+
 private:
     CWallet *wallet;
     bool fHaveWatchOnly;
@@ -241,6 +248,7 @@ private:
     OptionsModel *optionsModel;
 
     AddressTableModel *addressTableModel;
+    ContractTableModel *contractTableModel;
     TransactionTableModel *transactionTableModel;
     RecentRequestsTableModel *recentRequestsTableModel;
     TokenItemModel *tokenItemModel;
@@ -259,6 +267,9 @@ private:
     int cachedNumBlocks;
 
     QTimer *pollTimer;
+
+    QString restorePath;
+    QString restoreParam;
 
     void subscribeToCoreSignals();
     void unsubscribeFromCoreSignals();
@@ -301,6 +312,8 @@ public Q_SLOTS:
     void updateWatchOnlyFlag(bool fHaveWatchonly);
     /* Current, immature or unconfirmed balance might have changed - emit 'balanceChanged' if so */
     void pollBalanceChanged();
+    /* New, updated or removed contract book entry */
+    void updateContractBook(const QString &address, const QString &label, const QString &abi, int status);
 };
 
 #endif // BITCOIN_QT_WALLETMODEL_H

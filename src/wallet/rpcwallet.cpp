@@ -1,4 +1,4 @@
-// Copyright (c) 2010 Satoshi Nakamoto
+﻿// Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2016 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -24,6 +24,7 @@
 #include <stdint.h>
 
 #include <boost/assign/list_of.hpp>
+#include <boost/optional.hpp>
 
 #include <univalue.h>
 
@@ -450,7 +451,7 @@ UniValue createcontract(const JSONRPCRequest& request){
     uint64_t minGasPrice = CAmount(qtumDGP.getMinGasPrice(chainActive.Height()));
     CAmount nGasPrice = (minGasPrice>DEFAULT_GAS_PRICE)?minGasPrice:DEFAULT_GAS_PRICE;
 
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 5)
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 6)
         throw runtime_error(
                 "createcontract \"bytecode\" (gaslimit gasprice \"senderaddress\" broadcast)"
                 "\nCreate a contract with bytcode.\n"
@@ -519,6 +520,11 @@ UniValue createcontract(const JSONRPCRequest& request){
     	fBroadcast=request.params[4].get_bool();
     }
 
+    bool fChangeToSender=true;
+    if (request.params.size() > 5){
+        fChangeToSender=request.params[5].get_bool();
+    }
+
     CCoinControl coinControl;
 
     if(fHasSender){
@@ -551,7 +557,9 @@ UniValue createcontract(const JSONRPCRequest& request){
         if(!coinControl.HasSelected()){
             throw JSONRPCError(RPC_TYPE_ERROR, "Sender address does not have any unspent outputs");
         }
-        coinControl.destChange=senderAddress.Get();
+        if(fChangeToSender){
+            coinControl.destChange=senderAddress.Get();
+        }
     }
     EnsureWalletIsUnlocked();
 
@@ -644,7 +652,7 @@ UniValue sendtocontract(const JSONRPCRequest& request){
     uint64_t minGasPrice = CAmount(qtumDGP.getMinGasPrice(chainActive.Height()));
     CAmount nGasPrice = (minGasPrice>DEFAULT_GAS_PRICE)?minGasPrice:DEFAULT_GAS_PRICE;
 
-    if (request.fHelp || request.params.size() < 2 || request.params.size() > 7)
+    if (request.fHelp || request.params.size() < 2 || request.params.size() > 8)
         throw runtime_error(
                 "sendtocontract \"contractaddress\" \"data\" (amount gaslimit gasprice senderaddress broadcast)"
                 "\nSend funds and data to a contract.\n"
@@ -657,6 +665,7 @@ UniValue sendtocontract(const JSONRPCRequest& request){
                 "5. gasPrice  (numeric or string, optional) gasPrice HTMLCOIN price per gas unit, default: "+FormatMoney(nGasPrice)+", min:"+FormatMoney(minGasPrice)+"\n"
                 "6. \"senderaddress\" (string, optional) The quantum address that will be used as sender.\n"
                 "7. \"broadcast\" (bool, optional, default=true) Whether to broadcast the transaction or not.\n"
+                "8. \"changeToSender\" (bool, optional, default=true) Return the change to the sender.\n"
                 "\nResult:\n"
                 "[\n"
                 "  {\n"
@@ -728,6 +737,10 @@ UniValue sendtocontract(const JSONRPCRequest& request){
         fBroadcast=request.params[6].get_bool();
     }
 
+    bool fChangeToSender=true;
+    if (request.params.size() > 7){
+        fChangeToSender=request.params[7].get_bool();
+    }
 
     CCoinControl coinControl;
 
@@ -761,7 +774,9 @@ UniValue sendtocontract(const JSONRPCRequest& request){
         if(!coinControl.HasSelected()){
             throw JSONRPCError(RPC_TYPE_ERROR, "Sender address does not have any unspent outputs");
         }
-        coinControl.destChange=senderAddress.Get();
+        if(fChangeToSender){
+            coinControl.destChange=senderAddress.Get();
+        }
     }
 
     EnsureWalletIsUnlocked();
@@ -2267,18 +2282,22 @@ UniValue listsinceblock(const JSONRPCRequest& request)
     return ret;
 }
 
-UniValue gettransaction(const JSONRPCRequest& request)
+UniValue gettransaction(const JSONRPCRequest& request_)
 {
+    // long-poll
+    JSONRPCRequest& request = (JSONRPCRequest&) request_;
+
     if (!EnsureWalletIsAvailable(request.fHelp))
         return NullUniValue;
 
-    if (request.fHelp || request.params.size() < 1 || request.params.size() > 2)
+    if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
         throw runtime_error(
-            "gettransaction \"txid\" ( include_watchonly )\n"
+            "gettransaction \"txid\" ( include_watchonly ) (waitconf)\n"
             "\nGet detailed information about in-wallet transaction <txid>\n"
             "\nArguments:\n"
             "1. \"txid\"                  (string, required) The transaction id\n"
             "2. \"include_watchonly\"     (bool, optional, default=false) Whether to include watch-only addresses in balance calculation and details[]\n"
+            "3. \"waitconf\"              (int, optional, default=0) Wait for enough confirmations before returning\n"
             "\nResult:\n"
             "{\n"
             "  \"amount\" : x.xxx,        (numeric) The transaction amount in " + CURRENCY_UNIT + "\n"
@@ -2317,7 +2336,7 @@ UniValue gettransaction(const JSONRPCRequest& request)
             + HelpExampleRpc("gettransaction", "\"1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d\"")
         );
 
-    LOCK2(cs_main, pwalletMain->cs_wallet);
+
 
     uint256 hash;
     hash.SetHex(request.params[0].get_str());
@@ -2327,10 +2346,56 @@ UniValue gettransaction(const JSONRPCRequest& request)
         if(request.params[1].get_bool())
             filter = filter | ISMINE_WATCH_ONLY;
 
+    int waitconf = 0;
+    if(request.params.size() > 2) {
+        waitconf = request.params[2].get_int();
+    }
+
+    bool shouldWaitConf = request.params.size() > 2 && waitconf > 0;
+
+    {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
+        if (!pwalletMain->mapWallet.count(hash))
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid or non-wallet transaction id");
+    }
+
+    CWalletTx* _wtx = NULL;
+
+    // avoid long-poll if API caller does not specify waitconf
+    if (!shouldWaitConf) {
+        {
+            LOCK2(cs_main, pwalletMain->cs_wallet);
+            _wtx = &pwalletMain->mapWallet[hash];
+        }
+
+    } else {
+        request.PollStart();
+        while (true) {
+            {
+                LOCK2(cs_main, pwalletMain->cs_wallet);
+                _wtx = &pwalletMain->mapWallet[hash];
+
+                if (_wtx->GetDepthInMainChain() >= waitconf) {
+                    break;
+                }
+            }
+
+            request.PollPing();
+
+            std::unique_lock<std::mutex> lock(cs_blockchange);
+            cond_blockchange.wait_for(lock, std::chrono::milliseconds(300));
+
+            if (!request.PollAlive() || !IsRPCRunning()) {
+                return NullUniValue;
+            }
+        }
+    }
+
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+    CWalletTx& wtx = *_wtx;
+
     UniValue entry(UniValue::VOBJ);
-    if (!pwalletMain->mapWallet.count(hash))
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid or non-wallet transaction id");
-    const CWalletTx& wtx = pwalletMain->mapWallet[hash];
 
     CAmount nCredit = wtx.GetCredit(filter);
     CAmount nDebit = wtx.GetDebit(filter);
@@ -3573,7 +3638,7 @@ static const CRPCCommand commands[] =
         { "wallet",             "getrawchangeaddress",      &getrawchangeaddress,      true,   {} },
         { "wallet",             "getreceivedbyaccount",     &getreceivedbyaccount,     false,  {"account","minconf"} },
         { "wallet",             "getreceivedbyaddress",     &getreceivedbyaddress,     false,  {"address","minconf"} },
-        { "wallet",             "gettransaction",           &gettransaction,           false,  {"txid","include_watchonly"} },
+        { "wallet",             "gettransaction",           &gettransaction,           false,  {"txid","include_watchonly", "waitconf"} },
         { "wallet",             "getunconfirmedbalance",    &getunconfirmedbalance,    false,  {} },
         { "wallet",             "getwalletinfo",            &getwalletinfo,            false,  {} },
         { "wallet",             "importmulti",              &importmulti,              true,   {"requests","options"} },
@@ -3605,8 +3670,8 @@ static const CRPCCommand commands[] =
         { "wallet",             "walletpassphrasechange",   &walletpassphrasechange,   true,   {"oldpassphrase","newpassphrase"} },
         { "wallet",             "walletpassphrase",         &walletpassphrase,         true,   {"passphrase","timeout", "stakingonly"} },
         { "wallet",             "removeprunedfunds",        &removeprunedfunds,        true,   {"txid"} },
-        { "wallet",             "createcontract",           &createcontract,           false,  {"bytecode", "gasLimit", "gasPrice", "senderAddress", "broadcast"} },
-        { "wallet",             "sendtocontract",           &sendtocontract,           false,  {"contractaddress", "bytecode", "amount", "gasLimit", "gasPrice", "senderAddress", "broadcast"} },
+        { "wallet",             "createcontract",           &createcontract,           false,  {"bytecode", "gasLimit", "gasPrice", "senderAddress", "broadcast", "changeToSender"} },
+        { "wallet",             "sendtocontract",           &sendtocontract,           false,  {"contractaddress", "bytecode", "amount", "gasLimit", "gasPrice", "senderAddress", "broadcast", "changeToSender"} },
 };
 
 void RegisterWalletRPCCommands(CRPCTable &t)

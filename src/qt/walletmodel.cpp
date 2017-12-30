@@ -13,6 +13,7 @@
 #include "transactiontablemodel.h"
 #include "tokenitemmodel.h"
 #include "tokentransactiontablemodel.h"
+#include "contracttablemodel.h"
 
 #include "base58.h"
 #include "keystore.h"
@@ -23,17 +24,22 @@
 #include "util.h" // for GetBoolArg
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h" // for BackupWallet
+#include "timedata.h"
+#include "util.h"
 
 #include <stdint.h>
 
 #include <QDebug>
 #include <QSet>
 #include <QTimer>
+#include <QFile>
 
 #include <boost/foreach.hpp>
+#include <boost/filesystem.hpp>
 
 WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, OptionsModel *_optionsModel, QObject *parent) :
     QObject(parent), wallet(_wallet), optionsModel(_optionsModel), addressTableModel(0),
+    contractTableModel(0),
     transactionTableModel(0),
     recentRequestsTableModel(0),
     tokenItemModel(0),
@@ -54,6 +60,7 @@ WalletModel::WalletModel(const PlatformStyle *platformStyle, CWallet *_wallet, O
     fForceCheckBalanceChanged = false;
 
     addressTableModel = new AddressTableModel(wallet, this);
+    contractTableModel = new ContractTableModel(wallet, this);
     transactionTableModel = new TransactionTableModel(platformStyle, wallet, this);
     recentRequestsTableModel = new RecentRequestsTableModel(wallet, this);
     tokenItemModel = new TokenItemModel(wallet, this);
@@ -168,6 +175,12 @@ void WalletModel::pollBalanceChanged()
             checkTokenBalanceChanged();
         }
     }
+}
+
+void WalletModel::updateContractBook(const QString &address, const QString &label, const QString &abi, int status)
+{
+    if(contractTableModel)
+        contractTableModel->updateEntry(address, label, abi, status);
 }
 
 void WalletModel::checkBalanceChanged()
@@ -428,6 +441,11 @@ AddressTableModel *WalletModel::getAddressTableModel()
     return addressTableModel;
 }
 
+ContractTableModel *WalletModel::getContractTableModel()
+{
+    return contractTableModel;
+}
+
 TransactionTableModel *WalletModel::getTransactionTableModel()
 {
     return transactionTableModel;
@@ -509,6 +527,23 @@ bool WalletModel::backupWallet(const QString &filename)
     return wallet->BackupWallet(filename.toLocal8Bit().data());
 }
 
+bool WalletModel::restoreWallet(const QString &filename, const QString &param)
+{
+    if(QFile::exists(filename))
+    {
+        boost::filesystem::path pathWalletBak = GetDataDir() / strprintf("wallet.%d.bak", GetTime());
+        QString walletBak = QString::fromStdString(pathWalletBak.string());
+        if(backupWallet(walletBak))
+        {
+            restorePath = filename;
+            restoreParam = param;
+            return true;
+        }
+    }
+
+    return false;
+}
+
 // Handlers for core signals
 static void NotifyKeyStoreStatusChanged(WalletModel *walletmodel, CCryptoKeyStore *wallet)
 {
@@ -555,6 +590,21 @@ static void NotifyWatchonlyChanged(WalletModel *walletmodel, bool fHaveWatchonly
                               Q_ARG(bool, fHaveWatchonly));
 }
 
+static void NotifyContractBookChanged(WalletModel *walletmodel, CWallet *wallet,
+        const std::string &address, const std::string &label, const std::string &abi, ChangeType status)
+{
+    QString strAddress = QString::fromStdString(address);
+    QString strLabel = QString::fromStdString(label);
+    QString strAbi = QString::fromStdString(abi);
+
+    qDebug() << "NotifyContractBookChanged: " + strAddress + " " + strLabel + " status=" + QString::number(status);
+    QMetaObject::invokeMethod(walletmodel, "updateContractBook", Qt::QueuedConnection,
+                              Q_ARG(QString, strAddress),
+                              Q_ARG(QString, strLabel),
+                              Q_ARG(QString, strAbi),
+                              Q_ARG(int, status));
+}
+
 void WalletModel::subscribeToCoreSignals()
 {
     // Connect signals to wallet
@@ -563,6 +613,7 @@ void WalletModel::subscribeToCoreSignals()
     wallet->NotifyTransactionChanged.connect(boost::bind(NotifyTransactionChanged, this, _1, _2, _3));
     wallet->ShowProgress.connect(boost::bind(ShowProgress, this, _1, _2));
     wallet->NotifyWatchonlyChanged.connect(boost::bind(NotifyWatchonlyChanged, this, _1));
+    wallet->NotifyContractBookChanged.connect(boost::bind(NotifyContractBookChanged, this, _1, _2, _3, _4, _5));
 }
 
 void WalletModel::unsubscribeFromCoreSignals()
@@ -573,6 +624,7 @@ void WalletModel::unsubscribeFromCoreSignals()
     wallet->NotifyTransactionChanged.disconnect(boost::bind(NotifyTransactionChanged, this, _1, _2, _3));
     wallet->ShowProgress.disconnect(boost::bind(ShowProgress, this, _1, _2));
     wallet->NotifyWatchonlyChanged.disconnect(boost::bind(NotifyWatchonlyChanged, this, _1));
+    wallet->NotifyContractBookChanged.disconnect(boost::bind(NotifyContractBookChanged, this, _1, _2, _3, _4, _5));
 }
 
 // WalletModel::UnlockContext implementation
@@ -825,5 +877,15 @@ bool WalletModel::existTokenEntry(const CTokenInfo &token)
 bool WalletModel::removeTokenEntry(const std::string &sHash)
 {
     return wallet->RemoveTokenEntry(uint256S(sHash), true);
+}
+
+QString WalletModel::getRestorePath()
+{
+    return restorePath;
+}
+
+QString WalletModel::getRestoreParam()
+{
+    return restoreParam;
 }
 
