@@ -3096,6 +3096,8 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
         LogPrintf(" warning='%s'", boost::algorithm::join(warningMessages, ", "));
     LogPrintf("\n");
 
+    if (pindexBestHeader->pprev)
+        CheckSyncCheckpoint(pindexBestHeader->GetBlockHash(), pindexBestHeader->pprev);
 }
 
 /** Disconnect chainActive's tip. You probably want to call mempool.removeForReorg and manually re-limit mempool size after this, with cs_main held. */
