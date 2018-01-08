@@ -336,10 +336,6 @@ bool CSyncCheckpoint::ProcessSyncCheckpoint(CNode* pfrom)
         checkpointMessagePending = *this;
         LogPrintf("CSyncCheckpoint::ProcessSyncCheckpoint: pending for sync-checkpoint %s\n", hashCheckpoint.ToString().c_str());
 
-        // Ask for the block directly
-        if (pfrom)
-            pfrom->AskFor(CInv(MSG_BLOCK, hashCheckpoint));
-
         return false;
     }
 
