@@ -521,7 +521,7 @@ std::string HelpMessage(HelpMessageMode mode)
 
 std::string LicenseInfo()
 {
-    const std::string URL_SOURCE_CODE = "<https://github.com/HTML5/HTMLCOIN>";
+    const std::string URL_SOURCE_CODE = "<https://github.com/HTMLCOIN/HTMLCOIN>";
     const std::string URL_WEBSITE = "<https://htmlcoin.com>";
 
     return CopyrightHolders(strprintf(_("Copyright (C) %i"), COPYRIGHT_YEAR) + " ") + "\n" +
