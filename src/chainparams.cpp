@@ -267,9 +267,9 @@ public:
         vSeeds.push_back(CDNSSeedData("htmlcoin.com", "testnet-seed1.htmlcoin.com", true));
         vSeeds.push_back(CDNSSeedData("htmlcoin.com", "testnet-seed2.htmlcoin.com", true));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,100);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,228);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
