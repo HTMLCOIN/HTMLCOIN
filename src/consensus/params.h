@@ -9,6 +9,7 @@
 #include "uint256.h"
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Consensus {
 
@@ -47,6 +48,7 @@ struct Params {
     uint256 posLimit;
     int nDiffAdjustChange;
     std::string checkpointPubKey;
+    std::vector<unsigned char> vAlertPubKey;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;

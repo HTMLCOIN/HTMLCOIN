@@ -16,6 +16,8 @@ void SetfLargeWorkInvalidChainFound(bool flag);
 bool GetfLargeWorkInvalidChainFound();
 std::string GetWarnings(const std::string& strFor);
 
+extern std::string strMiscWarning;
+
 static const bool DEFAULT_TESTSAFEMODE = false;
 
 #endif //  BITCOIN_WARNINGS_H

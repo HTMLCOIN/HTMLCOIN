@@ -6,6 +6,7 @@
 #include "net_processing.h"
 
 #include "addrman.h"
+#include "alert.h"
 #include "arith_uint256.h"
 #include "blockencodings.h"
 #include "chainparams.h"
@@ -1374,6 +1375,13 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 checkpointMessage.RelayTo(pfrom);
         }
 
+        // Relay alerts
+        {
+            LOCK(cs_mapAlerts);
+            BOOST_FOREACH(const PAIRTYPE(uint256, CAlert)& item, mapAlerts)
+                item.second.RelayTo(pfrom);
+        }
+
         std::string remoteAddr;
         if (fLogIPs)
             remoteAddr = ", peeraddr=" + pfrom->addr.ToString();
@@ -2553,6 +2561,36 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             g_connman->ForEachNode([checkpoint](CNode* pnode) {
                 checkpoint.RelayTo(pnode);
             });
+        }
+    }
+
+    else if (fAlerts && strCommand == NetMsgType::ALERT)
+    {
+        CAlert alert;
+        vRecv >> alert;
+
+        uint256 alertHash = alert.GetHash();
+        if (pfrom->setKnown.count(alertHash) == 0)
+        {
+            if (alert.ProcessAlert(Params().GetConsensus().vAlertPubKey))
+            {
+                // Relay
+                pfrom->setKnown.insert(alertHash);
+                {
+                    g_connman->ForEachNode([alert](CNode* pnode) {
+                        alert.RelayTo(pnode);
+                    });
+                }
+            }
+            else {
+                // Small DoS penalty so peers that send us lots of
+                // duplicate/expired/invalid-signature/whatever alerts
+                // eventually get banned.
+                // This isn't a Misbehaving(100) (immediate ban) because the
+                // peer might be an older or different implementation with
+                // a different signature key, etc.
+                Misbehaving(pfrom->GetId(), 10);
+            }
         }
     }
 
