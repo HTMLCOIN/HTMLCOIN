@@ -82,7 +82,7 @@ UniValue importprivkey(const JSONRPCRequest& request)
     
     if (request.fHelp || request.params.size() < 1 || request.params.size() > 3)
         throw runtime_error(
-            "importprivkey \"htmlcoin\" ( \"label\" ) ( rescan )\n"
+            "importprivkey \"htmlcoinprivkey\" ( \"label\" ) ( rescan )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
             "1. \"htmlcoinprivkey\"   (string, required) The private key (see dumpprivkey)\n"

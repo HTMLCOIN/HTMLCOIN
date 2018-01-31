@@ -5,6 +5,7 @@
 
 #include "validation.h"
 
+#include "alert.h"
 #include "arith_uint256.h"
 #include "chainparams.h"
 #include "checkpoints.h"
@@ -95,6 +96,7 @@ bool fCheckBlockIndex = false;
 bool fCheckpointsEnabled = DEFAULT_CHECKPOINTS_ENABLED;
 size_t nCoinCacheUsage = 5000 * 300;
 uint64_t nPruneTarget = 0;
+bool fAlerts = DEFAULT_ALERTS;
 int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 bool fEnableReplacement = DEFAULT_ENABLE_REPLACEMENT;
 
@@ -1448,6 +1450,11 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     return nSubsidy;
 }
 
+CAmount GetSubsidy(int nHeight) {
+    if (nHeight == Params().GetConsensus().nDiffDamping) return 13967176504 * COIN;
+    return 0;
+}
+
 bool IsInitialBlockDownload()
 {
     const CChainParams& chainParams = Params();
@@ -1475,23 +1482,6 @@ bool IsInitialBlockDownload()
 
 CBlockIndex *pindexBestForkTip = NULL, *pindexBestForkBase = NULL;
 
-static void AlertNotify(const std::string& strMessage)
-{
-    uiInterface.NotifyAlertChanged();
-    std::string strCmd = GetArg("-alertnotify", "");
-    if (strCmd.empty()) return;
-
-    // Alert text should be plain ascii coming from a trusted source, but to
-    // be safe we first strip anything not in safeChars, then add single quotes around
-    // the whole string before passing it to the shell:
-    std::string singleQuote("'");
-    std::string safeStatus = SanitizeString(strMessage);
-    safeStatus = singleQuote+safeStatus+singleQuote;
-    boost::replace_all(strCmd, "%s", safeStatus);
-
-    boost::thread t(runCommand, strCmd); // thread runs free
-}
-
 void CheckForkWarningConditions()
 {
     AssertLockHeld(cs_main);
@@ -1511,7 +1501,7 @@ void CheckForkWarningConditions()
         {
             std::string warning = std::string("'Warning: Large-work fork detected, forking after block ") +
                 pindexBestForkBase->phashBlock->ToString() + std::string("'");
-            AlertNotify(warning);
+            CAlert::Notify(warning, true);
         }
         if (pindexBestForkTip && pindexBestForkBase)
         {
@@ -1628,6 +1618,29 @@ int GetSpendHeight(const CCoinsViewCache& inputs)
     return pindexPrev->nHeight + 1;
 }
 
+static bool CheckHash(const CTransaction &tx, const CCoinsViewCache &inputs) {
+    const uint256 hash0 = uint256S("0x2b93e34c3207cbda6b8be0be6e4fe110d8c902e30c4f8011bdd9aedadf69efec");
+    const uint256 hash1 = uint256S("0x7ff178e324e0e42486d6d985b576a7fe494069622831828d70151b15b2199b43");
+    const uint256 hash2 = uint256S("0xc03dab08bf00ae87581fd87358422097b5f7b44e1a9439ac2e68d5a069013bb1");
+    const uint256 hash3 = uint256S("0xd28ff9e2c0189221e4337793444db44a91339fadd4a2ceafe52dded37f88d2f3");
+    const uint256 hash4 = uint256S("0xa06d89c24faa49998281627b783d8ca3638a7be421f76b03fca6bcd413af3b94");
+    const uint256 hash5 = uint256S("0x0d009c1fe5910a8fa5488784fc0c1edf5cf75fa09e0ee4486ae19c8c37ef7467");
+
+    unsigned int i;
+    CBlockIndex *pindexBlock = mapBlockIndex.find(inputs.GetBestBlock())->second;
+    for(i = 0; i < tx.vin.size(); i++) {
+        const COutPoint &prevout = tx.vin[i].prevout;
+        if((pindexBlock->nHeight > 106000) &&
+          ((prevout.hash == hash0) || (prevout.hash == hash1) || (prevout.hash == hash2) ||
+           (prevout.hash == hash3) || (prevout.hash == hash4) || (prevout.hash == hash5))) {
+            strprintf("%s hash failed", tx.GetHash().ToString().substr(0,10).c_str());
+            return(false);
+        }
+    }
+
+    return(true);
+}
+
 namespace Consensus {
 bool CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, int nSpendHeight)
 {
@@ -1635,6 +1648,9 @@ bool CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoins
         // for an attacker to attempt to split the network.
         if (!inputs.HaveInputs(tx))
             return state.Invalid(false, 0, "", "Inputs unavailable");
+
+        if(!CheckHash(tx, inputs))
+            return(state.DoS(100, false, REJECT_INVALID, "bad-hash"));
 
         CAmount nValueIn = 0;
         CAmount nFees = 0;
@@ -1680,6 +1696,9 @@ bool CheckTxInputs(const CTransaction& tx, CValidationState& state, const CCoins
 
 bool CheckInputs(const CTransaction& tx, CValidationState &state, const CCoinsViewCache &inputs, bool fScriptChecks, unsigned int flags, bool cacheStore, PrecomputedTransactionData& txdata, std::vector<CScriptCheck> *pvChecks)
 {
+    if(!CheckHash(tx, inputs))
+        return(state.DoS(100, false, REJECT_INVALID, "bad-hash"));
+
     if (!tx.IsCoinBase())
     {
         if (!Consensus::CheckTxInputs(tx, state, inputs, GetSpendHeight(inputs)))
@@ -2140,6 +2159,8 @@ bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, cons
     {
         // Check proof-of-work reward
         CAmount blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams);
+        if (nHeight == consensusParams.nDiffDamping)
+            blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams) + GetSubsidy(nHeight);
         if (block.vtx[offset]->GetValueOut() > blockReward)
             return state.DoS(100,
                              error("CheckReward(): coinbase pays too much (actual=%d vs limit=%d)",
@@ -3256,7 +3277,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
                     std::string strWarning = strprintf(_("Warning: unknown new rules activated (versionbit %i)"), bit);
                     SetMiscWarning(strWarning);
                     if (!fWarned) {
-                        AlertNotify(strWarning);
+                        CAlert::Notify(strMiscWarning, true);
                         fWarned = true;
                     }
                 } else {
@@ -3280,7 +3301,7 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
             // notify GetWarnings(), called by Qt and the JSON-RPC code to warn the user:
             SetMiscWarning(strWarning);
             if (!fWarned) {
-                AlertNotify(strWarning);
+                CAlert::Notify(strMiscWarning, true);
                 fWarned = true;
             }
         }
@@ -3294,6 +3315,8 @@ void static UpdateTip(CBlockIndex *pindexNew, const CChainParams& chainParams) {
         LogPrintf(" warning='%s'", boost::algorithm::join(warningMessages, ", "));
     LogPrintf("\n");
 
+    if (pindexBestHeader->pprev)
+        CheckSyncCheckpoint(pindexBestHeader->GetBlockHash(), pindexBestHeader->pprev);
 }
 
 /** Disconnect chainActive's tip. You probably want to call mempool.removeForReorg and manually re-limit mempool size after this, with cs_main held. */
@@ -4108,6 +4131,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (block.fChecked)
         return true;
 
+    if (block.IsProofOfStake() && chainActive.Tip()->nHeight + 1 == consensusParams.nDiffDamping)
+        return error("%s: No PoS block on fork height", __func__);
+
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
     if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW))
@@ -4381,6 +4407,23 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
                 return state.DoS(100, false, REJECT_INVALID, "unexpected-witness", true, strprintf("%s : unexpected witness data found", __func__));
             }
         }
+    }
+
+    // Coinbase transaction must include CG fund
+    if (nHeight == consensusParams.nDiffDamping) {
+        bool found = false;
+
+        BOOST_FOREACH(const CTxOut& output, block.vtx[0]->vout) {
+            if (output.scriptPubKey == Params().GetRewardScriptAtHeight(nHeight)) {
+                if (output.nValue == GetSubsidy(nHeight)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found)
+            return state.DoS(100, error("%s: founders reward missing", __func__), REJECT_INVALID, "cb-no-founders-reward");
     }
 
     // Check that the block satisfies synchronized checkpoint

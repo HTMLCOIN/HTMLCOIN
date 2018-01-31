@@ -181,14 +181,14 @@ bool CheckSyncCheckpoint(const uint256& hashBlock, const CBlockIndex* pindexPrev
 {
     int nHeight = pindexPrev->nHeight + 1;
 
-    if (hashSyncCheckpoint == ArithToUint256(arith_uint256(0))) {
+    LOCK(cs_hashSyncCheckpoint);
+    // Reset checkpoint to Genesis block if not found or initialised
+    if (hashSyncCheckpoint == ArithToUint256(arith_uint256(0)) || !(mapBlockIndex.count(hashSyncCheckpoint))) {
         LogPrintf("%s: hashSyncCheckpoint not initialised, setting to genesis block: %s\n",__func__, Params().GetConsensus().hashGenesisBlock.ToString().c_str());
         WriteSyncCheckpoint(Params().GetConsensus().hashGenesisBlock);
+        return true;
     }
 
-    LOCK(cs_hashSyncCheckpoint);
-    // sync-checkpoint should always be accepted block
-    assert(mapBlockIndex.count(hashSyncCheckpoint));
     const CBlockIndex* pindexSync = mapBlockIndex[hashSyncCheckpoint];
 
     if (nHeight > pindexSync->nHeight)
@@ -335,10 +335,6 @@ bool CSyncCheckpoint::ProcessSyncCheckpoint(CNode* pfrom)
         hashPendingCheckpoint = hashCheckpoint;
         checkpointMessagePending = *this;
         LogPrintf("CSyncCheckpoint::ProcessSyncCheckpoint: pending for sync-checkpoint %s\n", hashCheckpoint.ToString().c_str());
-
-        // Ask for the block directly
-        if (pfrom)
-            pfrom->AskFor(CInv(MSG_BLOCK, hashCheckpoint));
 
         return false;
     }

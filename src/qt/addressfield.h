@@ -59,6 +59,14 @@ public:
     bool isValidAddress();
     void setComboBoxEditable(bool editable);
 
+    void setAddressTableModel(QAbstractItemModel *addressTableModel);
+
+    void setAddressColumn(int addressColumn);
+
+    void setTypeRole(int typeRole);
+
+    void setReceive(const QString &receive);
+
 Q_SIGNALS:
     /**
      * @brief addressTypeChanged Signal that the address type is changed
@@ -82,9 +90,16 @@ public Q_SLOTS:
     void on_editingFinished();
 
 private:
+    void appendAddress(const QString& strAddress);
+
+private:
     QStringList m_stringList;
     QStringListModel m_stringModel;
     AddressType m_addressType;
+    QAbstractItemModel* m_addressTableModel;
+    int m_addressColumn;
+    int m_typeRole;
+    QString m_receive;
 };
 
 #endif // ADDRESSFIELD_H

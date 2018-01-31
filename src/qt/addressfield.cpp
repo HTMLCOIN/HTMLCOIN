@@ -16,7 +16,12 @@ using namespace std;
 
 AddressField::AddressField(QWidget *parent) :
     QComboBox(parent),
-    m_addressType(AddressField::UTXO)
+    m_addressType(AddressField::UTXO),
+    m_addressTableModel(0),
+    m_addressColumn(0),
+    m_typeRole(Qt::UserRole),
+    m_receive("R")
+
 {
     setComboBoxEditable(false);
 
@@ -81,7 +86,30 @@ void AddressField::on_refresh()
     {
         // Fill the list with UTXO
         LOCK2(cs_main, pwalletMain->cs_wallet);
-        pwalletMain->AvailableCoins(vecOutputs);
+
+        // Add all available addresses if 0 address ballance for token is enabled
+        if(m_addressTableModel)
+        {
+            // Fill the list with user defined address
+            for(int row = 0; row < m_addressTableModel->rowCount(); row++)
+            {
+                QModelIndex index = m_addressTableModel->index(row, m_addressColumn);
+                QString strAddress = m_addressTableModel->data(index).toString();
+                QString type = m_addressTableModel->data(index, m_typeRole).toString();
+                if(type == m_receive)
+                {
+                    appendAddress(strAddress);
+                }
+            }
+
+            // Include zero or unconfirmed coins too
+            pwalletMain->AvailableCoins(vecOutputs, false, NULL, true);
+        }
+        else
+        {
+            // List only the spendable coins
+            pwalletMain->AvailableCoins(vecOutputs);
+        }
 
         BOOST_FOREACH(const COutput& out, vecOutputs) {
             CTxDestination address;
@@ -91,10 +119,7 @@ void AddressField::on_refresh()
             if (fValidAddress)
             {
                 QString strAddress = QString::fromStdString(CBitcoinAddress(address).ToString());
-                if(!m_stringList.contains(strAddress))
-                {
-                    m_stringList.append(strAddress);
-                }
+                appendAddress(strAddress);
             }
         }
     }
@@ -115,4 +140,44 @@ void AddressField::on_addressTypeChanged()
 void AddressField::on_editingFinished()
 {
     Q_EMIT editTextChanged(QComboBox::currentText());
+}
+
+void AddressField::appendAddress(const QString &strAddress)
+{
+    CBitcoinAddress address(strAddress.toStdString());
+    if(!m_stringList.contains(strAddress) &&
+            IsMine(*pwalletMain, address.Get()))
+    {
+        m_stringList.append(strAddress);
+    }
+}
+
+void AddressField::setReceive(const QString &receive)
+{
+    m_receive = receive;
+}
+
+void AddressField::setTypeRole(int typeRole)
+{
+    m_typeRole = typeRole;
+}
+
+void AddressField::setAddressColumn(int addressColumn)
+{
+    m_addressColumn = addressColumn;
+}
+
+void AddressField::setAddressTableModel(QAbstractItemModel *addressTableModel)
+{
+    if(m_addressTableModel)
+    {
+        disconnect(m_addressTableModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(on_refresh()));
+        disconnect(m_addressTableModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(on_refresh()));
+    }
+
+    m_addressTableModel = addressTableModel;
+    connect(m_addressTableModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(on_refresh()));
+    connect(m_addressTableModel, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(on_refresh()));
+
+    on_refresh();
 }

@@ -220,7 +220,12 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     else
     {
         coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
-        coinbaseTx.vout[0].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
+        coinbaseTx.vout[0].nValue = GetBlockSubsidy(nHeight, chainparams.GetConsensus());
+
+        if (nHeight == Params().GetConsensus().nDiffDamping)
+            coinbaseTx.vout.push_back(CTxOut(GetSubsidy(nHeight), chainparams.GetRewardScriptAtHeight(nHeight)));
+
+        coinbaseTx.vout[0].nValue += nFees;
     }
     coinbaseTx.vin[0].scriptSig = CScript() << nHeight << OP_0;
     originalRewardTx = coinbaseTx;

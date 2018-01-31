@@ -1,6 +1,6 @@
 <!--- Remove sections that do not apply -->
 
-This issue tracker is only for technical issues related to Qtum.
+This issue tracker is only for technical issues related to HTMLCOIN.
 
 ### Describe the issue
 
@@ -19,7 +19,7 @@ Tell us what happens instead
 ### Screenshots.
 If the issue is related to the GUI, screenshots can be added to this issue via drag & drop.
 
-### What version of Qtum are you using?
+### What version of HTMLCOIN are you using?
 List the version number/commit ID
 
 ### Machine specs:

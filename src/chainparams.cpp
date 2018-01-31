@@ -10,6 +10,7 @@
 #include "tinyformat.h"
 #include "util.h"
 #include "utilstrencodings.h"
+#include "base58.h"
 
 #include <assert.h>
 
@@ -118,6 +119,7 @@ public:
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.checkpointPubKey = "044bc117790972b27ec7e1086491da8148f5c7aa346bc89ebcce306a4682a19a759fd057200dd912f966fb7b1b7c0b1226c1948a12bed831f43096d2a3c6570ae4";
+        consensus.vAlertPubKey = ParseHex("04c593cc9b98b98dcfd8042532d2df4c83daf4f1af3f2cdf9820ff2ec477567edbde4fcd6e8d3ee322d32ac454dd1c401162ab6ddb86588aab167aed7a8b111241");
         consensus.nTargetTimespan = 120;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -125,6 +127,7 @@ public:
         consensus.nRuleChangeActivationThreshold = 15120; // 75% of 2016
         consensus.nMinerConfirmationWindow = 20160;
         consensus.nDiffAdjustChange = 7700;
+        consensus.nDiffDamping = 106000;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -140,10 +143,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000000000000000000010000"); // qtum
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000058323874cfb8e49ec263"); // qtum
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00000000000000000013176bf8d7dfeab4e1db31dc93bc311b436e82ab226b90"); //453354
+        consensus.defaultAssumeValid = uint256S("0x7b32043f231c326fc51f6efe1009831ddf932bff3bf323e902e5221b9a183413"); //97400
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -168,7 +171,10 @@ public:
         assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         // Note that of those with the service bits flag, most only support a subset of possible options
-        vSeeds.push_back(CDNSSeedData("seed1.htmlcoin.com", "seed2.htmlcoin.com", false)); // Qtum mainnet
+        vSeeds.push_back(CDNSSeedData("htmlcoin.com", "seed1.htmlcoin.com", false));
+        vSeeds.push_back(CDNSSeedData("htmlcoin.com", "seed2.htmlcoin.com", false));
+        vSeeds.push_back(CDNSSeedData("htmlcoin.com", "seed3.htmlcoin.com", false));
+        vSeeds.push_back(CDNSSeedData("htmlcoin.com", "seed4.htmlcoin.com", false));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,41);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,100);
@@ -214,6 +220,7 @@ public:
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.checkpointPubKey = "04c7617702e41c0da3a6af3e6a3aa5305e1df312308637abaa86775bb09d3ed797a02351a298a464940a7460c0833ba7ead0ff45c8a735e9b46e0862e56bb79f98";
+        consensus.vAlertPubKey = ParseHex("04b5f68dc8fa4ff5ef8585722585c89041b218b88249a30b5f44a65ed927ef84bd3e68e73cc77a9fbf71ee416b00fec2fe4cf3381396dfd17b2d089b69acc61023");
         consensus.nTargetTimespan = 10;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
@@ -221,6 +228,7 @@ public:
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016;
         consensus.nDiffAdjustChange = 1000;
+        consensus.nDiffDamping = 1100;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -261,11 +269,12 @@ public:
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.push_back(CDNSSeedData("testnet-seed1.htmlcoin.com", "testnet-seed2.htmlcoin.com", true));
+        vSeeds.push_back(CDNSSeedData("htmlcoin.com", "testnet-seed1.htmlcoin.com", true));
+        vSeeds.push_back(CDNSSeedData("htmlcoin.com", "testnet-seed2.htmlcoin.com", true));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,100);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,228);
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
@@ -305,6 +314,7 @@ public:
         consensus.nSubsidyHalvingInterval = 150;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.vAlertPubKey = ParseHex("04b5f68dc8fa4ff5ef8585722585c89041b218b88249a30b5f44a65ed927ef84bd3e68e73cc77a9fbf71ee416b00fec2fe4cf3381396dfd17b2d089b69acc61023");
         consensus.nTargetTimespan = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
@@ -408,4 +418,19 @@ void SelectParams(const std::string& network)
 void UpdateRegtestBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
 {
     regTestParams.UpdateBIP9Parameters(d, nStartTime, nTimeout);
+}
+
+CScript CChainParams::GetRewardScriptAtHeight(int nHeight) const {
+    assert(nHeight == consensus.nDiffDamping);
+
+    CBitcoinAddress address;
+    if (Params().NetworkIDString() == CBaseChainParams::MAIN)
+        address = CBitcoinAddress("HXsXRP1smr1pgb23eYV1fjN6ZB8EWfXj6J");
+    else if (Params().NetworkIDString() == CBaseChainParams::TESTNET)
+        address = CBitcoinAddress("hVwfQ9muHBjAJJr7DESMTmWmWc2g39SsWg");
+    else if (Params().NetworkIDString() == CBaseChainParams::REGTEST)
+        address = CBitcoinAddress("qKn4qdApT3ARHf2s6NhDyeSy9569Xb3GyS");
+
+    assert(address.IsValid());
+    return GetScriptForDestination(address.Get());
 }

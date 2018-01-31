@@ -146,6 +146,12 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     if (nActualTimespanSum != 0)
         nActualTimespan = nActualTimespanSum / 3;
 
+    if (pindexLast->nHeight >= params.nDiffDamping) {
+        // Apply .25 damping
+        nActualTimespan = nActualTimespan + (3 * params.nTargetTimespan);
+        nActualTimespan /= 4;
+    }
+
     // 9% difficulty limiter
     int nActualTimespanMax = params.nTargetTimespan * 494 / 453;
     int nActualTimespanMin = params.nTargetTimespan * 453 / 494;

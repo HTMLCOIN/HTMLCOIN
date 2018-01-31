@@ -265,7 +265,7 @@ class PosixWritableFile : public WritableFile {
       if (fd < 0) {
         s = IOError(dir, errno);
       } else {
-        if (fsync(fd) < 0) {
+        if (fsync(fd) < 0 && errno != EINVAL) {
           s = IOError(dir, errno);
         }
         close(fd);
