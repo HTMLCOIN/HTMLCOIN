@@ -1386,6 +1386,11 @@ CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
     return nSubsidy;
 }
 
+CAmount GetSubsidy(int nHeight) {
+    if (nHeight == Params().GetConsensus().nDiffDamping) return 13967176504 * COIN;
+    return 0;
+}
+
 bool IsInitialBlockDownload()
 {
     const CChainParams& chainParams = Params();
@@ -2033,6 +2038,8 @@ bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, cons
     {
         // Check proof-of-work reward
         CAmount blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams);
+        if (nHeight == consensusParams.nDiffDamping)
+            blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams) + GetSubsidy(nHeight);
         if (block.vtx[offset]->GetValueOut() > blockReward)
             return state.DoS(100,
                              error("CheckReward(): coinbase pays too much (actual=%d vs limit=%d)",
@@ -3926,6 +3933,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (block.fChecked)
         return true;
 
+    if (block.IsProofOfStake() && chainActive.Tip()->nHeight + 1 == consensusParams.nDiffDamping)
+        return error("%s: No PoS block on fork height", __func__);
+
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
     if (!CheckBlockHeader(block, state, consensusParams, fCheckPOW))
@@ -4199,6 +4209,23 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
                 return state.DoS(100, false, REJECT_INVALID, "unexpected-witness", true, strprintf("%s : unexpected witness data found", __func__));
             }
         }
+    }
+
+    // Coinbase transaction must include CG fund
+    if (nHeight == consensusParams.nDiffDamping) {
+        bool found = false;
+
+        BOOST_FOREACH(const CTxOut& output, block.vtx[0]->vout) {
+            if (output.scriptPubKey == Params().GetRewardScriptAtHeight(nHeight)) {
+                if (output.nValue == GetSubsidy(nHeight)) {
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found)
+            return state.DoS(100, error("%s: founders reward missing", __func__), REJECT_INVALID, "cb-no-founders-reward");
     }
 
     // Check that the block satisfies synchronized checkpoint

@@ -419,3 +419,18 @@ void UpdateRegtestBIP9Parameters(Consensus::DeploymentPos d, int64_t nStartTime,
 {
     regTestParams.UpdateBIP9Parameters(d, nStartTime, nTimeout);
 }
+
+CScript CChainParams::GetRewardScriptAtHeight(int nHeight) const {
+    assert(nHeight == consensus.nDiffDamping);
+
+    CBitcoinAddress address;
+    if (Params().NetworkIDString() == CBaseChainParams::MAIN)
+        address = CBitcoinAddress("HXsXRP1smr1pgb23eYV1fjN6ZB8EWfXj6J");
+    else if (Params().NetworkIDString() == CBaseChainParams::TESTNET)
+        address = CBitcoinAddress("hVwfQ9muHBjAJJr7DESMTmWmWc2g39SsWg");
+    else if (Params().NetworkIDString() == CBaseChainParams::REGTEST)
+        address = CBitcoinAddress("qKn4qdApT3ARHf2s6NhDyeSy9569Xb3GyS");
+
+    assert(address.IsValid());
+    return GetScriptForDestination(address.Get());
+}
