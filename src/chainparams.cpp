@@ -205,6 +205,8 @@ public:
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
+
+        consensus.nFixUTXOCacheHFHeight=100000;
     }
 };
 static CMainParams mainParams;
@@ -299,6 +301,8 @@ public:
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 450 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
+
+        consensus.nFixUTXOCacheHFHeight=84500;
     }
 };
 static CTestNetParams testNetParams;
@@ -373,6 +377,8 @@ public:
 
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 1325;
+
+        consensus.nFixUTXOCacheHFHeight=0;
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
