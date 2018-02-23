@@ -496,7 +496,7 @@ UniValue createcontract(const JSONRPCRequest& request){
 
     if (request.params.size() > 2){
         UniValue uGasPrice = request.params[2];
-        if(uGasPrice.get_real() < 0 || !ParseMoney(uGasPrice.getValStr(), nGasPrice))
+        if(!ParseMoney(uGasPrice.getValStr(), nGasPrice))
         {
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice");
         }
@@ -717,7 +717,7 @@ UniValue sendtocontract(const JSONRPCRequest& request){
 
     if (request.params.size() > 4){
         UniValue uGasPrice = request.params[4];
-        if(uGasPrice.get_real() < 0 || !ParseMoney(uGasPrice.getValStr(), nGasPrice))
+        if(!ParseMoney(uGasPrice.getValStr(), nGasPrice))
         {
             throw JSONRPCError(RPC_TYPE_ERROR, "Invalid value for gasPrice");
         }
