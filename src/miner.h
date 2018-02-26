@@ -58,6 +58,11 @@ struct CBlockTemplate
     std::vector<unsigned char> vchCoinbaseCommitment;
 };
 
+/** ByteReverse Function used by GetWork */
+uint32_t ByteReverse(uint32_t value);
+/** Check mined block */
+bool CheckWork(const CChainParams& chainparams, CBlock* pblock, CWallet& wallet, CReserveKey& reservekey);
+
 // Container for tracking updates to ancestor feerate as we include (parent)
 // transactions in a block
 struct CTxMemPoolModifiedEntry {
