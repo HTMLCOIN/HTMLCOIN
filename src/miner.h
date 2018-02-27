@@ -60,6 +60,8 @@ struct CBlockTemplate
 
 /** ByteReverse Function used by GetWork */
 uint32_t ByteReverse(uint32_t value);
+/** Do mining precalculation */
+void FormatHashBuffers(CBlock* pblock, char* pdata);
 /** Check mined block */
 bool CheckWork(const CChainParams& chainparams, CBlock* pblock, CWallet& wallet, CReserveKey& reservekey);
 
