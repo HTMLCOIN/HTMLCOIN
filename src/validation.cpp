@@ -233,6 +233,7 @@ CBlockIndex* FindForkInGlobalIndex(const CChain& chain, const CBlockLocator& loc
 
 CCoinsViewCache *pcoinsTip = NULL;
 CBlockTreeDB *pblocktree = NULL;
+StorageResults *pstorageresult = NULL;
 
 enum FlushStateMode {
     FLUSH_STATE_NONE,
@@ -1986,9 +1987,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
     globalState->setRootUTXO(uintToh256(pindex->pprev->hashUTXORoot)); // qtum
 
     if(pfClean == NULL && fLogEvents){
-        boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
-        StorageResults storageRes(stateDir.string());
-        storageRes.deleteResults(block.vtx);
+        pstorageresult->deleteResults(block.vtx);
         pblocktree->EraseHeightIndex(pindex->nHeight);
     }
     pblocktree->EraseStakeIndex(pindex->nHeight);
@@ -2111,6 +2110,15 @@ bool CheckSenderScript(const CCoinsViewCache& view, const CTransaction& tx){
 std::vector<ResultExecute> CallContract(const dev::Address& addrContract, std::vector<unsigned char> opcode, const dev::Address& sender, uint64_t gasLimit){
     CBlock block;
     CMutableTransaction tx;
+
+    CBlockIndex* pblockindex = mapBlockIndex[chainActive.Tip()->GetBlockHash()];
+    ReadBlockFromDisk(block, pblockindex, Params().GetConsensus());
+    block.nTime = GetAdjustedTime();
+
+    if(block.IsProofOfStake())
+        block.vtx.erase(block.vtx.begin()+2,block.vtx.end());
+    else
+        block.vtx.erase(block.vtx.begin()+1,block.vtx.end());
 
     QtumDGP qtumDGP(globalState.get(), fGettingValuesDGP);
     uint64_t blockGasLimit = qtumDGP.getBlockGasLimit(chainActive.Tip()->nHeight + 1);
@@ -2551,8 +2559,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     CBlock checkBlock(block.GetBlockHeader());
     std::vector<CTxOut> checkVouts;
 
-    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
-    StorageResults storageRes(stateDir.string());
     uint64_t countCumulativeGasUsed = 0;
     /////////////////////////////////////////////////
 
@@ -2888,10 +2894,10 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                     }
                     heightIndexes[key].second.push_back(tx.GetHash());
                     tri.push_back(TransactionReceiptInfo{block.GetHash(), uint32_t(pindex->nHeight), tx.GetHash(), uint32_t(i), resultConvertQtumTX.first[k].from(), resultConvertQtumTX.first[k].to(),
-                                countCumulativeGasUsed, uint64_t(resultExec[k].execRes.gasUsed), resultExec[k].execRes.newAddress, resultExec[k].txRec.log()});
+                                countCumulativeGasUsed, uint64_t(resultExec[k].execRes.gasUsed), resultExec[k].execRes.newAddress, resultExec[k].txRec.log(), resultExec[k].execRes.excepted});
                 }
 
-                storageRes.addResult(uintToh256(tx.GetHash()), tri);
+                pstorageresult->addResult(uintToh256(tx.GetHash()), tri);
             }
 
             blockGasUsed += bcer.usedGas;
@@ -3128,7 +3134,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     LogPrint("bench", "    - Callbacks: %.2fms [%.2fs]\n", 0.001 * (nTime6 - nTime5), nTimeCallbacks * 0.000001);
 
     if (fLogEvents)
-        storageRes.commitResults();
+        pstorageresult->commitResults();
 
     return true;
 }
@@ -3331,9 +3337,8 @@ bool static DisconnectTip(CValidationState& state, const CChainParams& chainpara
     // Apply the block atomically to the chain state.
     int64_t nStart = GetTimeMicros();
     {
-        bool fClean=true;
         CCoinsViewCache view(pcoinsTip);
-        if (DisconnectBlock(block, state, pindexDelete, view, &fClean) != DISCONNECT_OK)
+        if (DisconnectBlock(block, state, pindexDelete, view, NULL) != DISCONNECT_OK)
             return error("DisconnectTip(): DisconnectBlock %s failed", pindexDelete->GetBlockHash().ToString());
         bool flushed = view.Flush();
         assert(flushed);

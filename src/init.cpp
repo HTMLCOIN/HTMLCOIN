@@ -199,6 +199,7 @@ void Shutdown()
     StopHTTPRPC();
     StopREST();
     StopRPC();
+    ShutdownRPCMining();
     StopHTTPServer();
 #ifdef ENABLE_WALLET
     if (pwalletMain)
@@ -241,6 +242,8 @@ void Shutdown()
         pcoinsdbview = NULL;
         delete pblocktree;
         pblocktree = NULL;
+        delete pstorageresult;
+        pstorageresult = NULL;
 	    delete globalState.release();
         globalSealEngine.reset();
     }
@@ -1475,6 +1478,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 delete pcoinsdbview;
                 delete pcoinscatcher;
                 delete pblocktree;
+                delete pstorageresult;
 
                 pblocktree = new CBlockTreeDB(nBlockTreeDBCache, false, fReindex);
                 pcoinsdbview = new CCoinsViewDB(nCoinDBCache, false, fReindex || fReindexChainState);
@@ -1482,6 +1486,9 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 pcoinsTip = new CCoinsViewCache(pcoinscatcher);
 
                 if (fReindex) {
+                    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
+                    StorageResults storageRes(stateDir.string());
+                    storageRes.wipeResults();
                     pblocktree->WriteReindexing(true);
                     //If we're reindexing in prune mode, wipe away unusable block files and all undo data files
                     if (fPruneMode)
@@ -1513,7 +1520,9 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 }
 
                 dev::eth::Ethash::init();
+
                 boost::filesystem::path qtumStateDir = GetDataDir() / "stateHTMLCOIN";
+
                 bool fStatus = boost::filesystem::exists(qtumStateDir);
                 const std::string dirQtum(qtumStateDir.string());
                 const dev::h256 hashDB(dev::sha3(dev::rlp("")));
@@ -1521,6 +1530,8 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 globalState = std::unique_ptr<QtumState>(new QtumState(dev::u256(0), QtumState::openDB(dirQtum, hashDB, dev::WithExisting::Trust), dirQtum, existsQtumstate));
                 dev::eth::ChainParams cp((dev::eth::genesisInfo(dev::eth::Network::qtumMainNetwork)));
                 globalSealEngine = std::unique_ptr<dev::eth::SealEngineFace>(cp.createSealEngine());
+
+                pstorageresult = new StorageResults(qtumStateDir.string());
 
                 if(chainActive.Tip() != NULL){
                     globalState->setRoot(uintToh256(chainActive.Tip()->hashStateRoot));
@@ -1562,9 +1573,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
 
                 if (!GetBoolArg("-logevents", DEFAULT_LOGEVENTS))
                 {
-                    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
-                    StorageResults storageRes(stateDir.string());
-                    storageRes.wipeResults();
+                    pstorageresult->wipeResults();
                     pblocktree->WipeHeightIndex();
                     fLogEvents = false;
                     pblocktree->WriteFlag("logevents", fLogEvents);
@@ -1754,6 +1763,8 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (!connman.Start(scheduler, strNodeError, connOptions))
         return InitError(strNodeError);
 
+    // InitRPCMining is needed here so getwork in the GUI debug console works properly.
+    InitRPCMining();
 
 #ifdef ENABLE_WALLET
     // Mine proof-of-stake blocks in the background

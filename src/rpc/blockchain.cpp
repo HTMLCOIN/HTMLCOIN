@@ -1152,6 +1152,9 @@ void assignJSON(UniValue& entry, const TransactionReceiptInfo& resExec) {
             Pair("cumulativeGasUsed", CAmount(resExec.cumulativeGasUsed)));
     entry.push_back(Pair("gasUsed", CAmount(resExec.gasUsed)));
     entry.push_back(Pair("contractAddress", resExec.contractAddress.hex()));
+    std::stringstream ss;
+    ss << resExec.excepted;
+    entry.push_back(Pair("excepted",ss.str()));
 }
 
 void assignJSON(UniValue& logEntry, const dev::eth::LogEntry& log,
@@ -1420,14 +1423,11 @@ UniValue waitforlogs(const JSONRPCRequest& request_) {
 
     LOCK(cs_main);
 
-    boost::filesystem::path stateDir = GetDataDir() / "stateQtum";
-    StorageResults storageRes(stateDir.string());
-
     UniValue jsonLogs(UniValue::VARR);
 
     for (const auto& txHashes : hashesToBlock) {
         for (const auto& txHash : txHashes) {
-            std::vector<TransactionReceiptInfo> receipts = storageRes.getResult(
+            std::vector<TransactionReceiptInfo> receipts = pstorageresult->getResult(
                     uintToh256(txHash));
 
             for (const auto& receipt : receipts) {
@@ -1546,8 +1546,6 @@ UniValue searchlogs(const JSONRPCRequest& request)
     pblocktree->ReadHeightIndex(params.fromBlock, params.toBlock, params.minconf, hashesToBlock, params.addresses);
 
     UniValue result(UniValue::VARR);
-    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
-    StorageResults storageRes(stateDir.string());
 
     auto topics = params.topics;
 
@@ -1555,7 +1553,7 @@ UniValue searchlogs(const JSONRPCRequest& request)
     {
         for(const auto& e : hashesTx)
         {
-            std::vector<TransactionReceiptInfo> receipts = storageRes.getResult(uintToh256(e));
+            std::vector<TransactionReceiptInfo> receipts = pstorageresult->getResult(uintToh256(e));
             
             for(const auto& receipt : receipts) {
                 if(receipt.logs.empty()) {
@@ -1621,10 +1619,7 @@ UniValue gettransactionreceipt(const JSONRPCRequest& request)
     
     uint256 hash(uint256S(hashTemp));
 
-    boost::filesystem::path stateDir = GetDataDir() / "stateHTMLCOIN";
-    StorageResults storageRes(stateDir.string());
-
-    std::vector<TransactionReceiptInfo> transactionReceiptInfo = storageRes.getResult(uintToh256(hash));
+    std::vector<TransactionReceiptInfo> transactionReceiptInfo = pstorageresult->getResult(uintToh256(hash));
 
     UniValue result(UniValue::VARR);
     for(TransactionReceiptInfo& t : transactionReceiptInfo){
