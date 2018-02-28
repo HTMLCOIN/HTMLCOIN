@@ -199,6 +199,7 @@ void Shutdown()
     StopHTTPRPC();
     StopREST();
     StopRPC();
+    ShutdownRPCMining();
     StopHTTPServer();
 #ifdef ENABLE_WALLET
     if (pwalletMain)
@@ -1741,6 +1742,8 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (!connman.Start(scheduler, strNodeError, connOptions))
         return InitError(strNodeError);
 
+    // InitRPCMining is needed here so getwork in the GUI debug console works properly.
+    InitRPCMining();
 
 #ifdef ENABLE_WALLET
     // Mine proof-of-stake blocks in the background
