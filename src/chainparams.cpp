@@ -227,8 +227,8 @@ public:
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016;
-        consensus.nDiffAdjustChange = 1000;
-        consensus.nDiffDamping = 1100;
+        consensus.nDiffAdjustChange = 0;
+        consensus.nDiffDamping = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -426,10 +426,6 @@ CScript CChainParams::GetRewardScriptAtHeight(int nHeight) const {
     CBitcoinAddress address;
     if (Params().NetworkIDString() == CBaseChainParams::MAIN)
         address = CBitcoinAddress("HXsXRP1smr1pgb23eYV1fjN6ZB8EWfXj6J");
-    else if (Params().NetworkIDString() == CBaseChainParams::TESTNET)
-        address = CBitcoinAddress("hVwfQ9muHBjAJJr7DESMTmWmWc2g39SsWg");
-    else if (Params().NetworkIDString() == CBaseChainParams::REGTEST)
-        address = CBitcoinAddress("qKn4qdApT3ARHf2s6NhDyeSy9569Xb3GyS");
 
     assert(address.IsValid());
     return GetScriptForDestination(address.Get());
