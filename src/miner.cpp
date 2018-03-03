@@ -323,7 +323,7 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
     {
         coinbaseTx.vout[0].scriptPubKey = scriptPubKeyIn;
         coinbaseTx.vout[0].nValue = GetBlockSubsidy(nHeight, chainparams.GetConsensus());
-        if (nHeight == Params().GetConsensus().nDiffDamping)
+        if (Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight == Params().GetConsensus().nDiffDamping)
             coinbaseTx.vout.push_back(CTxOut(GetSubsidy(nHeight), chainparams.GetRewardScriptAtHeight(nHeight)));
         coinbaseTx.vout[0].nValue += nFees;
     }

@@ -2167,7 +2167,7 @@ bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, cons
     {
         // Check proof-of-work reward
         CAmount blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams);
-        if (nHeight == consensusParams.nDiffDamping)
+        if (Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight == consensusParams.nDiffDamping)
             blockReward = nFees + GetBlockSubsidy(nHeight, consensusParams) + GetSubsidy(nHeight);
         if (block.vtx[offset]->GetValueOut() > blockReward)
             return state.DoS(100,
@@ -4136,7 +4136,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, const Consensus::P
     if (block.fChecked)
         return true;
 
-    if (block.IsProofOfStake() && chainActive.Tip()->nHeight + 1 == consensusParams.nDiffDamping)
+    if (Params().NetworkIDString() == CBaseChainParams::MAIN && block.IsProofOfStake() && chainActive.Tip()->nHeight + 1 == consensusParams.nDiffDamping)
         return error("%s: No PoS block on fork height", __func__);
 
     // Check that the header is valid (particularly PoW).  This is mostly
@@ -4415,7 +4415,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, const Co
     }
 
     // Coinbase transaction must include CG fund
-    if (nHeight == consensusParams.nDiffDamping) {
+    if (Params().NetworkIDString() == CBaseChainParams::MAIN && nHeight == consensusParams.nDiffDamping) {
         bool found = false;
 
         BOOST_FOREACH(const CTxOut& output, block.vtx[0]->vout) {
