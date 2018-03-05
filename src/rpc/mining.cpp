@@ -947,6 +947,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.push_back(Pair("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1));
     result.push_back(Pair("mutable", aMutable));
     result.push_back(Pair("noncerange", "00000000ffffffff"));
+    result.push_back(Pair("hashStateRoot", pblock->hashStateRoot.GetHex()));
+    result.push_back(Pair("hashUTXORoot", pblock->hashUTXORoot.GetHex()));
     int64_t nSigOpLimit = dgpMaxBlockSigOps;
     if (fPreSegWit) {
         assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
