@@ -3,7 +3,8 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpc/server.h"
-
+#include "alert.h"
+#include "base58.h"
 #include "chainparams.h"
 #include "clientversion.h"
 #include "core_io.h"
@@ -622,6 +623,72 @@ UniValue setnetworkactive(const JSONRPCRequest& request)
     return g_connman->GetNetworkActive();
 }
 
+UniValue sendalert(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() < 6)
+        throw std::runtime_error(
+            "sendalert \"message\" \"privatekey\" \"minver\" \"maxver\" \"priority\" \"id\" (cancelupto)\n"
+            "\"message\"      (String required) is the alert text message\n"
+            "\"privatekey\"   (String required) is base58 hex string of alert master private key\n"
+            "\"minver\"       (Numeric required) is the minimum applicable internal client version\n"
+            "\"maxver\"       (Numeric required) is the maximum applicable internal client version\n"
+            "\"priority\"     (Numeric required) is integer priority number\n"
+            "\"id\"           (Numeric required) is the alert id\n"
+            "\"cancelupto\"   (Numeric) cancels all alert id's up to this number\n"
+            "Returns true or false.");
+
+    // Prepare the alert message
+    CAlert alert;
+    alert.strStatusBar = request.params[0].get_str();
+    alert.nMinVer = request.params[2].get_int();
+    alert.nMaxVer = request.params[3].get_int();
+    alert.nPriority = request.params[4].get_int();
+    alert.nID = request.params[5].get_int();
+    if (request.params.size() > 6)
+        alert.nCancel = request.params[6].get_int();
+    alert.nVersion = PROTOCOL_VERSION;
+    alert.nRelayUntil = GetAdjustedTime() + 365*24*60*60;
+    alert.nExpiration = GetAdjustedTime() + 365*24*60*60;
+
+    CDataStream sMsg(SER_NETWORK, PROTOCOL_VERSION);
+    sMsg << (CUnsignedAlert)alert;
+    alert.vchMsg = std::vector<unsigned char>(sMsg.begin(), sMsg.end());
+
+    // Prepare master key and sign alert message
+    CBitcoinSecret vchSecret;
+    if (!vchSecret.SetString(request.params[1].get_str()))
+        throw std::runtime_error("Invalid alert master key");
+
+    CKey key = vchSecret.GetKey();
+    if (!key.Sign(Hash(alert.vchMsg.begin(), alert.vchMsg.end()), alert.vchSig))
+        throw std::runtime_error(
+            "Unable to sign alert, check alert master key?\n");
+
+    // Process alert
+    if(!alert.ProcessAlert(Params().GetConsensus().vAlertPubKey))
+        throw std::runtime_error(
+            "Failed to process alert.\n");
+
+    // Relay alert
+    g_connman->ForEachNode([alert](CNode* pnode) {
+        alert.RelayTo(pnode);
+    });
+
+    UniValue result(UniValue::VARR);
+    UniValue entry(UniValue::VOBJ);
+    entry.push_back(Pair("strStatusBar", alert.strStatusBar));
+    entry.push_back(Pair("nVersion", alert.nVersion));
+    entry.push_back(Pair("nMinVer", alert.nMinVer));
+    entry.push_back(Pair("nMaxVer", alert.nMaxVer));
+    entry.push_back(Pair("nPriority", alert.nPriority));
+    entry.push_back(Pair("nID", alert.nID));
+    if (alert.nCancel > 0)
+        entry.push_back(Pair("nCancel", alert.nCancel));
+    result.push_back(entry);
+
+    return result;
+}
+
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         okSafeMode
   //  --------------------- ------------------------  -----------------------  ----------
@@ -637,6 +704,7 @@ static const CRPCCommand commands[] =
     { "network",            "listbanned",             &listbanned,             true,  {} },
     { "network",            "clearbanned",            &clearbanned,            true,  {} },
     { "network",            "setnetworkactive",       &setnetworkactive,       true,  {"state"} },
+    { "network",            "sendalert",              &sendalert,              true,  {"message", "privatekey", "minver", "maxver", "priority", "id", "cancelupto"} },
 };
 
 void RegisterNetRPCCommands(CRPCTable &t)
