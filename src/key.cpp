@@ -143,13 +143,31 @@ bool EnsureLowS(std::vector<unsigned char>& vchSig) {
     if (sig == NULL)
         return false;
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    const BIGNUM *sig_r, *sig_s;
+    ECDSA_SIG_get0(sig, &sig_r, &sig_s);
+#endif
+
     BIGNUM *order = BN_bin2bn(vchOrder, sizeof(vchOrder), NULL);
     BIGNUM *halforder = BN_bin2bn(vchHalfOrder, sizeof(vchHalfOrder), NULL);
 
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    if (BN_cmp(sig_s, halforder) > 0) {
+        BIGNUM *r, *s;
+        r = BN_dup(sig_r);
+        s = BN_new();
+
+        // enforce low S values, by negating the value (modulo the order) if above order/2.
+        BN_sub(s, order, sig_s);
+
+        ECDSA_SIG_set0(sig, r, s);
+    }
+#else
     if (BN_cmp(sig->s, halforder) > 0) {
         // enforce low S values, by negating the value (modulo the order) if above order/2.
         BN_sub(sig->s, order, sig->s);
     }
+#endif
 
     BN_free(halforder);
     BN_free(order);
