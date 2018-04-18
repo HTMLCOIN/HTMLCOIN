@@ -55,7 +55,6 @@
 #include "checkpoints.h"
 #include "checkpointsync.h"
 
-#include "opensslkey.h"
 #include "base58.h"
 #include "txdb.h"
 #include "uint256.h"
@@ -259,19 +258,12 @@ bool CheckCheckpointPubKey()
 
 bool SetCheckpointPrivKey(string strPrivKey)
 {
-    // Test signing a sync-checkpoint with genesis block
-    CSyncCheckpoint checkpoint;
-    checkpoint.hashCheckpoint = Params().GetConsensus().hashGenesisBlock;
-    CDataStream sMsg(SER_NETWORK, PROTOCOL_VERSION);
-    sMsg << (CUnsignedSyncCheckpoint)checkpoint;
-    checkpoint.vchMsg = vector<unsigned char>(sMsg.begin(), sMsg.end());
-
-    CBitcoinOpenSecret vchSecret;
+    CBitcoinSecret vchSecret;
     if (!vchSecret.SetString(strPrivKey))
         return error("SendSyncCheckpoint: Checkpoint master key invalid");
-    COpenKey key = vchSecret.GetKey(); // If key is not correct openssl may crash
-    if (!key.Sign(Hash(checkpoint.vchMsg.begin(), checkpoint.vchMsg.end()), checkpoint.vchSig))
-        return false;
+    CKey key = vchSecret.GetKey(); // If key is not correct openssl may crash
+    if (!key.IsValid())
+        return error("SendSyncCheckpoint: Checkpoint master key invalid");
 
     // Test signing successful, proceed
     CSyncCheckpoint::strMasterPrivKey = strPrivKey;
@@ -288,10 +280,10 @@ bool SendSyncCheckpoint(uint256 hashCheckpoint)
 
     if (CSyncCheckpoint::strMasterPrivKey.empty())
         return error("SendSyncCheckpoint: Checkpoint master key unavailable.");
-    CBitcoinOpenSecret vchSecret;
+    CBitcoinSecret vchSecret;
     if (!vchSecret.SetString(CSyncCheckpoint::strMasterPrivKey))
         return error("SendSyncCheckpoint: Checkpoint master key invalid");
-    COpenKey key = vchSecret.GetKey(); // If key is not correct openssl may crash
+    CKey key = vchSecret.GetKey(); // If key is not correct openssl may crash
     if (!key.Sign(Hash(checkpoint.vchMsg.begin(), checkpoint.vchMsg.end()), checkpoint.vchSig))
         return error("SendSyncCheckpoint: Unable to sign checkpoint, check private key?");
 
@@ -310,7 +302,7 @@ bool SendSyncCheckpoint(uint256 hashCheckpoint)
 bool CSyncCheckpoint::CheckSignature()
 {
     string strMasterPubKey = Params().GetConsensus().checkpointPubKey;
-    COpenPubKey key(ParseHex(strMasterPubKey));
+    CPubKey key(ParseHex(strMasterPubKey));
     if (!key.Verify(Hash(vchMsg.begin(), vchMsg.end()), vchSig)) {
         LogPrintf("CSyncCheckpoint::CheckSignature() : verify signature failed");
         return error("CSyncCheckpoint::CheckSignature() : verify signature failed");

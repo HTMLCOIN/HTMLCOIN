@@ -658,8 +658,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
             "     ,...\n"
             "  ],\n"
             "  \"noncerange\" : \"00000000ffffffff\",(string) A range of valid nonces\n"
-            "  \"hashstateroot\" : \"XXX\",(string) Block hash state root\n"
-            "  \"hashutxoroot\" : \"XXX\",(string) Block hash utxo root\n"
             "  \"sigoplimit\" : n,                 (numeric) limit of sigops in blocks\n"
             "  \"sizelimit\" : n,                  (numeric) limit of block size\n"
             "  \"weightlimit\" : n,                (numeric) limit of block weight\n"
@@ -949,8 +947,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.push_back(Pair("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1));
     result.push_back(Pair("mutable", aMutable));
     result.push_back(Pair("noncerange", "00000000ffffffff"));
-    result.push_back(Pair("hashstateroot", pblock->hashStateRoot.GetHex()));
-    result.push_back(Pair("hashutxoroot", pblock->hashUTXORoot.GetHex()));
     int64_t nSigOpLimit = dgpMaxBlockSigOps;
     if (fPreSegWit) {
         assert(nSigOpLimit % WITNESS_SCALE_FACTOR == 0);
