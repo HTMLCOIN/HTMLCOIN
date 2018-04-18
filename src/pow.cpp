@@ -7,6 +7,7 @@
 
 #include "arith_uint256.h"
 #include "chain.h"
+#include "chainparams.h"
 #include "primitives/block.h"
 #include "uint256.h"
 #include "util.h"
@@ -73,7 +74,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     int nTargetTimespan = params.nTargetTimespan;
 
     // Set testnet time to be the same as mainnet
-    if (ChainNameFromCommandLine() == CBaseChainParams::TESTNET && nHeight >= params.nFixUTXOCacheHFHeight)
+    if (Params().NetworkIDString() == CBaseChainParams::TESTNET && nHeight >= params.nFixUTXOCacheHFHeight)
         nTargetTimespan = 60;
 
     // Make sure there's enough PoW or PoS blocks for eHRC long sample
