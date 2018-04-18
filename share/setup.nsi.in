@@ -5,7 +5,7 @@ SetCompressor /SOLID lzma
 
 # General Symbol Definitions
 !define REGKEY "SOFTWARE\$(^Name)"
-!define VERSION @CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@
+!define VERSION @CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@.@CLIENT_VERSION_BUILD@
 !define COMPANY "@PACKAGE_NAME@ project"
 !define URL @PACKAGE_URL@
 
@@ -87,6 +87,7 @@ Section -post SEC0001
     !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
     CreateDirectory $SMPROGRAMS\$StartMenuGroup
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\$(^Name).lnk" $INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@
+    CreateShortcut "$SMPROGRAMS\$StartMenuGroup\@PACKAGE_NAME@ (testnet, @WINDOWS_BITS@-bit).lnk" "$INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@" "-testnet" "$INSTDIR\@BITCOIN_GUI_NAME@@EXEEXT@" 1
     CreateShortcut "$SMPROGRAMS\$StartMenuGroup\Uninstall $(^Name).lnk" $INSTDIR\uninstall.exe
     !insertmacro MUI_STARTMENU_WRITE_END
     WriteRegStr HKCU "SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\$(^Name)" DisplayName "$(^Name)"

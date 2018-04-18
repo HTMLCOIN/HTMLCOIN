@@ -193,18 +193,21 @@ public:
             boost::assign::map_list_of
             ( 0, uint256S("0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0"))
             ( 798, uint256S("00002847d05b6fe46570b754815309123bedcb84a5ac2ae58fa1d38957ccb772"))
+            ( 211401, uint256S("00000000000a2142cf5781b89170e7fd2d1fb22b92a7f3878e8199378e32a54b"))
         };
 
         chainTxData = ChainTxData{
             // Data as of block 00000000000000000166d612d5595e2b1cd88d71d695fc580af64d8da8658c23 (height 446482).
-            1510744433, // * UNIX timestamp of last known number of transactions
-            799,  // * total number of transactions between genesis and that timestamp
+            1524041124, // * UNIX timestamp of last known number of transactions
+            388458,  // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            7200         // * estimated number of transactions per second after that timestamp
+            0.01         // * estimated number of transactions per second after that timestamp
         };
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
+
+        consensus.nFixUTXOCacheHFHeight=251000;
     }
 };
 static CMainParams mainParams;
@@ -299,6 +302,8 @@ public:
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 450 + consensus.nMPoSRewardRecipients +
                                     COINBASE_MATURITY;
+
+        consensus.nFixUTXOCacheHFHeight=340480;
     }
 };
 static CTestNetParams testNetParams;
@@ -373,6 +378,8 @@ public:
 
         consensus.nMPoSRewardRecipients = 10;
         consensus.nFirstMPoSBlock = 1325;
+
+        consensus.nFixUTXOCacheHFHeight=0;
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);

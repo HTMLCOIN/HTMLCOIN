@@ -15,7 +15,6 @@
 #define BITCOIN_BASE58_H
 
 #include "chainparams.h"
-#include "opensslkey.h"
 #include "key.h"
 #include "pubkey.h"
 #include "script/script.h"
@@ -136,22 +135,6 @@ public:
 
     CBitcoinSecret(const CKey& vchSecret) { SetKey(vchSecret); }
     CBitcoinSecret() {}
-};
-
-/**
- * A base58-encoded OpenSSL secret key
- */
-class CBitcoinOpenSecret : public CBase58Data
-{
-public:
-    void SetKey(const COpenKey& vchSecret);
-    COpenKey GetKey();
-    bool IsValid() const;
-    bool SetString(const char* pszSecret);
-    bool SetString(const std::string& strSecret);
-
-    CBitcoinOpenSecret(const COpenKey& vchSecret) { SetKey(vchSecret); }
-    CBitcoinOpenSecret() {}
 };
 
 template<typename K, int Size, CChainParams::Base58Type Type> class CBitcoinExtKeyBase : public CBase58Data

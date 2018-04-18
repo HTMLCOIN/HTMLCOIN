@@ -26,8 +26,8 @@
 #include "utilmoneystr.h"
 #include "validationinterface.h"
 #include "wallet/wallet.h"
-#include "base58.h"
 
+#include <openssl/sha.h>
 #include <algorithm>
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>

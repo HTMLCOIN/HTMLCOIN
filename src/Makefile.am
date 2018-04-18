@@ -121,7 +121,6 @@ BITCOIN_CORE_H = \
   netbase.h \
   netmessagemaker.h \
   noui.h \
-  opensslkey.h \
   policy/fees.h \
   policy/policy.h \
   policy/rbf.h \
@@ -142,8 +141,6 @@ BITCOIN_CORE_H = \
   streams.h \
   support/allocators/secure.h \
   support/allocators/zeroafterfree.h \
-  support/allocators.h \
-  support/allocators.cpp \
   support/cleanse.h \
   support/events.h \
   support/lockedpool.h \
@@ -348,7 +345,6 @@ libbitcoin_common_a_SOURCES = \
   keystore.cpp \
   netaddress.cpp \
   netbase.cpp \
-  opensslkey.cpp \
   protocol.cpp \
   scheduler.cpp \
   script/sign.cpp \
