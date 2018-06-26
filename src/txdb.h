@@ -157,6 +157,10 @@ public:
 
     //////////////////////////////////////////////////////////////////////////////
 
+    bool ReadSyncCheckpoint(uint256& hashCheckpoint);
+    bool WriteSyncCheckpoint(uint256 hashCheckpoint);
+    bool ReadCheckpointPubKey(std::string& strPubKey);
+    bool WriteCheckpointPubKey(const std::string& strPubKey);
 };
 
 #endif // BITCOIN_TXDB_H

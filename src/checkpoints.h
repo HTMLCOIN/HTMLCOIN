@@ -28,6 +28,9 @@ const CBlockIndex* AutoSelectSyncCheckpoint();
 //! Check against automatically selected checkpoint
 bool CheckSync(int nHeight);
 
+//! Returns the block hash of latest hardened checkpoint, if empty genesis block returned
+uint256 GetLatestHardenedCheckpoint(const CCheckpointData& data);
+
 } //namespace Checkpoints
 
 #endif // BITCOIN_CHECKPOINTS_H
