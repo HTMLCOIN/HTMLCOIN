@@ -580,7 +580,7 @@ UniValue createcontract(const JSONRPCRequest& request){
                 "\nArguments:\n"
                 "1. \"bytecode\"  (string, required) contract bytcode.\n"
                 "2. gasLimit  (numeric or string, optional) gasLimit, default: "+i64tostr(DEFAULT_GAS_LIMIT_OP_CREATE)+", max: "+i64tostr(blockGasLimit)+"\n"
-                "3. gasPrice  (numeric or string, optional) gasPrice QTUM price per gas unit, default: "+FormatMoney(nGasPrice)+", min:"+FormatMoney(minGasPrice)+"\n"
+                "3. gasPrice  (numeric or string, optional) gasPrice HTML price per gas unit, default: "+FormatMoney(nGasPrice)+", min:"+FormatMoney(minGasPrice)+"\n"
                 "4. \"senderaddress\" (string, optional) The quantum address that will be used to create the contract.\n"
                 "5. \"broadcast\" (bool, optional, default=true) Whether to broadcast the transaction or not.\n"
                 "6. \"changeToSender\" (bool, optional, default=true) Return the change to the sender.\n"
