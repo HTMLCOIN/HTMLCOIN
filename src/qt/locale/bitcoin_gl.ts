@@ -206,8 +206,8 @@
         <translation>Barra de ferramentas</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Solicitar pagos (xenera códigos QR e qtum: URIs)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Solicitar pagos (xenera códigos QR e htmlcoin: URIs)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -218,8 +218,8 @@
         <translation>Amosar a listaxe de etiquetas e direccións para recibir empregadas</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Abrir un qtum: URI ou solicitude de pago</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Abrir un htmlcoin: URI ou solicitude de pago</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>

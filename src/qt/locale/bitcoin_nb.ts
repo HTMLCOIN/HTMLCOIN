@@ -410,8 +410,8 @@
         <translation>Verktøylinje for faner</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Forespør betalinger (genererer QR-koder og qtum: URIer)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Forespør betalinger (genererer QR-koder og htmlcoin: URIer)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -422,7 +422,7 @@
         <translation>Vis listen over bruke mottaksadresser og merkelapper</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
+        <source>Open a htmlcoin: URI or payment request</source>
         <translation>Åpne en Qtum: URI eller betalingsetterspørring</translation>
     </message>
     <message>
@@ -1904,7 +1904,7 @@
         <translation>Skriv inn en merkelapp for denne adressen for å legge den til listen av brukte adresser</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
         <translation>En melding som var tilknyttet qtumen: URI vil bli lagret med transaksjonen for din oversikt. Denne meldingen vil ikke bli sendt over Qtum-nettverket.</translation>
     </message>
     <message>

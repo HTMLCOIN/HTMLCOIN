@@ -414,7 +414,7 @@
         <translation>ツールバータブ</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
         <translation>支払の要求 (QRコードとビットコインのURIを作成)</translation>
     </message>
     <message>
@@ -426,7 +426,7 @@
         <translation>受信に使用したアドレスとラベルの一覧を表示</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
+        <source>Open a htmlcoin: URI or payment request</source>
         <translation>ビットコインのURIまたは支払要求を開く</translation>
     </message>
     <message>
@@ -1246,7 +1246,7 @@
         <translation>支払い要求エラー</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
         <translation>ビットコインを開始できません: click-to-pay handler</translation>
     </message>
     <message>
@@ -2208,7 +2208,7 @@
         <translation>使用されたアドレス一覧のために、このアドレスのラベルを入力します。</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
         <translation>参考資料に保存された処理のビットコインURIは、メッセージに添付されます。メモ: このメッセージはビットコイン上で送信されません。</translation>
     </message>
     <message>

@@ -218,7 +218,7 @@
         <translation>Barra de pestañas</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
         <translation>Solicitar pagos (genera codigo QR y URL's de Qtum)</translation>
     </message>
     <message>
@@ -230,8 +230,8 @@
         <translation>Muestra la lista de direcciones de recepción y etiquetas</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Abrir un qtum: URI o petición de pago</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Abrir un htmlcoin: URI o petición de pago</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>

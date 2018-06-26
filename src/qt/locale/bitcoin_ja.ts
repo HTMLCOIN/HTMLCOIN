@@ -414,8 +414,8 @@
         <translation>タブツールバー</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>支払いを要求する (QRコードとqtum:ではじまるURIを生成する)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>支払いを要求する (QRコードとhtmlcoin:ではじまるURIを生成する)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -426,8 +426,8 @@
         <translation>支払いを受け取るアドレスとラベルのリストを表示する</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>qtum: URIまたは支払いリクエストを開く</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>htmlcoin: URIまたは支払いリクエストを開く</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1270,7 +1270,7 @@
         <translation>支払いのリクエストのエラーです</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
         <translation>Qtum を起動できません: click-to-pay handler</translation>
     </message>
     <message>
@@ -2288,8 +2288,8 @@
         <translation>このアドレスに対するラベルを入力することで、使用済みアドレスの一覧に追加することができます</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
-        <translation>qtum: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはQtumネットワークを通して送信されるわけではありません。</translation>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <translation>htmlcoin: URIに添付されていたメッセージです。これは参照用としてトランザクションとともに保存されます。注意：このメッセージはQtumネットワークを通して送信されるわけではありません。</translation>
     </message>
     <message>
         <source>Pay To:</source>
