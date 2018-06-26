@@ -87,8 +87,8 @@
 // Application startup time (used for uptime calculation)
 const int64_t nStartupTime = GetTime();
 
-const char * const BITCOIN_CONF_FILENAME = "qtum.conf";
-const char * const BITCOIN_PID_FILENAME = "qtumd.pid";
+const char * const BITCOIN_CONF_FILENAME = "htmlcoin.conf";
+const char * const BITCOIN_PID_FILENAME = "htmlcoind.pid";
 
 ArgsManager gArgs;
 bool fPrintToConsole = false;
@@ -556,7 +556,7 @@ fs::path GetDefaultDataDir()
     // Unix: ~/.qtum
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "Qtum";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "HTMLCOIN";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -566,10 +566,10 @@ fs::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/Qtum";
+    return pathRet / "Library/Application Support/HTMLCOIN";
 #else
     // Unix
-    return pathRet / ".qtum";
+    return pathRet / ".htmlcoin";
 #endif
 #endif
 }
