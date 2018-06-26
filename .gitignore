@@ -1,10 +1,10 @@
 *.tar.gz
 
 *.exe
-src/bitcoin
-src/bitcoind
-src/bitcoin-cli
-src/bitcoin-tx
+src/htmlcoin
+src/htmlcoind
+src/htmlcoin-cli
+src/htmlcoin-tx
 src/test/test_bitcoin
 src/test/test_bitcoin_fuzzy
 src/qt/test/test_bitcoin-qt
@@ -74,8 +74,8 @@ src/qt/test/moc*.cpp
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-bitcoin-qt
-Bitcoin-Qt.app
+htmlcoin-qt
+HTMLCOIN-Qt.app
 
 # Unit-tests
 Makefile.test
