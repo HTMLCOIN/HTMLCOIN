@@ -55,7 +55,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Qtum cannot be compiled without assertions."
+# error "HTMLCOIN cannot be compiled without assertions."
 #endif
 
 /**
@@ -114,7 +114,7 @@ static bool UpdateHashProof(const CBlock& block, CValidationState& state, const 
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "Qtum Signed Message:\n";
+const std::string strMessageMagic = "HTMLCOIN Signed Message:\n";
 
 // Internal stuff
 namespace {

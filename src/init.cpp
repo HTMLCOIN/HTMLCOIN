@@ -841,7 +841,7 @@ void InitLogging()
     fLogIPs = gArgs.GetBoolArg("-logips", DEFAULT_LOGIPS);
 
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    LogPrintf("Qtum version %s\n", FormatFullVersion());
+    LogPrintf("HTMLCOIN version %s\n", FormatFullVersion());
 }
 
 namespace { // Variables internal to initialization process only
@@ -1551,7 +1551,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
                 }
 
                 dev::eth::Ethash::init();
-                fs::path qtumStateDir = GetDataDir() / "stateQtum";
+                fs::path qtumStateDir = GetDataDir() / "stateHTMLCOIN";
                 bool fStatus = fs::exists(qtumStateDir);
                 const std::string dirQtum(qtumStateDir.string());
                 const dev::h256 hashDB(dev::sha3(dev::rlp("")));
