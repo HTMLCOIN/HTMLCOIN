@@ -44,23 +44,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     if (pindexPrevPrev->pprev == NULL)
         return nTargetLimit;
 
-    // min difficulty
+    // Return min difficulty on regtest
     if (params.fPowAllowMinDifficultyBlocks)
-    {
-        // Special difficulty rule for testnet:
-        // If the new block's timestamp is more than 2* 10 minutes
-        // then allow mining of a min-difficulty block.
-        if (pblock->GetBlockTime() > pindexLast->GetBlockTime() + params.nPowTargetSpacing*2)
-            return nTargetLimit;
-        else
-        {
-            // Return the last non-special-min-difficulty-rules-block
-            const CBlockIndex* pindex = pindexLast;
-            while (pindex->pprev && pindex->nHeight % params.DifficultyAdjustmentInterval() != 0 && pindex->nBits == nTargetLimit)
-                pindex = pindex->pprev;
-            return pindex->nBits;
-        }
-    }
+        return nTargetLimit;
 
     return CalculateNextWorkRequired(pindexPrev, params, fProofOfStake);
 }
@@ -69,26 +55,39 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
  * eHRC (enhanced Hash Rate Compensation)
  * Short, medium and long samples averaged together and compared against the target time span.
  * Adjust every block but limted to 9% change maximum.
+ * Difficulty is calculated separately for PoW and PoS blocks in that PoW skips PoS blocks and vice versa.
  */
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params, bool fProofOfStake)
 {
-    if (fProofOfStake && params.fPoSNoRetargeting)
-        return pindexLast->nBits;
-    else if (params.fPowNoRetargeting)
-        return pindexLast->nBits;
-
-    unsigned int nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
-    int nHeight = pindexLast->nHeight + 1;
-    int nTargetTimespan = params.nPowTargetTimespan;
+    arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
     int shortSample = 15;
     int mediumSample = 200;
     int longSample = 1000;
     int pindexFirstShortTime = 0;
     int pindexFirstMediumTime = 0;
+    int nActualTimespan = 0;
+    int nActualTimespanShort = 0;
+    int nActualTimespanMedium = 0;
+    int nActualTimespanLong = 0;
 
-    // New chain
-    if (nHeight <= longSample)
-        return nTargetLimit;
+    // Make sure there's enough PoW or PoS blocks for eHRC long sample
+    const CBlockIndex* pindexCheck = pindexLast;
+    for (int i = 0; i <= longSample + 1;) {
+
+        // Hit the start of the chain before finding enough blocks
+        if (pindexCheck->pprev == NULL)
+            return nTargetLimit.GetCompact();
+
+        // Only increment if we have a block of the current type
+        if (fProofOfStake) {
+            if (pindexCheck->IsProofOfStake())
+                i++;
+        } else if (pindexCheck->IsProofOfWork()) {
+            i++;
+        }
+
+        pindexCheck = pindexCheck->pprev;
+    }
 
     const CBlockIndex* pindexFirstLong = pindexLast;
     for(int i = 0; pindexFirstLong && i < longSample; i++) {
@@ -96,18 +95,35 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
         if (i == shortSample - 1)
             pindexFirstShortTime = pindexFirstLong->GetBlockTime();
 
+        // If we have a block of the wrong type skip this iteration
+        if (fProofOfStake) {
+            if (pindexFirstLong->IsProofOfWork())
+                continue;
+        } else if (pindexFirstLong->IsProofOfStake()) {
+            continue;
+        }
+
         if (i == mediumSample - 1)
             pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
     }
 
-    int nActualTimespanShort = (pindexLast->GetBlockTime() - pindexFirstShortTime) / shortSample;
-    int nActualTimespanMedium = (pindexLast->GetBlockTime() - pindexFirstMediumTime)/ mediumSample;
-    int nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime()) / longSample;
-    int nActualTimespan = (nActualTimespanShort + nActualTimespanMedium + nActualTimespanLong) / 3;
+    if (pindexLast->GetBlockTime() - pindexFirstShortTime != 0)
+        nActualTimespanShort = (pindexLast->GetBlockTime() - pindexFirstShortTime) / shortSample;
+
+    if (pindexLast->GetBlockTime() - pindexFirstMediumTime != 0)
+        nActualTimespanMedium = (pindexLast->GetBlockTime() - pindexFirstMediumTime) / mediumSample;
+
+    if (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime() != 0)
+        nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime()) / longSample;
+
+    int nActualTimespanSum = nActualTimespanShort + nActualTimespanMedium + nActualTimespanLong;
+
+    if (nActualTimespanSum != 0)
+        nActualTimespan = nActualTimespanSum / 3;
 
     // 9% difficulty limiter
-    int nActualTimespanMax = nTargetTimespan * 494 / 453;
-    int nActualTimespanMin = nTargetTimespan * 453 / 494;
+    int nActualTimespanMax = params.nTargetTimespan * 494 / 453;
+    int nActualTimespanMin = params.nTargetTimespan * 453 / 494;
 
     if(nActualTimespan < nActualTimespanMin)
         nActualTimespan = nActualTimespanMin;
@@ -118,7 +134,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
-    bnNew /= nTargetTimespan;
+    bnNew /= params.nTargetTimespan;
 
     if (bnNew <= 0 || bnNew > nTargetLimit)
         bnNew = nTargetLimit;
