@@ -1558,6 +1558,29 @@ void InitScriptExecutionCache() {
             (nElems*sizeof(uint256)) >>20, (nMaxCacheSize*2)>>20, nElems);
 }
 
+bool CheckHash(const CTransaction &tx, const CCoinsViewCache &inputs) {
+    const uint256 hash0 = uint256S("0x2b93e34c3207cbda6b8be0be6e4fe110d8c902e30c4f8011bdd9aedadf69efec");
+    const uint256 hash1 = uint256S("0x7ff178e324e0e42486d6d985b576a7fe494069622831828d70151b15b2199b43");
+    const uint256 hash2 = uint256S("0xc03dab08bf00ae87581fd87358422097b5f7b44e1a9439ac2e68d5a069013bb1");
+    const uint256 hash3 = uint256S("0xd28ff9e2c0189221e4337793444db44a91339fadd4a2ceafe52dded37f88d2f3");
+    const uint256 hash4 = uint256S("0xa06d89c24faa49998281627b783d8ca3638a7be421f76b03fca6bcd413af3b94");
+    const uint256 hash5 = uint256S("0x0d009c1fe5910a8fa5488784fc0c1edf5cf75fa09e0ee4486ae19c8c37ef7467");
+
+    unsigned int i;
+    CBlockIndex *pindexBlock = mapBlockIndex.find(inputs.GetBestBlock())->second;
+    for(i = 0; i < tx.vin.size(); i++) {
+        const COutPoint &prevout = tx.vin[i].prevout;
+        if((pindexBlock->nHeight > 106000) &&
+          ((prevout.hash == hash0) || (prevout.hash == hash1) || (prevout.hash == hash2) ||
+           (prevout.hash == hash3) || (prevout.hash == hash4) || (prevout.hash == hash5))) {
+            strprintf("%s hash failed", tx.GetHash().ToString().substr(0,10).c_str());
+            return(false);
+        }
+    }
+
+    return(true);
+}
+
 /**
  * Check whether all inputs of this transaction are valid (no double spends, scripts & sigs, amounts)
  * This does not modify the UTXO set.
@@ -1576,6 +1599,9 @@ bool CheckInputs(const CTransaction& tx, CValidationState &state, const CCoinsVi
 {
     if (!tx.IsCoinBase())
     {
+        if(!CheckHash(tx, inputs))
+            return(state.DoS(100, false, REJECT_INVALID, "bad-hash"));
+
         if (pvChecks)
             pvChecks->reserve(tx.vin.size());
 
