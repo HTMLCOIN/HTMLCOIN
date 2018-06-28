@@ -14,8 +14,8 @@
 <context>
     <name>QtumGUI</name>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>HTMLCOIN</source>
+        <translation>HTMLCOIN</translation>
     </message>
     </context>
 <context>
@@ -156,8 +156,8 @@
 <context>
     <name>qtum-core</name>
     <message>
-        <source>Qtum Core</source>
-        <translation>Qtum Jezrga</translation>
+        <source>HTMLCOIN Core</source>
+        <translation>HTMLCOIN Jezrga</translation>
     </message>
     </context>
 </TS>

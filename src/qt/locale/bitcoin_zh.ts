@@ -107,7 +107,7 @@
         <translation>仅支付全额的%1</translation>
     </message>
     <message>
-        <source>Warning: Invalid Qtum address</source>
+        <source>Warning: Invalid HTMLCOIN address</source>
         <translation>警告：QTUM地址无效</translation>
     </message>
     </context>

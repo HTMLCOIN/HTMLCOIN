@@ -142,8 +142,8 @@
         <translation>Deschide &amp;URI...</translation>
     </message>
     <message>
-        <source>Send coins to a Qtum address</source>
-        <translation>Trimite monedele către o adresă Qtum</translation>
+        <source>Send coins to a HTMLCOIN address</source>
+        <translation>Trimite monedele către o adresă HTMLCOIN</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -166,8 +166,8 @@
         <translation>&amp;Verifică mesajul...</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>HTMLCOIN</source>
+        <translation>HTMLCOIN</translation>
     </message>
     <message>
         <source>Wallet</source>
@@ -194,12 +194,12 @@
         <translation>Criptează cheile private care aparțin portofelului tău.</translation>
     </message>
     <message>
-        <source>Sign messages with your Qtum addresses to prove you own them</source>
-        <translation>Semnează mesajele cu adresa ta de Qtum pentru a face dovada că îți aparțin.</translation>
+        <source>Sign messages with your HTMLCOIN addresses to prove you own them</source>
+        <translation>Semnează mesajele cu adresa ta de HTMLCOIN pentru a face dovada că îți aparțin.</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Qtum addresses</source>
-        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de Qtum specificată.</translation>
+        <source>Verify messages to ensure they were signed with specified HTMLCOIN addresses</source>
+        <translation>Verifică mesajele cu scopul de a asigura faptul că au fost semnate cu adresa de HTMLCOIN specificată.</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -748,8 +748,8 @@
 <context>
     <name>qtum-core</name>
     <message>
-        <source>Qtum Core</source>
-        <translation>Qtum Core</translation>
+        <source>HTMLCOIN Core</source>
+        <translation>HTMLCOIN Core</translation>
     </message>
     <message>
         <source>Information</source>

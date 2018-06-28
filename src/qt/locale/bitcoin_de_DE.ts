@@ -51,7 +51,7 @@
     </message>
     <message>
         <source>C&amp;hoose</source>
-        <translation>Dies sind deine Qtum Adressen zum Senden von Zahlungsmitteln.
+        <translation>Dies sind deine HTMLCOIN Adressen zum Senden von Zahlungsmitteln.
 Überprüfe immer die Menge, sowie die Empfänger-Adresse vor dem Senden von Coins.</translation>
     </message>
     <message>
