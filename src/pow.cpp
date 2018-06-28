@@ -59,6 +59,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
  */
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params, bool fProofOfStake)
 {
+    int nHeight = pindexLast->nHeight + 1;
     arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
     int shortSample = 15;
     int mediumSample = 200;
@@ -90,21 +91,44 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     }
 
     const CBlockIndex* pindexFirstLong = pindexLast;
-    for(int i = 0; pindexFirstLong && i < longSample; i++) {
-        pindexFirstLong = pindexFirstLong->pprev;
-        if (i == shortSample - 1)
-            pindexFirstShortTime = pindexFirstLong->GetBlockTime();
+    if (nHeight <= params.nDiffAdjustChange) {
+        for (int i = 0; pindexFirstLong && i < longSample; i++) {
+            pindexFirstLong = pindexFirstLong->pprev;
 
-        // If we have a block of the wrong type skip this iteration
-        if (fProofOfStake) {
-            if (pindexFirstLong->IsProofOfWork())
+            // If we have a block of the wrong type skip this iteration
+            if (fProofOfStake) {
+                if (pindexFirstLong->IsProofOfWork())
+                    continue;
+            } else if (pindexFirstLong->IsProofOfStake()) {
                 continue;
-        } else if (pindexFirstLong->IsProofOfStake()) {
-            continue;
-        }
+            }
 
-        if (i == mediumSample - 1)
-            pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
+            if (i == shortSample - 1)
+                pindexFirstShortTime = pindexFirstLong->GetBlockTime();
+
+            if (i == mediumSample - 1)
+                pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
+        }
+    } else {
+        for (int i = 0; pindexFirstLong && i < longSample;) {
+            pindexFirstLong = pindexFirstLong->pprev;
+
+            // If we have a block of the wrong type skip this iteration
+            if (fProofOfStake) {
+                if (pindexFirstLong->IsProofOfWork())
+                    continue;
+            } else if (pindexFirstLong->IsProofOfStake()) {
+                continue;
+            }
+
+            if (i == shortSample - 1)
+                pindexFirstShortTime = pindexFirstLong->GetBlockTime();
+
+            if (i == mediumSample - 1)
+                pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
+
+             i++;
+        }
     }
 
     if (pindexLast->GetBlockTime() - pindexFirstShortTime != 0)
