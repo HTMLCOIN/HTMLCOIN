@@ -4268,6 +4268,14 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     if (block.IsProofOfStake() && block.GetBlockTime() > FutureDrift(nAdjustedTime))
         return state.Invalid(false, REJECT_INVALID, "time-too-new", "PoS block timestamp too far in the future");
 
+    // Limit block in future accepted in chain to only a time window of 15 min
+    if (block.GetBlockTime() > GetAdjustedTime() + 15 * 60)
+        return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
+
+    // Check timestamp against prev it should not be more then 15 minutes outside blockchain time
+    if (block.GetBlockTime() <= pindexPrev->GetBlockTime() - 15 * 60)
+        return state.Invalid(false, REJECT_INVALID, "time-too-old", "block timestamp is too early");
+
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades
     if((block.nVersion < 2 && nHeight >= consensusParams.BIP34Height) ||
