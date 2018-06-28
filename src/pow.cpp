@@ -147,13 +147,13 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
 
     if (pindexLast->nHeight >= params.nDiffDamping) {
         // Apply .25 damping
-        nActualTimespan = nActualTimespan + (3 * params.nTargetTimespan);
+        nActualTimespan = nActualTimespan + (3 * params.nPowTargetTimespan);
         nActualTimespan /= 4;
     }
 
     // 9% difficulty limiter
-    int nActualTimespanMax = params.nTargetTimespan * 494 / 453;
-    int nActualTimespanMin = params.nTargetTimespan * 453 / 494;
+    int nActualTimespanMax = params.nPowTargetTimespan * 494 / 453;
+    int nActualTimespanMin = params.nPowTargetTimespan * 453 / 494;
 
     if(nActualTimespan < nActualTimespanMin)
         nActualTimespan = nActualTimespanMin;
@@ -164,7 +164,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
-    bnNew /= params.nTargetTimespan;
+    bnNew /= params.nPowTargetTimespan;
 
     if (bnNew <= 0 || bnNew > nTargetLimit)
         bnNew = nTargetLimit;
