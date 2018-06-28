@@ -4186,13 +4186,8 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
 
 static bool UpdateHashProof(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, CBlockIndex* pindex, CCoinsViewCache& view)
 {
-    int nHeight = pindex->nHeight;
     uint256 hash = block.GetHash();
 
-    //reject proof of work at height consensusParams.nLastPOWBlock
-    if (block.IsProofOfWork() && nHeight > consensusParams.nLastPOWBlock)
-        return state.DoS(100, error("UpdateHashProof() : reject proof-of-work at height %d", nHeight));
-    
     // Check coinstake timestamp
     if (block.IsProofOfStake() && !CheckCoinStakeTimestamp(block.GetBlockTime()))
         return state.DoS(50, error("UpdateHashProof() : coinstake timestamp violation nTimeBlock=%d", block.GetBlockTime()));
@@ -4336,10 +4331,6 @@ static bool AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CValidation
 
     // Get block height
     int nHeight = pindex->nHeight;
-
-    // Check for the last proof of work block
-    if (block.IsProofOfWork() && nHeight > chainparams.GetConsensus().nLastPOWBlock)
-        return state.DoS(100, error("AcceptBlock() : reject proof-of-work at height %d", nHeight));
 
     // Check that the block satisfies synchronized checkpoint
     if (!Checkpoints::CheckSync(nHeight))
