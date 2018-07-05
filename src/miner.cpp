@@ -6,6 +6,7 @@
 #include <miner.h>
 
 #include <amount.h>
+#include <base58.h>
 #include <chain.h>
 #include <chainparams.h>
 #include <coins.h>
@@ -28,6 +29,7 @@
 #include <validationinterface.h>
 #include <wallet/wallet.h>
 
+#include <openssl/sha.h>
 #include <algorithm>
 #include <queue>
 #include <utility>
@@ -36,6 +38,33 @@
 //
 // BitcoinMiner
 //
+
+uint32_t ByteReverse(uint32_t value)
+{
+    value = ((value & 0xFF00FF00) >> 8) | ((value & 0x00FF00FF) << 8);
+    return (value<<16) | (value>>16);
+}
+
+static const unsigned int pSHA256InitState[8] =
+{0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19};
+
+void SHA256Transform(void* pstate, void* pinput, const void* pinit)
+{
+    SHA256_CTX ctx;
+    unsigned char data[64];
+
+    SHA256_Init(&ctx);
+
+    for (int i = 0; i < 16; i++)
+        ((uint32_t*)data)[i] = ByteReverse(((uint32_t*)pinput)[i]);
+
+    for (int i = 0; i < 8; i++)
+        ctx.h[i] = ((uint32_t*)pinit)[i];
+
+    SHA256_Update(&ctx, data, sizeof(data));
+    for (int i = 0; i < 8; i++)
+        ((uint32_t*)pstate)[i] = ctx.h[i];
+}
 
 //
 // Unconfirmed transactions in the memory pool often depend on other
@@ -47,6 +76,81 @@ uint64_t nLastBlockTx = 0;
 uint64_t nLastBlockWeight = 0;
 int64_t nLastCoinStakeSearchInterval = 0;
 unsigned int nMinerSleep = STAKER_POLLING_PERIOD;
+
+void FormatHashBuffers(CBlock* pblock, char* pdata)
+{
+    unsigned char workpadding[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                   0xff, 0xff, 0xff, 0xff, 0x00};
+    struct
+    {
+        struct unnamed2
+        {
+            int nVersion;
+            uint256 hashPrevBlock;
+            uint256 hashMerkleRoot;
+            unsigned int nTime;
+            unsigned int nBits;
+            unsigned int nNonce;
+            uint256 hashStateRoot; // qtum
+            uint256 hashUTXORoot; // qtum
+            unsigned char workpadding[48];//37
+        }
+        block;
+        unsigned char pchPadding0[64];
+    }
+    tmp;
+    memset(&tmp, 0, sizeof(tmp));
+
+    tmp.block.nVersion       = pblock->nVersion;
+    tmp.block.hashPrevBlock  = pblock->hashPrevBlock;
+    tmp.block.hashMerkleRoot = pblock->hashMerkleRoot;
+    tmp.block.nTime          = pblock->nTime;
+    tmp.block.nBits          = pblock->nBits;
+    tmp.block.nNonce         = pblock->nNonce;
+    tmp.block.hashStateRoot  = pblock->hashStateRoot; // qtum
+    tmp.block.hashUTXORoot   = pblock->hashUTXORoot; // qtum
+    memcpy((unsigned char *)(tmp.block.workpadding), workpadding, sizeof(workpadding));
+    // Byte swap all the input buffer
+    for (unsigned int i = 0; i < 180/4; i++) // sizeof(tmp)/4
+        ((unsigned int*)&tmp.block)[i] = ByteReverse(((unsigned int*)&tmp.block)[i]);
+    memcpy(pdata, &tmp.block, 192); // 192 // 128
+}
+
+bool CheckWork(const CChainParams& chainparams, CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
+{
+    uint256 hash = pblock->GetHash();
+    arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+
+    if (UintToArith256(hash) > hashTarget)
+        return false;
+
+    // Found a solution
+    {
+        LOCK(cs_main);
+        if (pblock->hashPrevBlock != chainActive.Tip()->GetBlockHash())
+            return error("Generated block is stale!");
+
+        // Remove key from key pool
+        reservekey.KeepKey();
+
+        // Track how many getdata requests this block gets
+        {
+            LOCK(wallet.cs_wallet);
+            wallet.mapRequestCount[pblock->GetHash()] = 0;
+        }
+
+        // Process this block the same as if we had received it from another node
+        std::shared_ptr<const CBlock> shared_pblock = std::make_shared<const CBlock>(*pblock);
+        bool fNewBlock = false;
+        if (!ProcessNewBlock(chainparams, shared_pblock, true, &fNewBlock))
+            return error("CheckWork: block not accepted");
+    }
+    //LogPrintf("CheckWork: Leaving CheckWork\n");
+    return true;
+}
 
 int64_t UpdateTime(CBlockHeader* pblock, const Consensus::Params& consensusParams, const CBlockIndex* pindexPrev)
 {
