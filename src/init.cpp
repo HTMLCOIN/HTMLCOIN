@@ -187,6 +187,7 @@ void Shutdown()
     StopHTTPRPC();
     StopREST();
     StopRPC();
+    ShutdownRPCMining();
     StopHTTPServer();
 #ifdef ENABLE_WALLET
     for (CWalletRef pwallet : vpwallets) {
@@ -1821,6 +1822,9 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
     if (!connman.Start(scheduler, connOptions)) {
         return false;
     }
+
+    // InitRPCMining is needed here so getwork in the GUI debug console works properly.
+    InitRPCMining();
 
 #ifdef ENABLE_WALLET
     // Mine proof-of-stake blocks in the background

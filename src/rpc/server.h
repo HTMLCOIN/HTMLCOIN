@@ -239,6 +239,9 @@ extern uint256 ParseHashO(const UniValue& o, std::string strKey);
 extern std::vector<unsigned char> ParseHexV(const UniValue& v, std::string strName);
 extern std::vector<unsigned char> ParseHexO(const UniValue& o, std::string strKey);
 
+extern void InitRPCMining();
+extern void ShutdownRPCMining();
+
 extern CAmount AmountFromValue(const UniValue& value);
 extern double GetPoWMHashPS();
 extern double GetPoSKernelPS();
