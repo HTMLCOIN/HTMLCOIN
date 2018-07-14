@@ -91,7 +91,7 @@
     </message>
     <message>
         <source>Exporting Failed</source>
-        <translation>Falha na exportação</translation>
+        <translation>Falha ao exportar</translation>
     </message>
     <message>
         <source>There was an error trying to save the address list to %1. Please try again.</source>
@@ -1654,7 +1654,7 @@
     </message>
     <message>
         <source>&amp;Network Traffic</source>
-        <translation>Tráfico de Rede</translation>
+        <translation>Trafego de Rede</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
@@ -1726,7 +1726,7 @@
     </message>
     <message>
         <source>Network activity disabled</source>
-        <translation>Atividade da rede disativada</translation>
+        <translation>Atividade da rede desativada</translation>
     </message>
     <message>
         <source>%1 B</source>
