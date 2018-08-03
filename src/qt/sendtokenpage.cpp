@@ -207,8 +207,19 @@ void SendTokenPage::on_confirmClicked()
     }
     else
     {
-        QString message = tr("To send %1 you need HTML on address <br /> %2.")
-                .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::fromStdString(CBitcoinAddress(m_selectedToken->sender).ToString()));
+        
+        uint64_t gasLimit = ui->lineEditGasLimit->value(); //What is the gas limit?
+        long double gasPrice = ui->lineEditGasPrice->value(); //How much gas the user had defined?
+        long double calcGas = gasPrice * gasLimit; //calculate the cost of Gas 
+        long double precisionHTML = 0.00000001 * calcGas; //Do the precision to make the calculations of precision HTMLCOIN style
+        
+        /* 
+        
+        Show a message with amount of HTML needed, dinamically change when increase the gasPrice
+        The old message had no control about!
+        */ 
+        QString message = tr("To send %1 you need %2 HTML on address <br /> %3.")
+                .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::number(precisionHTML, 'prec', 8)).arg(QString::fromStdString(CBitcoinAddress(m_selectedToken->sender).ToString()));
 
         QMessageBox::warning(this, tr("Send token"), message);
     }
