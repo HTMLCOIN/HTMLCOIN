@@ -24,18 +24,18 @@ If you want to build the disk image with `make deploy` (.dmg / optional), you ne
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
-Build Build Qtum Core
+Build Build HTMLCOIN Core
 ------------------------
 
-1. Clone the qtum source code and cd into `qtum`
+1. Clone the name htmlcoin source code and cd into `htmlcoin`
 
-        git clone --recursive https://github.com/qtumproject/qtum.git
-        cd qtum
+        git clone --recursive https://github.com/htmlcoin/htmlcoin.git
+        cd htmlcoin
         git submodule update --init --recursive
 
-2.  Build qtum-core:
+2.  Build htmlcoin-core:
 
-    Configure and build the headless qtum binaries as well as the GUI (if Qt is found).
+    Configure and build the headless htmlcoin binaries as well as the GUI (if Qt is found).
 
     You can disable the GUI build by passing `--without-gui` to configure.
 
@@ -54,26 +54,26 @@ Build Build Qtum Core
 Running
 -------
 
-Bitcoin Core is now available at `./src/bitcoind`
+Htmlcoin Core is now available at `./src/htmlcoind`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=bitcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Bitcoin/bitcoin.conf"
+    echo -e "rpcuser=htmlcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Htmlcoin/htmlcoin.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/Bitcoin/bitcoin.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Htmlcoin/htmlcoin.conf"
 
 The first time you run bitcoind, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/Bitcoin/debug.log
+    tail -f $HOME/Library/Application\ Support/Htmlcoin/debug.log
 
 Other commands:
 -------
 
-    ./src/bitcoind -daemon # Starts the bitcoin daemon.
-    ./src/bitcoin-cli --help # Outputs a list of command-line options.
-    ./src/bitcoin-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/htmlcoind -daemon # Starts the bitcoin daemon.
+    ./src/htmlcoin-cli --help # Outputs a list of command-line options.
+    ./src/htmlcoin-cli help # Outputs a list of RPC commands when the daemon is running.
 
 Using Qt Creator as IDE
 ------------------------
