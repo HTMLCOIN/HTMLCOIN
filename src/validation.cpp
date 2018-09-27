@@ -1963,7 +1963,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                 fClean = fClean && res != DISCONNECT_UNCLEAN;
 
                 const auto &undo = txundo.vprevout[j];
-                const bool isTxCoinStake = tx.IsCoinStake();
+                const bool isTxCoinStake = tx.IsCoinStake() || tx.IsCoinBase();
                 const CTxIn input = tx.vin[j];
                 if (fAddressIndex) {
                     spentIndex.push_back(std::make_pair(CSpentIndexKey(input.prevout.hash, input.prevout.n), CSpentIndexValue()));
@@ -2932,7 +2932,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
             for (unsigned int k = 0; k < tx.vout.size(); k++) {
                 const CTxOut &out = tx.vout[k];
-                const bool isTxCoinStake = tx.IsCoinStake();
+                const bool isTxCoinStake = tx.IsCoinStake() || tx.IsCoinBase();
                 
                 CTxDestination dest;
                 if (ExtractDestination({tx.GetHash(), k}, out.scriptPubKey, dest)) {
