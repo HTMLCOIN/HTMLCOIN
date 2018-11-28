@@ -90,8 +90,8 @@
 <context>
     <name>QtumGUI</name>
     <message>
-        <source>Send coins to a Qtum address</source>
-        <translation>ផ្ញើកាក់ទៅកាន់ អាសយដ្ឋាន Qtum មួយ</translation>
+        <source>Send coins to a HTMLCOIN address</source>
+        <translation>ផ្ញើកាក់ទៅកាន់ អាសយដ្ឋាន HTMLCOIN មួយ</translation>
     </message>
     <message>
         <source>Wallet</source>
