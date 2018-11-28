@@ -418,8 +418,8 @@
         <translation>Панель вкладок</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Запросить платежи (создаёт QR-коды и qtum: ссылки)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Запросить платежи (создаёт QR-коды и htmlcoin: ссылки)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -430,8 +430,8 @@
         <translation>Показать список использованных адресов и меток получения</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Открыть qtum: URI или запрос платежа</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Открыть htmlcoin: URI или запрос платежа</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1322,8 +1322,8 @@
         <translation>Ошибка запроса платежа</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
-        <translation>Не удаётся запустить qtum: обработчик click-to-pay</translation>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
+        <translation>Не удаётся запустить htmlcoin: обработчик click-to-pay</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -2372,8 +2372,8 @@
         <translation>Введите метку для этого адреса, чтобы добавить его в список использованных</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
-        <translation>К qtum: URI было прикреплено сообщение, которое будет сохранено вместе с транзакцией для вашего сведения. Заметьте: сообщение не будет отправлено через сеть Qtum.</translation>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <translation>К htmlcoin: URI было прикреплено сообщение, которое будет сохранено вместе с транзакцией для вашего сведения. Заметьте: сообщение не будет отправлено через сеть Qtum.</translation>
     </message>
     <message>
         <source>Pay To:</source>

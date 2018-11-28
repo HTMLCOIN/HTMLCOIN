@@ -418,7 +418,7 @@
         <translation>Bara de unelte</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
         <translation>Cereţi plăţi (generează coduri QR şi qtum-uri: URls)</translation>
     </message>
     <message>
@@ -430,8 +430,8 @@
         <translation>Arată lista de adrese pentru primire şi etichetele</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Deschidere qtum: o adresa URI sau o cerere de plată</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Deschidere htmlcoin: o adresa URI sau o cerere de plată</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1322,7 +1322,7 @@
         <translation>Eroare la cererea de plată</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
         <translation>Qtum nu poate porni: click-to-pay handler</translation>
     </message>
     <message>
@@ -2372,8 +2372,8 @@
         <translation>Introduceţi eticheta pentru ca această adresa să fie introdusă în lista de adrese folosite</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
-        <translation>un mesaj a fost ataşat la qtum: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua qtum.</translation>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <translation>un mesaj a fost ataşat la htmlcoin: URI care va fi stocat cu tranzacţia pentru referinţa dvs. Notă: Acest mesaj nu va fi trimis către reţeaua qtum.</translation>
     </message>
     <message>
         <source>Pay To:</source>

@@ -414,8 +414,8 @@
         <translation>Tabs taakbalk</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Betalingen aanvragen (genereert QR codes en qtum: URI's)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Betalingen aanvragen (genereert QR codes en htmlcoin: URI's)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -426,8 +426,8 @@
         <translation>Toon de lijst van gebruikte ontvangst adressen en labels</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Open een qtum: URI of betaalverzoek</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Open een htmlcoin: URI of betaalverzoek</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>

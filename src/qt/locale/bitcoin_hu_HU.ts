@@ -418,8 +418,8 @@
         <translation>Ablak fülek eszköztára</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Kérjen fizetéseket (QR kódokat generál és qtum: URLeket)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Kérjen fizetéseket (QR kódokat generál és htmlcoin: URLeket)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -430,8 +430,8 @@
         <translation>Mutassa a használt fogadó címek és cimkék listáját</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Nyisson meg egy qtum: URI-t vagy fizetési kérelmet</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Nyisson meg egy htmlcoin: URI-t vagy fizetési kérelmet</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1310,7 +1310,7 @@
         <translation>Hiba történt a fizetési kérelem során</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
         <translation>A qtum nem tud elindulni: click-to-pay kezelő</translation>
     </message>
     <message>

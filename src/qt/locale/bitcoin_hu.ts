@@ -411,8 +411,8 @@ Kérem a kulcsmondatban használjon &lt;b&gt; tíz vagy több véletlenszerű ka
         <translation>Fül eszköztár</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Fizetési kérelem (QR-kódot és "qtum:" URI azonosítót hoz létre)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Fizetési kérelem (QR-kódot és "htmlcoin:" URI azonosítót hoz létre)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -423,8 +423,8 @@ Kérem a kulcsmondatban használjon &lt;b&gt; tíz vagy több véletlenszerű ka
         <translation>A használt fogadó címek és címkék megtekintése</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>"qtum:" URI azonosító vagy fizetési kérelem megnyitása</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>"htmlcoin:" URI azonosító vagy fizetési kérelem megnyitása</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1287,7 +1287,7 @@ Kérem a kulcsmondatban használjon &lt;b&gt; tíz vagy több véletlenszerű ka
         <translation>Hiba történt a fizetési kérelem során</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
         <translation>A qtum nem tud elindulni: click-to-pay kezelő</translation>
     </message>
     <message>

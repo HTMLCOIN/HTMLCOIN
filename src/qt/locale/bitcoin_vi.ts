@@ -410,8 +410,8 @@
         <translation>Các thanh công cụ</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Yêu cầu thanh toán (tạo QR code và qtum: URIs)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Yêu cầu thanh toán (tạo QR code và htmlcoin: URIs)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -422,8 +422,8 @@
         <translation>Hiển thị danh sách các địa chỉ và nhãn đã dùng để nhận</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Mở một qtum: URI hoặc yêu cầu thanh toán</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Mở một htmlcoin: URI hoặc yêu cầu thanh toán</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -1294,8 +1294,8 @@
         <translation>Payment request error</translation>
     </message>
     <message>
-        <source>Cannot start qtum: click-to-pay handler</source>
-        <translation>Không thể khởi tạo qtum: click-to-pay handler</translation>
+        <source>Cannot start htmlcoin: click-to-pay handler</source>
+        <translation>Không thể khởi tạo htmlcoin: click-to-pay handler</translation>
     </message>
     <message>
         <source>URI handling</source>
@@ -2308,8 +2308,8 @@
         <translation>Nhập một label cho cái address này để thêm vào danh sách địa chỉ đã sử dụng</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
-        <translation>Một tin nhắn được đính kèm với số qtum: URI mà sẽ được lưu giữ với transaction dành cho tài liệu tham khảo. Lưu ý: Tin nhắn này sẽ không được gửi thông qua Qtum network.</translation>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <translation>Một tin nhắn được đính kèm với số htmlcoin: URI mà sẽ được lưu giữ với transaction dành cho tài liệu tham khảo. Lưu ý: Tin nhắn này sẽ không được gửi thông qua Qtum network.</translation>
     </message>
     <message>
         <source>Pay To:</source>

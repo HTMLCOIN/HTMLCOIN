@@ -391,7 +391,7 @@ Ví của bạn chưa được mã hóa.</translation>
         <translation>Thanh công cụ (toolbar)</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
         <translation>Yêu cầu thanh toán(tạo mã QR và địa chỉ Qtum: URLs)</translation>
     </message>
     <message>
@@ -403,8 +403,8 @@ Ví của bạn chưa được mã hóa.</translation>
         <translation>Hiện thỉ danh sách các địa chỉ và nhãn đã dùng để nhận.</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Mở qtum:URL hoặc yêu cầu thanh toán</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Mở htmlcoin:URL hoặc yêu cầu thanh toán</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>

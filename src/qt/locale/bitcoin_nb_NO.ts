@@ -414,7 +414,7 @@
         <translation>Hjelpelinje for fliker</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
         <translation>Be om betalinger (genererer QR-koder og qtum-URIer)</translation>
     </message>
     <message>
@@ -426,8 +426,8 @@
         <translation>Vis lista over brukte mottakeradresser og merkelapper</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Åpne en qtum: URI eller betalingsforespørsel</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Åpne en htmlcoin: URI eller betalingsforespørsel</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>

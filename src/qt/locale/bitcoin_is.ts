@@ -414,8 +414,8 @@
         <translation>Tólaborð flipa</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Óska eftir greiðslum (býr til QR kóða og qtum: URI)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Óska eftir greiðslum (býr til QR kóða og htmlcoin: URI)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -426,8 +426,8 @@
         <translation>Sýna færslugildi sem notuð hafa verið til að taka við mynt og merkingar þeirra</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Opna qtum: URI eða greiðslubeiðni</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Opna htmlcoin: URI eða greiðslubeiðni</translation>
     </message>
     <message>
         <source>Indexing blocks on disk...</source>

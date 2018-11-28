@@ -210,9 +210,9 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("qtum://", Qt::CaseInsensitive))
+    if(uri.startsWith("htmlcoin://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 7, "qtum:"); // QTUM: change string length to 7 to correctly parse qtum://
+        uri.replace(0, 11, "htmlcoin:"); // QTUM: change string length to 11 to correctly parse htmlcoin://
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -220,7 +220,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("qtum:%1").arg(info.address);
+    QString ret = QString("htmlcoin:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
