@@ -135,7 +135,7 @@ void SendTokenPage::on_numBlocksChanged()
         m_clientModel->getGasInfo(blockGasLimit, minGasPrice, nGasPrice);
 
         ui->labelGasLimit->setToolTip(tr("Gas limit: Default = %1, Max = %2.").arg(DEFAULT_GAS_LIMIT_OP_SEND).arg(blockGasLimit));
-        ui->labelGasPrice->setToolTip(tr("Gas price: QTUM price per gas unit. Default = %1, Min = %2.").arg(QString::fromStdString(FormatMoney(DEFAULT_GAS_PRICE))).arg(QString::fromStdString(FormatMoney(minGasPrice))));
+        ui->labelGasPrice->setToolTip(tr("Gas price: HTML price per gas unit. Default = %1, Min = %2.").arg(QString::fromStdString(FormatMoney(DEFAULT_GAS_PRICE))).arg(QString::fromStdString(FormatMoney(minGasPrice))));
         ui->lineEditGasPrice->setMinimum(minGasPrice);
         ui->lineEditGasLimit->setMaximum(blockGasLimit);
     }
@@ -207,7 +207,7 @@ void SendTokenPage::on_confirmClicked()
     }
     else
     {
-        QString message = tr("To send %1 you need QTUM on address <br /> %2.")
+        QString message = tr("To send %1 you need HTML on address <br /> %2.")
                 .arg(QString::fromStdString(m_selectedToken->symbol)).arg(QString::fromStdString(m_selectedToken->sender));
 
         QMessageBox::warning(this, tr("Send token"), message);
