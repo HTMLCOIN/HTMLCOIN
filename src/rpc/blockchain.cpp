@@ -75,9 +75,6 @@ double GetDifficulty(const CChain& chain, const CBlockIndex* blockindex)
 
 double GetPoWMHashPS()
 {
-    if (pindexBestHeader->nHeight >= Params().GetConsensus().nLastPOWBlock)
-        return 0;
-
     int nPoWInterval = 72;
     int64_t nTargetSpacingWorkMin = 30, nTargetSpacingWork = 30;
 
