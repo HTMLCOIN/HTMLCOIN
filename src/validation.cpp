@@ -1352,16 +1352,17 @@ bool ReadFromDisk(CMutableTransaction& tx, CDiskTxPos& txindex, CBlockTreeDB& tx
 
 CAmount GetBlockSubsidy(int nHeight, const Consensus::Params& consensusParams)
 {
-    if(nHeight <= consensusParams.nLastPOWBlock)
-        return 20000 * COIN;
+    // 70.8 billion coins to cover existing coins, developer fund and exchange reimbursement
+    if (nHeight <= 798)
+        return 100000000 * COIN;
 
-    int halvings = (nHeight - consensusParams.nLastPOWBlock - 1) / consensusParams.nSubsidyHalvingInterval;
+    int halvings = nHeight / consensusParams.nSubsidyHalvingInterval;
     // Force block reward to zero when right shift is undefined.
-    if (halvings >= 7)
+    if (halvings >= 64)
         return 0;
 
-    CAmount nSubsidy = 4 * COIN;
-    // Subsidy is cut in half every 985500 blocks which will occur approximately every 4 years.
+    CAmount nSubsidy = 1250 * COIN;
+    // Subsidy is cut in half every 14.6 years.
     nSubsidy >>= halvings;
     return nSubsidy;
 }
