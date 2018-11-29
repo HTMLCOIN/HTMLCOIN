@@ -10,8 +10,10 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <checkpoints.h>
+#include <checkpointsync.h>
 #include <coins.h>
 #include <consensus/validation.h>
+#include <keystore.h>
 #include <validation.h>
 #include <core_io.h>
 #include <policy/feerate.h>
@@ -1452,6 +1454,31 @@ UniValue waitforlogs(const JSONRPCRequest& request_) {
     return result;
 }
 
+// RPC commands related to sync checkpoints
+// get information of sync-checkpoint (first introduced in ppcoin)
+UniValue getcheckpoint(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 0)
+        throw std::runtime_error(
+            "getcheckpoint\n"
+            "Show info of synchronized checkpoint.\n");
+
+    UniValue result(UniValue::VOBJ);
+    CBlockIndex* pindexCheckpoint;
+
+    result.push_back(Pair("synccheckpoint", hashSyncCheckpoint.ToString().c_str()));
+    if (mapBlockIndex.count(hashSyncCheckpoint))
+    {
+        pindexCheckpoint = mapBlockIndex[hashSyncCheckpoint];
+        result.push_back(Pair("height", pindexCheckpoint->nHeight));
+        result.push_back(Pair("timestamp", (boost::int64_t) pindexCheckpoint->GetBlockTime()));
+    }
+    if (gArgs.IsArgSet("-checkpointkey"))
+        result.push_back(Pair("checkpointmaster", true));
+
+    return result;
+}
+
 class SearchLogsParams {
 public:
     size_t fromBlock;
@@ -1582,6 +1609,38 @@ UniValue searchlogs(const JSONRPCRequest& request)
             }
         }
     }
+
+    return result;
+}
+
+UniValue sendcheckpoint(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() != 1)
+        throw std::runtime_error(
+            "sendcheckpoint <blockhash>\n"
+            "Send a synchronized checkpoint.\n");
+
+    if (!gArgs.IsArgSet("-checkpointkey") || CSyncCheckpoint::strMasterPrivKey.empty())
+        throw std::runtime_error("Not a checkpointmaster node, first set checkpointkey in configuration and restart client. ");
+
+    std::string strHash = request.params[0].get_str();
+    uint256 hash = uint256S(strHash);
+
+    if (!SendSyncCheckpoint(hash))
+        throw std::runtime_error("Failed to send checkpoint, check log. ");
+
+    UniValue result(UniValue::VOBJ);
+    CBlockIndex* pindexCheckpoint;
+
+    result.push_back(Pair("synccheckpoint", hashSyncCheckpoint.ToString().c_str()));
+    if (mapBlockIndex.count(hashSyncCheckpoint))
+    {
+        pindexCheckpoint = mapBlockIndex[hashSyncCheckpoint];
+        result.push_back(Pair("height", pindexCheckpoint->nHeight));
+        result.push_back(Pair("timestamp", (boost::int64_t) pindexCheckpoint->GetBlockTime()));
+    }
+    if (gArgs.IsArgSet("-checkpointkey"))
+        result.push_back(Pair("checkpointmaster", true));
 
     return result;
 }
@@ -2487,6 +2546,8 @@ static const CRPCCommand commands[] =
     { "blockchain",         "getblock",               &getblock,               {"blockhash","verbosity|verbose"} },
     { "blockchain",         "getblockhash",           &getblockhash,           {"height"} },
     { "blockchain",         "getblockheader",         &getblockheader,         {"blockhash","verbose"} },
+    { "blockchain",         "getcheckpoint",          &getcheckpoint,          {} },
+    { "blockchain",         "sendcheckpoint",         &sendcheckpoint,         {"blockhash"} },
     { "blockchain",         "getchaintips",           &getchaintips,           {} },
     { "blockchain",         "getdifficulty",          &getdifficulty,          {} },
     { "blockchain",         "getmempoolancestors",    &getmempoolancestors,    {"txid","verbose"} },

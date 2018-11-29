@@ -71,6 +71,7 @@ struct Params {
     uint256 posLimit;
     int nDiffAdjustChange;
     int nDiffDamping;
+    std::string checkpointPubKey;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
