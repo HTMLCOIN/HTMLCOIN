@@ -177,8 +177,12 @@ bool CheckSyncCheckpoint(const CBlockIndex* pindexNew)
     const uint256& hashBlock = pindexNew->GetBlockHash();
     int nHeight = pindexNew->nHeight;
 
-    // Checkpoint should always be accepted block
-    assert(mapBlockIndex.count(hashSyncCheckpoint));
+    // Reset checkpoint to Genesis block if not found or initialised
+    if (hashSyncCheckpoint == ArithToUint256(arith_uint256(0)) || !(mapBlockIndex.count(hashSyncCheckpoint))) {
+        WriteSyncCheckpoint(Params().GetConsensus().hashGenesisBlock);
+        return true;
+    }
+
     const CBlockIndex* pindexSync = mapBlockIndex[hashSyncCheckpoint];
 
     // Blocks could have been rewound on startup, do not
