@@ -10,6 +10,7 @@
 #include <limits>
 #include <map>
 #include <string>
+#include <vector>
 
 namespace Consensus {
 
@@ -72,6 +73,7 @@ struct Params {
     int nDiffAdjustChange;
     int nDiffDamping;
     std::string checkpointPubKey;
+    std::vector<unsigned char> vAlertPubKey;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
