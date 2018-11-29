@@ -2080,6 +2080,9 @@ bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, cons
                                    nActualStakeReward, blockReward),
                              REJECT_INVALID, "bad-cs-amount");
 
+        // MPoS not enabled so the rest can be skipped
+        return true;
+
         // The first proof-of-stake blocks get full reward, the rest of them are split between recipients
         int rewardRecipients = 1;
         int nPrevHeight = nHeight -1;
@@ -4271,7 +4274,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
 
     // Check timestamp
     if (block.IsProofOfStake() && block.GetBlockTime() > FutureDrift(nAdjustedTime))
-        return state.Invalid(false, REJECT_INVALID, "time-too-new", "block timestamp too far in the future");
+        return state.Invalid(false, REJECT_INVALID, "time-too-new", "PoS block timestamp too far in the future");
 
     // Reject outdated version blocks when 95% (75% on testnet) of the network has upgraded:
     // check for version 2, 3 and 4 upgrades

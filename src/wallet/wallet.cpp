@@ -159,10 +159,7 @@ bool AddMPoSScript(std::vector<CScript> &mposScriptList, int nHeight, const Cons
     // Check if the block index exist into the active chain
     CBlockIndex* pblockindex = chainActive[nHeight];
     if(!pblockindex)
-    {
-        LogPrint(BCLog::COINSTAKE, "Block index not found\n");
-        return false;
-    }
+        return error("AddMPoSScript: Block index not found\n");
 
     // Try find the script from the cache
     CScript script;
@@ -174,9 +171,8 @@ bool AddMPoSScript(std::vector<CScript> &mposScriptList, int nHeight, const Cons
 
     // Read the block
     uint160 stakeAddress;
-    if(!pblocktree->ReadStakeIndex(nHeight, stakeAddress)){
-        return false;
-    }
+    if(!pblocktree->ReadStakeIndex(nHeight, stakeAddress))
+        return error("AddMPoSScript: ReadStakeIndex failed\n");
 
     // The block reward for PoS is in the second transaction (coinstake) and the second or third output
     if(pblockindex->IsProofOfStake())
@@ -207,8 +203,7 @@ bool AddMPoSScript(std::vector<CScript> &mposScriptList, int nHeight, const Cons
             return true;
 
         }
-        LogPrint(BCLog::COINSTAKE, "The block is not proof-of-stake\n");
-        return false;
+        return error("AddMPoSScript: The block is not proof-of-stake\n");
     }
 
     return true;
@@ -217,12 +212,28 @@ bool AddMPoSScript(std::vector<CScript> &mposScriptList, int nHeight, const Cons
 bool GetMPoSOutputScripts(std::vector<CScript>& mposScriptList, int nHeight, const Consensus::Params& consensusParams)
 {
     bool ret = true;
-    nHeight -= COINBASE_MATURITY;
 
-    // Populate the list of scripts for the reward recipients
-    for(int i = 0; (i < consensusParams.nMPoSRewardRecipients - 1) && ret; i++)
-    {
-        ret &= AddMPoSScript(mposScriptList, nHeight - i, consensusParams);
+    if (nHeight >= consensusParams.nDiffAdjustChange) {
+        nHeight -= COINBASE_MATURITY;
+        // Populate the list of scripts for the reward recipients
+        int offset = 0;
+        for(int i = 0; (i < consensusParams.nMPoSRewardRecipients - 1) && ret; i++)
+        {
+            CBlockIndex* pblockindex = chainActive[nHeight - i - offset];
+
+            while (!pblockindex->IsProofOfStake()) {
+                pblockindex = pblockindex->pprev;
+                offset++;
+
+                // Start of chain and no PoS found
+                if (pblockindex == NULL)
+                    return error("GetMPoSOutputScripts: Start of chain and not enough PoS recipients found\n");
+            }
+
+            ret &= AddMPoSScript(mposScriptList, nHeight - i - offset, consensusParams);
+        }
+    } else {
+        return false;
     }
 
     return ret;
@@ -232,10 +243,7 @@ bool CreateMPoSOutputs(CMutableTransaction& txNew, int64_t nRewardPiece, int nHe
 {
     std::vector<CScript> mposScriptList;
     if(!GetMPoSOutputScripts(mposScriptList, nHeight, consensusParams))
-    {
-        LogPrint(BCLog::COINSTAKE, "Fail to get the list of recipients\n");
-        return false;
-    }
+        return error("CreateMPoSOutputs : Fail to get the list of recipients\n");
 
     // Split the block reward with the recipients
     for(unsigned int i = 0; i < mposScriptList.size(); i++)
@@ -3612,24 +3620,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, con
     }
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    int64_t nRewardPiece = 0;
     // Calculate reward
     {
         int64_t nReward = nTotalFees + GetBlockSubsidy(pindexPrev->nHeight + 1, consensusParams);
         if (nReward < 0)
             return false;
 
-        if(pindexPrev->nHeight < consensusParams.nFirstMPoSBlock)
-        {
-            // Keep whole reward
-            nCredit += nReward;
-        }
-        else
-        {
-            // Split the reward when mpos is used
-            nRewardPiece = nReward / consensusParams.nMPoSRewardRecipients;
-            nCredit += nRewardPiece + nReward % consensusParams.nMPoSRewardRecipients;
-        }
+        nCredit += nReward;
    }
 
     if (nCredit >= GetStakeSplitThreshold())
@@ -3650,10 +3647,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, con
         txNew.vout[1].nValue = nCredit;
 
     if(pindexPrev->nHeight >= consensusParams.nFirstMPoSBlock)
-    {
-        if(!CreateMPoSOutputs(txNew, nRewardPiece, pindexPrev->nHeight, consensusParams))
-            return error("CreateCoinStake : failed to create MPoS reward outputs");
-    }
+        if(pindexPrev->nHeight <= consensusParams.nDiffAdjustChange)
+            return error("CreateCoinStake : PoS disabled until after block %d", consensusParams.nDiffAdjustChange);
 
     // Append the Refunds To Sender to the transaction outputs
     for(unsigned int i = 2; i < tx.vout.size(); i++)
