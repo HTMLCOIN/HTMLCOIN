@@ -1445,16 +1445,20 @@ void CWallet::SyncTransaction(const CTransactionRef& ptx, const CBlockIndex *pin
         }
     }
 
+    bool isMine = true;
+
     if (!AddToWalletIfInvolvingMe(ptx, pindex, posInBlock, true))
-        return; // Not one of ours
+        isMine = false; // Not one of ours
 
     // If a transaction changes 'conflicted' state, that changes the balance
     // available of the outputs it spends. So force those to be
     // recomputed, also:
-    for (const CTxIn& txin : tx.vin) {
-        auto it = mapWallet.find(txin.prevout.hash);
-        if (it != mapWallet.end()) {
-            it->second.MarkDirty();
+    if (isMine == true) {
+        for (const CTxIn& txin : tx.vin) {
+            auto it = mapWallet.find(txin.prevout.hash);
+            if (it != mapWallet.end()) {
+                it->second.MarkDirty();
+            }
         }
     }
 }
