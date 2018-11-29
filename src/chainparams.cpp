@@ -10,6 +10,7 @@
 #include <tinyformat.h>
 #include <util.h>
 #include <utilstrencodings.h>
+#include <base58.h>
 
 #include <assert.h>
 
@@ -198,8 +199,8 @@ public:
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016;
-        consensus.nDiffAdjustChange = 1000;
-        consensus.nDiffDamping = 1100;
+        consensus.nDiffAdjustChange = 0;
+        consensus.nDiffDamping = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -408,4 +409,15 @@ void SelectParams(const std::string& network)
 void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout)
 {
     globalChainParams->UpdateVersionBitsParameters(d, nStartTime, nTimeout);
+}
+
+CScript CChainParams::GetRewardScriptAtHeight(int nHeight) const {
+    assert(nHeight == consensus.nDiffDamping);
+
+    CTxDestination destination;
+    if (Params().NetworkIDString() == CBaseChainParams::MAIN)
+        destination = DecodeDestination("HXsXRP1smr1pgb23eYV1fjN6ZB8EWfXj6J");
+
+    assert(IsValidDestination(destination));
+    return GetScriptForDestination(destination);
 }
