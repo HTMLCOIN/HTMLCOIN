@@ -29,6 +29,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
 
     unsigned int nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
+    int nHeight = pindexLast->nHeight + 1;
 
     // genesis block
     if (pindexLast == NULL)
@@ -48,6 +49,19 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     if (params.fPowAllowMinDifficultyBlocks)
         return nTargetLimit;
 
+    if (nHeight >= params.nDiffChange)
+    {
+        if (fProofOfStake)
+        {
+            return CalculateNextWorkRequired_QTUM(pindexPrev, pindexPrevPrev->GetBlockTime(), params);
+        }
+        else
+        {
+            return CalculateNextWorkRequired_Dash(pindexLast, pblock, params);
+        }
+    }
+
+    
     return CalculateNextWorkRequired(pindexPrev, params, fProofOfStake);
 }
 
@@ -60,7 +74,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params, bool fProofOfStake)
 {
     int nHeight = pindexLast->nHeight + 1;
-    arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
+    const arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
     int shortSample = 15;
     int mediumSample = 200;
     int longSample = 1000;
@@ -173,6 +187,83 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
 
     if (bnNew <= 0 || bnNew > nTargetLimit)
         bnNew = nTargetLimit;
+
+    return bnNew.GetCompact();
+}
+
+// Use QTUM's difficulty adjust for PoS blocks only
+unsigned int CalculateNextWorkRequired_QTUM(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
+{
+    bool fProofOfStake = true;
+    int64_t nTargetSpacing = params.nPowTargetSpacing;
+    int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
+    if (nActualSpacing < 0)
+        nActualSpacing = nTargetSpacing;
+    if (nActualSpacing > nTargetSpacing * 10)
+        nActualSpacing = nTargetSpacing * 10;
+
+	// Retarget
+    const arith_uint256 bnTargetLimit = GetLimit(params, fProofOfStake);
+    // ppcoin: target change every block
+    // ppcoin: retarget with exponential moving toward target spacing
+    arith_uint256 bnNew;
+    bnNew.SetCompact(pindexLast->nBits);
+    int64_t nInterval = params.DifficultyAdjustmentInterval();
+    bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
+    bnNew /= ((nInterval + 1) * nTargetSpacing);
+
+    if (bnNew <= 0 || bnNew > bnTargetLimit)
+        bnNew = bnTargetLimit;
+
+    return bnNew.GetCompact();
+}
+
+// Use Dash's difficulty adjust for PoW blocks only
+unsigned int CalculateNextWorkRequired_Dash(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
+{
+    /* current difficulty formula, dash - DarkGravity v3, written by Evan Duffield - evan@dash.org */
+
+    bool fProofOfStake = false;
+    const arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
+    int64_t nPastBlocks = 30;
+    const CBlockIndex *pindex = pindexLast;
+    arith_uint256 bnPastTargetAvg;
+
+    for (unsigned int nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++) {
+        arith_uint256 bnTarget = arith_uint256().SetCompact(pindex->nBits);
+        if (nCountBlocks == 1) {
+            bnPastTargetAvg = bnTarget;
+        } else {
+            // NOTE: that's not an average really...
+            bnPastTargetAvg = (bnPastTargetAvg * nCountBlocks + bnTarget) / (nCountBlocks + 1);
+        }
+
+        if(nCountBlocks != nPastBlocks) {
+            // If we hit start of chain return min diff
+            if (pindex->pprev == NULL)
+                return nTargetLimit.GetCompact();
+
+            pindex = GetLastBlockIndex(pindex->pprev, fProofOfStake);
+        }
+    }
+
+    arith_uint256 bnNew(bnPastTargetAvg);
+
+    int64_t nActualTimespan = pindexLast->GetBlockTime() - pindex->GetBlockTime();
+    int64_t nTargetTimespan = nPastBlocks * params.nPowTargetSpacing;
+
+    if (nActualTimespan < nTargetTimespan/3)
+        nActualTimespan = nTargetTimespan/3;
+    if (nActualTimespan > nTargetTimespan*3)
+        nActualTimespan = nTargetTimespan*3;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (bnNew > nTargetLimit) {
+        bnNew = nTargetLimit;
+    }
 
     return bnNew.GetCompact();
 }

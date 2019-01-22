@@ -81,6 +81,7 @@ public:
         consensus.BIP66Height = 0;
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.nPosTargetTimespan = 15 * 60;
         consensus.nPowTargetTimespan = 120;
         consensus.nPowTargetSpacing = 120;
         consensus.checkpointPubKey = "044bc117790972b27ec7e1086491da8148f5c7aa346bc89ebcce306a4682a19a759fd057200dd912f966fb7b1b7c0b1226c1948a12bed831f43096d2a3c6570ae4";
@@ -92,6 +93,7 @@ public:
         consensus.nMinerConfirmationWindow = 20160;
         consensus.nDiffAdjustChange = 7700;
         consensus.nDiffDamping = 106000;
+        consensus.nDiffChange = 626000;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -194,6 +196,7 @@ public:
         consensus.BIP66Height = 0;
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.nPosTargetTimespan = 15 * 60;
         consensus.nPowTargetTimespan = 10; // 16 minutes
         consensus.nPowTargetSpacing = 10;
         consensus.fPowAllowMinDifficultyBlocks = false;
@@ -205,6 +208,7 @@ public:
         consensus.nMinerConfirmationWindow = 2016;
         consensus.nDiffAdjustChange = 0;
         consensus.nDiffDamping = 0;
+        consensus.nDiffChange = -1;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -294,6 +298,7 @@ public:
         consensus.BIP66Height = 0; // BIP66 activated on regtest (Used in rpc activation tests)
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+        consensus.nPosTargetTimespan = 15 * 60;
         consensus.nPowTargetTimespan = 60;
         consensus.nPowTargetSpacing = 60;
         consensus.checkpointPubKey = "04c7617702e41c0da3a6af3e6a3aa5305e1df312308637abaa86775bb09d3ed797a02351a298a464940a7460c0833ba7ead0ff45c8a735e9b46e0862e56bb79f98";
@@ -303,6 +308,9 @@ public:
         consensus.fPoSNoRetargeting = true;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
         consensus.nMinerConfirmationWindow = 144; // Faster than normal for regtest (144 instead of 2016)
+        consensus.nDiffAdjustChange = 0;
+        consensus.nDiffDamping = 0;
+        consensus.nDiffChange = 1100;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 0;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 999999999999ULL;
