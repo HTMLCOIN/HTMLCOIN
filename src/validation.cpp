@@ -794,7 +794,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                 if(gasAllTxs > dev::u256(blockGasLimit))
                     return state.DoS(1, false, REJECT_INVALID, "bad-txns-gas-exceeds-blockgaslimit");
 
-                //don't allow less than DGP set minimum gas price to prevent MPoS greedy mining/spammers
+                //don't allow less than DGP set minimum gas price to prevent greedy mining/spammers
                 if(v.rootVM!=0 && (uint64_t)qtumTransaction.gasPrice() < minGasPrice)
                     return state.DoS(100, error("AcceptToMempool(): Contract execution has lower gas price than allowed"), REJECT_INVALID, "bad-tx-low-gas-price");
             }
@@ -2099,48 +2099,6 @@ bool CheckReward(const CBlock& block, CValidationState& state, int nHeight, cons
                              error("CheckReward(): coinstake pays too much (actual=%d vs limit=%d)",
                                    nActualStakeReward, blockReward),
                              REJECT_INVALID, "bad-cs-amount");
-
-        // MPoS not enabled so the rest can be skipped
-        return true;
-
-        // The first proof-of-stake blocks get full reward, the rest of them are split between recipients
-        int rewardRecipients = 1;
-        int nPrevHeight = nHeight -1;
-        if(nPrevHeight >= consensusParams.nFirstMPoSBlock)
-            rewardRecipients = consensusParams.nMPoSRewardRecipients;
-
-        // Check reward recipients number
-        if(rewardRecipients < 1)
-            return error("CheckReward(): invalid reward recipients");
-
-        //if only 1 then no MPoS logic required
-        if(rewardRecipients == 1){
-            return true;
-        }
-        if(blockReward < gasRefunds){
-            return state.DoS(100, error("CheckReward(): Block Reward is less than total gas refunds"),
-                             REJECT_INVALID, "bad-cs-gas-greater-than-reward");
-
-        }
-        CAmount splitReward = (blockReward - gasRefunds) / rewardRecipients;
-
-        // Generate the list of script recipients including all of their parameters
-        std::vector<CScript> mposScriptList;
-        if(!GetMPoSOutputScripts(mposScriptList, nPrevHeight, consensusParams))
-            return error("CheckReward(): cannot create the list of MPoS output scripts");
-      
-        for(size_t i = 0; i < mposScriptList.size(); i++){
-            it=std::find(vTempVouts.begin(), vTempVouts.end(), CTxOut(splitReward,mposScriptList[i]));
-            if(it==vTempVouts.end()){
-                return state.DoS(100,
-                        error("CheckReward(): An MPoS participant was not properly paid"),
-                        REJECT_INVALID, "bad-cs-mpos-missing");
-            }else{
-                vTempVouts.erase(it);
-            }
-        }
-
-        vTempVouts.clear();
     }
 
     return true;
@@ -2772,7 +2730,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
                 if(gasAllTxs > dev::u256(blockGasLimit))
                     return state.DoS(1, false, REJECT_INVALID, "bad-txns-gas-exceeds-blockgaslimit");
 
-                //don't allow less than DGP set minimum gas price to prevent MPoS greedy mining/spammers
+                //don't allow less than DGP set minimum gas price to prevent greedy mining/spammers
                 if(v.rootVM!=0 && (uint64_t)qtx.gasPrice() < minGasPrice)
                     return state.DoS(100, error("ConnectBlock(): Contract execution has lower gas price than allowed"), REJECT_INVALID, "bad-tx-low-gas-price");
             }

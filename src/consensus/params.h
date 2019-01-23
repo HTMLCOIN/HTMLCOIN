@@ -84,8 +84,6 @@ struct Params {
     int64_t DifficultyAdjustmentInterval() const { return nPosTargetTimespan / nPowTargetSpacing; }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
-    int nFirstMPoSBlock;
-    int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
 };
 } // namespace Consensus

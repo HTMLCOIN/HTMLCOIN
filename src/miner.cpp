@@ -221,7 +221,7 @@ void BlockAssembler::RebuildRefundTransaction(){
     CMutableTransaction contrTx(originalRewardTx);
     contrTx.vout[refundtx].nValue = nFees + GetBlockSubsidy(nHeight, chainparams.GetConsensus());
     contrTx.vout[refundtx].nValue -= bceResult.refundSender;
-    //note, this will need changed for MPoS
+
     int i=contrTx.vout.size();
     contrTx.vout.resize(contrTx.vout.size()+bceResult.refundOutputs.size());
     for(CTxOut& vout : bceResult.refundOutputs){
@@ -620,7 +620,7 @@ bool BlockAssembler::AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64
 
     // manually rebuild refundtx
     CMutableTransaction contrTx(*pblock->vtx[proofTx]);
-    //note, this will need changed for MPoS
+
     int i=contrTx.vout.size();
     contrTx.vout.resize(contrTx.vout.size()+testExecResult.refundOutputs.size());
     for(CTxOut& vout : testExecResult.refundOutputs){

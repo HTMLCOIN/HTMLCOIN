@@ -173,9 +173,6 @@ public:
                             //   (the tx=... number in the SetBestChain debug.log lines)
 			0.01 // * estimated number of transactions per second after that timestamp
         };
-        consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = 5000 + consensus.nMPoSRewardRecipients +
-                                    COINBASE_MATURITY;
 
         consensus.nFixUTXOCacheHFHeight=251000;
     }
@@ -275,10 +272,6 @@ public:
 			0
         };
 
-        consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nMPoSRewardRecipients + 
-                                    COINBASE_MATURITY;
-
         consensus.nFixUTXOCacheHFHeight=340480;
     }
 };
@@ -358,8 +351,6 @@ public:
             0,
             0
         };
-        consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = 1325;
 
         consensus.nFixUTXOCacheHFHeight=0;
 

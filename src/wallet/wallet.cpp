@@ -62,12 +62,6 @@ struct ScriptsElement{
 };
 
 /**
- * Cache of the recent mpos scripts for the block reward recipients
- * The max size of the map is 2 * nCacheScripts - nMPoSRewardRecipients, so in this case it is 20
- */
-std::map<int, ScriptsElement> scriptsMap;
-
-/**
  * Fees smaller than this (in satoshi) are considered zero fee (for transaction creation)
  * Override with -mintxfee
  */
@@ -93,168 +87,6 @@ int64_t GetStakeCombineThreshold() { return 100 * COIN; }
 unsigned int GetStakeSplitOutputs() { return 2; }
 
 int64_t GetStakeSplitThreshold() { return GetStakeSplitOutputs() * GetStakeCombineThreshold(); }
-
-bool NeedToEraseScriptFromCache(int nBlockHeight, int nCacheScripts, int nScriptHeight, const ScriptsElement& scriptElement)
-{
-    // Erase element from cache if not in range [nBlockHeight - nCacheScripts, nBlockHeight + nCacheScripts]
-    if(nScriptHeight < (nBlockHeight - nCacheScripts) ||
-            nScriptHeight > (nBlockHeight + nCacheScripts))
-        return true;
-
-    // Erase element from cache if hash different
-    CBlockIndex* pblockindex = chainActive[nScriptHeight];
-    if(pblockindex && pblockindex->GetBlockHash() != scriptElement.hash)
-        return true;
-
-    return false;
-}
-
-void CleanScriptCache(int nHeight, const Consensus::Params& consensusParams)
-{
-    int nCacheScripts = consensusParams.nMPoSRewardRecipients * 1.5;
-
-    // Remove the scripts from cache that are not used
-    for (std::map<int, ScriptsElement>::iterator it=scriptsMap.begin(); it!=scriptsMap.end();){
-        if(NeedToEraseScriptFromCache(nHeight, nCacheScripts, it->first, it->second))
-        {
-            it = scriptsMap.erase(it);
-        }
-        else{
-            it++;
-        }
-    }
-}
-
-bool ReadFromScriptCache(CScript &script, CBlockIndex* pblockindex, int nHeight, const Consensus::Params& consensusParams)
-{
-    CleanScriptCache(nHeight, consensusParams);
-
-    // Find the script in the cache
-    std::map<int, ScriptsElement>::iterator it = scriptsMap.find(nHeight);
-    if(it != scriptsMap.end())
-    {
-        if(it->second.hash == pblockindex->GetBlockHash())
-        {
-            script = it->second.script;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void AddToScriptCache(CScript script, CBlockIndex* pblockindex, int nHeight, const Consensus::Params& consensusParams)
-{
-    CleanScriptCache(nHeight, consensusParams);
-
-    // Add the script into the cache
-    ScriptsElement listElement;
-    listElement.script = script;
-    listElement.hash = pblockindex->GetBlockHash();
-    scriptsMap.insert(std::pair<int, ScriptsElement>(nHeight, listElement));
-}
-
-bool AddMPoSScript(std::vector<CScript> &mposScriptList, int nHeight, const Consensus::Params& consensusParams)
-{
-    // Check if the block index exist into the active chain
-    CBlockIndex* pblockindex = chainActive[nHeight];
-    if(!pblockindex)
-        return error("AddMPoSScript: Block index not found\n");
-
-    // Try find the script from the cache
-    CScript script;
-    if(ReadFromScriptCache(script, pblockindex, nHeight, consensusParams))
-    {
-        mposScriptList.push_back(script);
-        return true;
-    }
-
-    // Read the block
-    uint160 stakeAddress;
-    if(!pblocktree->ReadStakeIndex(nHeight, stakeAddress))
-        return error("AddMPoSScript: ReadStakeIndex failed\n");
-
-    // The block reward for PoS is in the second transaction (coinstake) and the second or third output
-    if(pblockindex->IsProofOfStake())
-    {
-        if(stakeAddress == uint160())
-        {
-            LogPrint(BCLog::COINSTAKE, "Fail to solve script for mpos reward recipient\n");
-            //This should never fail, but in case it somehow did we don't want it to bring the network to a halt
-            //So, use an OP_RETURN script to burn the coins for the unknown staker
-            script = CScript() << OP_RETURN;
-        }else{
-            // Make public key hash script
-            script = CScript() << OP_DUP << OP_HASH160 << ToByteVector(stakeAddress) << OP_EQUALVERIFY << OP_CHECKSIG;
-        }
-
-        // Add the script into the list
-        mposScriptList.push_back(script);
-
-        // Update script cache
-        AddToScriptCache(script, pblockindex, nHeight, consensusParams);
-    }
-    else
-    {
-        if(consensusParams.fPoSNoRetargeting){
-            //this could happen in regtest. Just ignore and add an empty script
-            script = CScript() << OP_RETURN;
-            mposScriptList.push_back(script);
-            return true;
-
-        }
-        return error("AddMPoSScript: The block is not proof-of-stake\n");
-    }
-
-    return true;
-}
-
-bool GetMPoSOutputScripts(std::vector<CScript>& mposScriptList, int nHeight, const Consensus::Params& consensusParams)
-{
-    bool ret = true;
-
-    if (nHeight >= consensusParams.nDiffAdjustChange) {
-        nHeight -= COINBASE_MATURITY;
-        // Populate the list of scripts for the reward recipients
-        int offset = 0;
-        for(int i = 0; (i < consensusParams.nMPoSRewardRecipients - 1) && ret; i++)
-        {
-            CBlockIndex* pblockindex = chainActive[nHeight - i - offset];
-
-            while (!pblockindex->IsProofOfStake()) {
-                pblockindex = pblockindex->pprev;
-                offset++;
-
-                // Start of chain and no PoS found
-                if (pblockindex == NULL)
-                    return error("GetMPoSOutputScripts: Start of chain and not enough PoS recipients found\n");
-            }
-
-            ret &= AddMPoSScript(mposScriptList, nHeight - i - offset, consensusParams);
-        }
-    } else {
-        return false;
-    }
-
-    return ret;
-}
-
-bool CreateMPoSOutputs(CMutableTransaction& txNew, int64_t nRewardPiece, int nHeight, const Consensus::Params& consensusParams)
-{
-    std::vector<CScript> mposScriptList;
-    if(!GetMPoSOutputScripts(mposScriptList, nHeight, consensusParams))
-        return error("CreateMPoSOutputs : Fail to get the list of recipients\n");
-
-    // Split the block reward with the recipients
-    for(unsigned int i = 0; i < mposScriptList.size(); i++)
-    {
-        CTxOut txOut(CTxOut(0, mposScriptList[i]));
-        txOut.nValue = nRewardPiece;
-        txNew.vout.push_back(txOut);
-    }
-
-    return true;
-}
 
 /** @defgroup mapWallet
  *
@@ -3649,10 +3481,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, con
     }
     else
         txNew.vout[1].nValue = nCredit;
-
-    if(pindexPrev->nHeight >= consensusParams.nFirstMPoSBlock)
-        if(pindexPrev->nHeight <= consensusParams.nDiffAdjustChange)
-            return error("CreateCoinStake : PoS disabled until after block %d", consensusParams.nDiffAdjustChange);
 
     // Append the Refunds To Sender to the transaction outputs
     for(unsigned int i = 2; i < tx.vout.size(); i++)
