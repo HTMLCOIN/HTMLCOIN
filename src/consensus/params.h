@@ -76,7 +76,6 @@ struct Params {
     std::string checkpointPubKey;
     std::vector<unsigned char> vAlertPubKey;
     bool fPowAllowMinDifficultyBlocks;
-    bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
     int64_t nPowTargetSpacing;
     int64_t nPosTargetTimespan;

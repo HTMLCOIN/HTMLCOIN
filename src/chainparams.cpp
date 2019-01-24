@@ -87,7 +87,6 @@ public:
         consensus.checkpointPubKey = "044bc117790972b27ec7e1086491da8148f5c7aa346bc89ebcce306a4682a19a759fd057200dd912f966fb7b1b7c0b1226c1948a12bed831f43096d2a3c6570ae4";
         consensus.vAlertPubKey = ParseHex("04c593cc9b98b98dcfd8042532d2df4c83daf4f1af3f2cdf9820ff2ec477567edbde4fcd6e8d3ee322d32ac454dd1c401162ab6ddb86588aab167aed7a8b111241");
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 15120;
         consensus.nMinerConfirmationWindow = 20160;
@@ -199,7 +198,6 @@ public:
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.checkpointPubKey = "04c7617702e41c0da3a6af3e6a3aa5305e1df312308637abaa86775bb09d3ed797a02351a298a464940a7460c0833ba7ead0ff45c8a735e9b46e0862e56bb79f98";
         consensus.vAlertPubKey = ParseHex("04b5f68dc8fa4ff5ef8585722585c89041b218b88249a30b5f44a65ed927ef84bd3e68e73cc77a9fbf71ee416b00fec2fe4cf3381396dfd17b2d089b69acc61023");
-        consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016;
@@ -297,7 +295,6 @@ public:
         consensus.checkpointPubKey = "04c7617702e41c0da3a6af3e6a3aa5305e1df312308637abaa86775bb09d3ed797a02351a298a464940a7460c0833ba7ead0ff45c8a735e9b46e0862e56bb79f98";
         consensus.vAlertPubKey = ParseHex("04b5f68dc8fa4ff5ef8585722585c89041b218b88249a30b5f44a65ed927ef84bd3e68e73cc77a9fbf71ee416b00fec2fe4cf3381396dfd17b2d089b69acc61023");
         consensus.fPowAllowMinDifficultyBlocks = true;
-        consensus.fPowNoRetargeting = true;
         consensus.fPoSNoRetargeting = true;
         consensus.nRuleChangeActivationThreshold = 108; // 75% for testchains
         consensus.nMinerConfirmationWindow = 144; // Faster than normal for regtest (144 instead of 2016)
