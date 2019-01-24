@@ -32,17 +32,17 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     int nHeight = pindexLast->nHeight + 1;
 
     // genesis block
-    if (pindexLast == NULL)
+    if (pindexLast == nullptr)
         return nTargetLimit;
 
     // first block
     const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
-    if (pindexPrev->pprev == NULL)
+    if (pindexPrev->pprev == nullptr)
         return nTargetLimit;
 
     // second block
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
-    if (pindexPrevPrev->pprev == NULL)
+    if (pindexPrevPrev->pprev == nullptr)
         return nTargetLimit;
 
     // Return min difficulty on regtest
@@ -75,79 +75,59 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
 {
     int nHeight = pindexLast->nHeight + 1;
     const arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
-    int shortSample = 15;
-    int mediumSample = 200;
-    int longSample = 1000;
-    int pindexFirstShortTime = 0;
-    int pindexFirstMediumTime = 0;
-    int nActualTimespan = 0;
-    int nActualTimespanShort = 0;
-    int nActualTimespanMedium = 0;
-    int nActualTimespanLong = 0;
     int nPowTargetTimespan = params.nPowTargetTimespan;
+
+    int pindexFirstShortTime = 0, pindexFirstMediumTime = 0, pindexFirstLongTime = 0;
+    int shortSample = 15, mediumSample = 200, longSample = 1000;
+    int nActualTimespan = 0, nActualTimespanShort = 0, nActualTimespanMedium = 0, nActualTimespanLong = 0;
 
     // Set testnet time to be the same as mainnet
     if (Params().NetworkIDString() == CBaseChainParams::TESTNET && nHeight >= params.nFixUTXOCacheHFHeight)
         nPowTargetTimespan = 60;
 
-    // Make sure there's enough PoW or PoS blocks for eHRC long sample
-    const CBlockIndex* pindexCheck = pindexLast;
-    for (int i = 0; i <= longSample + 1;) {
+    const CBlockIndex* pindexFirstLong = pindexLast;
+
+    // i tracks sample height, j counts number of blocks of required type
+    for (int i = 0, j = 0; j <= longSample + 1;) {
+        bool skip = false;
 
         // Hit the start of the chain before finding enough blocks
-        if (pindexCheck->pprev == NULL)
+        if (pindexFirstLong->pprev == nullptr)
             return nTargetLimit.GetCompact();
 
-        // Only increment if we have a block of the current type
+        // Only increment j if we have a block of the current type
         if (fProofOfStake) {
-            if (pindexCheck->IsProofOfStake())
+            if (pindexFirstLong->IsProofOfStake())
+                j++;
+            if (pindexFirstLong->pprev->IsProofOfWork())
+                skip = true;
+        } else {
+            if (pindexFirstLong->IsProofOfWork())
+                j++;
+            if (pindexFirstLong->pprev->IsProofOfStake())
+                skip = true;
+        }
+
+        pindexFirstLong = pindexFirstLong->pprev;
+
+        // Do not sample on longSample - 1 due to nDiffAdjustChange bug
+        if (i < longSample)
+            pindexFirstLongTime = pindexFirstLong->GetBlockTime();
+
+        if (skip) {
+            // Incorrectly increment i before nDiffAdjustChange
+            if (nHeight <= params.nDiffAdjustChange)
                 i++;
-        } else if (pindexCheck->IsProofOfWork()) {
-            i++;
+            continue;
         }
 
-        pindexCheck = pindexCheck->pprev;
-    }
+        if (i == shortSample - 1)
+            pindexFirstShortTime = pindexFirstLong->GetBlockTime();
 
-    const CBlockIndex* pindexFirstLong = pindexLast;
-    if (nHeight <= params.nDiffAdjustChange) {
-        for (int i = 0; pindexFirstLong && i < longSample; i++) {
-            pindexFirstLong = pindexFirstLong->pprev;
+        if (i == mediumSample - 1)
+            pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
 
-            // If we have a block of the wrong type skip this iteration
-            if (fProofOfStake) {
-                if (pindexFirstLong->IsProofOfWork())
-                    continue;
-            } else if (pindexFirstLong->IsProofOfStake()) {
-                continue;
-            }
-
-            if (i == shortSample - 1)
-                pindexFirstShortTime = pindexFirstLong->GetBlockTime();
-
-            if (i == mediumSample - 1)
-                pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
-        }
-    } else {
-        for (int i = 0; pindexFirstLong && i < longSample;) {
-            pindexFirstLong = pindexFirstLong->pprev;
-
-            // If we have a block of the wrong type skip this iteration
-            if (fProofOfStake) {
-                if (pindexFirstLong->IsProofOfWork())
-                    continue;
-            } else if (pindexFirstLong->IsProofOfStake()) {
-                continue;
-            }
-
-            if (i == shortSample - 1)
-                pindexFirstShortTime = pindexFirstLong->GetBlockTime();
-
-            if (i == mediumSample - 1)
-                pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
-
-             i++;
-        }
+        i++;
     }
 
     if (pindexLast->GetBlockTime() - pindexFirstShortTime != 0)
@@ -156,8 +136,8 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     if (pindexLast->GetBlockTime() - pindexFirstMediumTime != 0)
         nActualTimespanMedium = (pindexLast->GetBlockTime() - pindexFirstMediumTime) / mediumSample;
 
-    if (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime() != 0)
-        nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime()) / longSample;
+    if (pindexLast->GetBlockTime() - pindexFirstLongTime != 0)
+        nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLongTime) / longSample;
 
     int nActualTimespanSum = nActualTimespanShort + nActualTimespanMedium + nActualTimespanLong;
 
@@ -240,7 +220,7 @@ unsigned int CalculateNextWorkRequired_Dash(const CBlockIndex* pindexLast, const
 
         if(nCountBlocks != nPastBlocks) {
             // If we hit start of chain return min diff
-            if (pindex->pprev == NULL)
+            if (pindex->pprev == nullptr)
                 return nTargetLimit.GetCompact();
 
             pindex = GetLastBlockIndex(pindex->pprev, fProofOfStake);
