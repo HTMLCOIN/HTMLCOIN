@@ -30,24 +30,37 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 {
 
     unsigned int nTargetLimit = GetLimit(params, fProofOfStake).GetCompact();
+    int nHeight = pindexLast->nHeight + 1;
 
     // genesis block
-    if (pindexLast == NULL)
+    if (pindexLast == nullptr)
         return nTargetLimit;
 
     // first block
     const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
-    if (pindexPrev->pprev == NULL)
+    if (pindexPrev->pprev == nullptr)
         return nTargetLimit;
 
     // second block
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
-    if (pindexPrevPrev->pprev == NULL)
+    if (pindexPrevPrev->pprev == nullptr)
         return nTargetLimit;
 
     // Return min difficulty on regtest
     if (params.fPowAllowMinDifficultyBlocks)
         return nTargetLimit;
+
+    if (nHeight >= params.nDiffChange)
+    {
+        if (fProofOfStake)
+        {
+            return CalculateNextWorkRequired_QTUM(pindexPrev, pindexPrevPrev->GetBlockTime(), params);
+        }
+        else
+        {
+            return CalculateNextWorkRequired_Dash(pindexLast, pblock, params);
+        }
+    }
 
     return CalculateNextWorkRequired(pindexPrev, params, fProofOfStake);
 }
@@ -61,81 +74,60 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params& params, bool fProofOfStake)
 {
     int nHeight = pindexLast->nHeight + 1;
-    arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
-    int shortSample = 15;
-    int mediumSample = 200;
-    int longSample = 1000;
-    int pindexFirstShortTime = 0;
-    int pindexFirstMediumTime = 0;
-    int nActualTimespan = 0;
-    int nActualTimespanShort = 0;
-    int nActualTimespanMedium = 0;
-    int nActualTimespanLong = 0;
+    const arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
     int nTargetTimespan = params.nTargetTimespan;
+
+    int pindexFirstShortTime = 0, pindexFirstMediumTime = 0, pindexFirstLongTime = 0;
+    int shortSample = 15, mediumSample = 200, longSample = 1000;
+    int nActualTimespan = 0, nActualTimespanShort = 0, nActualTimespanMedium = 0, nActualTimespanLong = 0;
 
     // Set testnet time to be the same as mainnet
     if (Params().NetworkIDString() == CBaseChainParams::TESTNET && nHeight >= params.nFixUTXOCacheHFHeight)
         nTargetTimespan = 60;
 
-    // Make sure there's enough PoW or PoS blocks for eHRC long sample
-    const CBlockIndex* pindexCheck = pindexLast;
-    for (int i = 0; i <= longSample + 1;) {
-
-        // Hit the start of the chain before finding enough blocks
-        if (pindexCheck->pprev == NULL)
-            return nTargetLimit.GetCompact();
-
-        // Only increment if we have a block of the current type
-        if (fProofOfStake) {
-            if (pindexCheck->IsProofOfStake())
-                i++;
-        } else if (pindexCheck->IsProofOfWork()) {
-            i++;
-        }
-
-        pindexCheck = pindexCheck->pprev;
-    }
-
     const CBlockIndex* pindexFirstLong = pindexLast;
 
-    if (nHeight <= params.nDiffAdjustChange) {
-        for (int i = 0; pindexFirstLong && i < longSample; i++) {
-            pindexFirstLong = pindexFirstLong->pprev;
+    // i tracks sample height, j counts number of blocks of required type
+    for (int i = 0, j = 0; j <= longSample + 1;) {
+        bool skip = false;
 
-            // If we have a block of the wrong type skip this iteration
-            if (fProofOfStake) {
-                if (pindexFirstLong->IsProofOfWork())
-                    continue;
-            } else if (pindexFirstLong->IsProofOfStake()) {
-                continue;
-            }
+        // Hit the start of the chain before finding enough blocks
+        if (pindexFirstLong->pprev == nullptr)
+            return nTargetLimit.GetCompact();
 
-            if (i == shortSample - 1)
-                pindexFirstShortTime = pindexFirstLong->GetBlockTime();
-
-            if (i == mediumSample - 1)
-                pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
+        // Only increment j if we have a block of the current type
+        if (fProofOfStake) {
+            if (pindexFirstLong->IsProofOfStake())
+                j++;
+            if (pindexFirstLong->pprev->IsProofOfWork())
+                skip = true;
+        } else {
+            if (pindexFirstLong->IsProofOfWork())
+                j++;
+            if (pindexFirstLong->pprev->IsProofOfStake())
+                skip = true;
         }
-    } else {
-        for (int i = 0; pindexFirstLong && i < longSample;) {
-            pindexFirstLong = pindexFirstLong->pprev;
 
-            // If we have a block of the wrong type skip this iteration
-            if (fProofOfStake) {
-                if (pindexFirstLong->IsProofOfWork())
-                    continue;
-            } else if (pindexFirstLong->IsProofOfStake()) {
-                continue;
-            }
+        pindexFirstLong = pindexFirstLong->pprev;
 
-            if (i == shortSample - 1)
-                pindexFirstShortTime = pindexFirstLong->GetBlockTime();
+        // Do not sample on longSample - 1 due to nDiffAdjustChange bug
+        if (i < longSample)
+            pindexFirstLongTime = pindexFirstLong->GetBlockTime();
 
-            if (i == mediumSample - 1)
-                pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
-
-             i++;
+        if (skip) {
+            // Incorrectly increment i before nDiffAdjustChange
+            if (nHeight <= params.nDiffAdjustChange)
+                i++;
+            continue;
         }
+
+        if (i == shortSample - 1)
+            pindexFirstShortTime = pindexFirstLong->GetBlockTime();
+
+        if (i == mediumSample - 1)
+            pindexFirstMediumTime = pindexFirstLong->GetBlockTime();
+
+        i++;
     }
 
     if (pindexLast->GetBlockTime() - pindexFirstShortTime != 0)
@@ -144,8 +136,8 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     if (pindexLast->GetBlockTime() - pindexFirstMediumTime != 0)
         nActualTimespanMedium = (pindexLast->GetBlockTime() - pindexFirstMediumTime) / mediumSample;
 
-    if (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime() != 0)
-        nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLong->GetBlockTime()) / longSample;
+    if (pindexLast->GetBlockTime() - pindexFirstLongTime != 0)
+        nActualTimespanLong = (pindexLast->GetBlockTime() - pindexFirstLongTime) / longSample;
 
     int nActualTimespanSum = nActualTimespanShort + nActualTimespanMedium + nActualTimespanLong;
 
@@ -175,6 +167,83 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
 
     if (bnNew <= 0 || bnNew > nTargetLimit)
         bnNew = nTargetLimit;
+
+    return bnNew.GetCompact();
+}
+
+// Use QTUM's difficulty adjust for PoS blocks only
+unsigned int CalculateNextWorkRequired_QTUM(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
+{
+    bool fProofOfStake = true;
+    int64_t nTargetSpacing = params.nTargetTimespan;
+    int64_t nActualSpacing = pindexLast->GetBlockTime() - nFirstBlockTime;
+    if (nActualSpacing < 0)
+        nActualSpacing = nTargetSpacing;
+    if (nActualSpacing > nTargetSpacing * 10)
+        nActualSpacing = nTargetSpacing * 10;
+
+	// Retarget
+    const arith_uint256 bnTargetLimit = GetLimit(params, fProofOfStake);
+    // ppcoin: target change every block
+    // ppcoin: retarget with exponential moving toward target spacing
+    arith_uint256 bnNew;
+    bnNew.SetCompact(pindexLast->nBits);
+    int64_t nInterval = params.DifficultyAdjustmentInterval();
+    bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
+    bnNew /= ((nInterval + 1) * nTargetSpacing);
+
+    if (bnNew <= 0 || bnNew > bnTargetLimit)
+        bnNew = bnTargetLimit;
+
+    return bnNew.GetCompact();
+}
+
+// Use Dash's difficulty adjust for PoW blocks only
+unsigned int CalculateNextWorkRequired_Dash(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
+{
+    /* current difficulty formula, dash - DarkGravity v3, written by Evan Duffield - evan@dash.org */
+
+    bool fProofOfStake = false;
+    const arith_uint256 nTargetLimit = GetLimit(params, fProofOfStake);
+    int64_t nPastBlocks = 30;
+    const CBlockIndex *pindex = pindexLast;
+    arith_uint256 bnPastTargetAvg;
+
+    for (unsigned int nCountBlocks = 1; nCountBlocks <= nPastBlocks; nCountBlocks++) {
+        arith_uint256 bnTarget = arith_uint256().SetCompact(pindex->nBits);
+        if (nCountBlocks == 1) {
+            bnPastTargetAvg = bnTarget;
+        } else {
+            // NOTE: that's not an average really...
+            bnPastTargetAvg = (bnPastTargetAvg * nCountBlocks + bnTarget) / (nCountBlocks + 1);
+        }
+
+        if(nCountBlocks != nPastBlocks) {
+            // If we hit start of chain return min diff
+            if (pindex->pprev == nullptr)
+                return nTargetLimit.GetCompact();
+
+            pindex = GetLastBlockIndex(pindex->pprev, fProofOfStake);
+        }
+    }
+
+    arith_uint256 bnNew(bnPastTargetAvg);
+
+    int64_t nActualTimespan = pindexLast->GetBlockTime() - pindex->GetBlockTime();
+    int64_t nTargetTimespan = nPastBlocks * params.nTargetTimespan;
+
+    if (nActualTimespan < nTargetTimespan/3)
+        nActualTimespan = nTargetTimespan/3;
+    if (nActualTimespan > nTargetTimespan*3)
+        nActualTimespan = nTargetTimespan*3;
+
+    // Retarget
+    bnNew *= nActualTimespan;
+    bnNew /= nTargetTimespan;
+
+    if (bnNew > nTargetLimit) {
+        bnNew = nTargetLimit;
+    }
 
     return bnNew.GetCompact();
 }
