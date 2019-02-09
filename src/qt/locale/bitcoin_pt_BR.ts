@@ -63,7 +63,7 @@
     </message>
     <message>
         <source>These are your HTMLCOIN addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Estes são os seus endereços para enviar pagamentos. Sempre cheque a quantia e o endereço do destinatário antes de enviar moedas.</translation>
+        <translation>Estes são os seus endereços para enviar pagamentos. Sempre cheque a quantidade e o endereço do destinatário antes de enviar moedas.</translation>
     </message>
     <message>
         <source>These are your HTMLCOIN addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
@@ -564,7 +564,7 @@
     </message>
     <message>
         <source>Amount:</source>
-        <translation>Quantia:</translation>
+        <translation>Quantidade:</translation>
     </message>
     <message>
         <source>Fee:</source>
@@ -628,7 +628,7 @@
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Copiar quantia</translation>
+        <translation>Copiar quantidade</translation>
     </message>
     <message>
         <source>Copy transaction ID</source>
@@ -644,7 +644,7 @@
     </message>
     <message>
         <source>Copy quantity</source>
-        <translation>Copiar quantia</translation>
+        <translation>Copiar quantidade</translation>
     </message>
     <message>
         <source>Copy fee</source>
@@ -1813,7 +1813,7 @@
     </message>
     <message>
         <source>An optional amount to request. Leave this empty or zero to not request a specific amount.</source>
-        <translation>Uma quantia opcional para cobrar. Deixe vazio ou em branco se o pagador puder especificar a quantia.</translation>
+        <translation>Uma quantidade opcional para cobrar. Deixe vazio ou em branco se o pagador puder especificar a quantidade.</translation>
     </message>
     <message>
         <source>Clear all fields of the form.</source>
@@ -1861,7 +1861,7 @@
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Copiar quantia</translation>
+        <translation>Copiar quantidade</translation>
     </message>
 </context>
 <context>
@@ -1900,7 +1900,7 @@
     </message>
     <message>
         <source>Amount</source>
-        <translation>Quantia</translation>
+        <translation>Quantidade</translation>
     </message>
     <message>
         <source>Label</source>
@@ -1943,7 +1943,7 @@
     </message>
     <message>
         <source>(no amount requested)</source>
-        <translation>(nenhuma quantia solicitada)</translation>
+        <translation>(nenhuma quantidade solicitada)</translation>
     </message>
     <message>
         <source>Requested</source>
@@ -1982,7 +1982,7 @@
     </message>
     <message>
         <source>Amount:</source>
-        <translation>Quantia:</translation>
+        <translation>Quantidade:</translation>
     </message>
     <message>
         <source>Fee:</source>
@@ -2098,11 +2098,11 @@
     </message>
     <message>
         <source>Copy quantity</source>
-        <translation>Copiar quantia</translation>
+        <translation>Copiar quantidade</translation>
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Copiar quantia</translation>
+        <translation>Copiar quantidade</translation>
     </message>
     <message>
         <source>Copy fee</source>
@@ -2138,7 +2138,7 @@
     </message>
     <message>
         <source>Total Amount %1</source>
-        <translation>Quantia tota %1</translation>
+        <translation>Quantidade total %1</translation>
     </message>
     <message>
         <source>or</source>
@@ -2154,11 +2154,11 @@
     </message>
     <message>
         <source>The amount to pay must be larger than 0.</source>
-        <translation>A quantia à pagar deve ser maior que 0</translation>
+        <translation>A quantidade à pagar deve ser maior que 0</translation>
     </message>
     <message>
         <source>The amount exceeds your balance.</source>
-        <translation>A quantia excede o seu saldo</translation>
+        <translation>A quantidade excede o seu saldo</translation>
     </message>
     <message>
         <source>The total exceeds your balance when the %1 transaction fee is included.</source>
@@ -2261,11 +2261,11 @@
     </message>
     <message>
         <source>The fee will be deducted from the amount being sent. The recipient will receive less HTMLCOIN than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
-        <translation>A taxa será deduzida da quantia que está sendo enviada. O destinatário receberá menos HTMLCOIN do que você colocou no campo de quantidade. Se vários destinatários estão selecionados, a taxa é dividida igualmente.</translation>
+        <translation>A taxa será deduzida da quantidade que está sendo enviada. O destinatário receberá menos HTMLCOIN do que você colocou no campo de quantidade. Se vários destinatários estão selecionados, a taxa é dividida igualmente.</translation>
     </message>
     <message>
         <source>S&amp;ubtract fee from amount</source>
-        <translation>&amp;Retirar taxa da quantia</translation>
+        <translation>&amp;Retirar taxa da quantidade</translation>
     </message>
     <message>
         <source>Message:</source>
@@ -2635,7 +2635,7 @@
     </message>
     <message>
         <source>Amount</source>
-        <translation>Quantia</translation>
+        <translation>Quantidade</translation>
     </message>
     <message>
         <source>true</source>
@@ -2828,7 +2828,7 @@
     </message>
     <message>
         <source>Min amount</source>
-        <translation>Quantia mínima</translation>
+        <translation>Quantidade mínima</translation>
     </message>
     <message>
         <source>Abandon transaction</source>
@@ -2844,7 +2844,7 @@
     </message>
     <message>
         <source>Copy amount</source>
-        <translation>Copiar quantia</translation>
+        <translation>Copiar quantidade</translation>
     </message>
     <message>
         <source>Copy transaction ID</source>
@@ -3475,7 +3475,7 @@
     </message>
     <message>
         <source>The transaction amount is too small to send after the fee has been deducted</source>
-        <translation>A quantia da transação é muito pequena para mandar </translation>
+        <translation>A quantidade da transação é muito pequena para mandar </translation>
     </message>
     <message>
         <source>Use hierarchical deterministic key generation (HD) after BIP32. Only has effect during wallet creation/first start</source>
@@ -3651,7 +3651,7 @@
     </message>
     <message>
         <source>-maxtxfee is set very high! Fees this large could be paid on a single transaction.</source>
-        <translation>-maxtxfee é muito alto! Essa quantia poderia ser paga em uma única transação.</translation>
+        <translation>-maxtxfee é muito alto! Essa quantidade poderia ser paga em uma única transação.</translation>
     </message>
     <message>
         <source>Do not keep transactions in the mempool longer than &lt;n&gt; hours (default: %u)</source>
