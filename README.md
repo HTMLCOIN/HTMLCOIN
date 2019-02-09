@@ -1,4 +1,4 @@
-HTMLCOIN 2.2 Core
+HTMLCOIN 2.3 Core
 =========
 
 http://www.htmlcoin.com/
