@@ -221,7 +221,10 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsi
                         if (version.rootVM != 0 && val < STANDARD_MINIMUM_GAS_LIMIT) {
                             return false;
                         }
-
+                        if (val > DEFAULT_BLOCK_GAS_LIMIT_DGP / 2) {
+                            //don't allow transactions that use more than 1/2 block of gas to be broadcast on the mempool
+                            return false;
+                        }
                     }
                 }
                 catch (const scriptnum_error &err) {
