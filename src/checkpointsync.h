@@ -21,7 +21,6 @@ class CCoinsViewCache;
 extern uint256 hashSyncCheckpoint;
 extern CSyncCheckpoint checkpointMessage;
 extern uint256 hashInvalidCheckpoint;
-extern CCriticalSection cs_hashSyncCheckpoint;
 extern std::string strCheckpointWarning;
 
 bool WriteSyncCheckpoint(const uint256& hashCheckpoint);

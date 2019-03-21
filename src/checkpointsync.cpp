@@ -69,7 +69,6 @@ uint256 hashPendingCheckpoint = ArithToUint256(arith_uint256(0));
 CSyncCheckpoint checkpointMessage;
 CSyncCheckpoint checkpointMessagePending;
 uint256 hashInvalidCheckpoint = ArithToUint256(arith_uint256(0));
-CCriticalSection cs_hashSyncCheckpoint;
 string strCheckpointWarning;
 
 // Only descendant of current sync-checkpoint is allowed
@@ -124,7 +123,7 @@ bool WriteSyncCheckpoint(const uint256& hashCheckpoint)
 
 bool AcceptPendingSyncCheckpoint()
 {
-    LOCK(cs_hashSyncCheckpoint);
+    LOCK(cs_main);
     bool havePendingCheckpoint = hashPendingCheckpoint != ArithToUint256(arith_uint256(0)) && mapBlockIndex.count(hashPendingCheckpoint);
     if (!havePendingCheckpoint)
         return false;
@@ -170,7 +169,7 @@ uint256 AutoSelectSyncCheckpoint()
 // Check against synchronized checkpoint
 bool CheckSyncCheckpoint(const CBlockIndex* pindexNew)
 {
-    LOCK(cs_hashSyncCheckpoint);
+    LOCK(cs_main);
     assert(pindexNew != NULL);
     if (pindexNew->nHeight == 0)
         return true;
@@ -214,7 +213,7 @@ bool CheckSyncCheckpoint(const CBlockIndex* pindexNew)
 // Reset synchronized checkpoint to the assume valid block
 bool ResetSyncCheckpoint()
 {
-    LOCK(cs_hashSyncCheckpoint);
+    LOCK(cs_main);
 
     if (!WriteSyncCheckpoint(Params().GetConsensus().defaultAssumeValid))
         return error("%s: failed to write sync checkpoint %s", __func__, Params().GetConsensus().defaultAssumeValid.ToString());
@@ -317,7 +316,7 @@ bool CSyncCheckpoint::ProcessSyncCheckpoint()
     if (!CheckSignature())
         return false;
 
-    LOCK(cs_hashSyncCheckpoint);
+    LOCK(cs_main);
     if (!mapBlockIndex.count(hashCheckpoint))
     {
         LogPrintf("%s: Missing headers for received sync-checkpoint %s\n", __func__, hashCheckpoint.ToString());
