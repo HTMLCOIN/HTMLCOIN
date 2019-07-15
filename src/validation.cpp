@@ -1962,7 +1962,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                 fClean = fClean && res != DISCONNECT_UNCLEAN;
 
                 const auto &undo = txundo.vprevout[j];
-                const bool isTxCoinStake = tx.IsCoinStake();
+                const bool isTxCoinStake = tx.IsCoinStake() || tx.IsCoinBase();
                 const CTxIn input = tx.vin[j];
                 if (pfClean == nullptr && fAddressIndex) {
                     const CTxOut &prevout = view.GetOutputFor(input);
