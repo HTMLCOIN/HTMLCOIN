@@ -1905,16 +1905,30 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
     /////////////////////////////////////////////////////////// // qtum
     std::vector<std::pair<CAddressIndexKey, CAmount> > addressIndex;
     std::vector<std::pair<CAddressUnspentKey, CAddressUnspentValue> > addressUnspentIndex;
-    std::vector<std::pair<CSpentIndexKey, CSpentIndexValue> > spentIndex;
     ///////////////////////////////////////////////////////////
 
     // undo transactions in reverse order
     for (int i = block.vtx.size() - 1; i >= 0; i--) {
         const CTransaction &tx = *(block.vtx[i]);
         uint256 hash = tx.GetHash();
+        bool is_coinbase = tx.IsCoinBase();
+        bool is_coinstake = tx.IsCoinStake();
+
+        // Check that all outputs are available and match the outputs in the block itself
+        // exactly.
+        for (size_t o = 0; o < tx.vout.size(); o++) {
+            if (!tx.vout[o].scriptPubKey.IsUnspendable()) {
+                COutPoint out(hash, o);
+                Coin coin;
+                bool is_spent = view.SpendCoin(out, &coin);
+                if (!is_spent || tx.vout[o] != coin.out || pindex->nHeight != coin.nHeight || is_coinbase != coin.fCoinBase || is_coinstake != coin.fCoinStake) {
+                    fClean = false; // transaction output mismatch
+                }
+            }
+        }
 
         /////////////////////////////////////////////////////////// // qtum
-        if (fAddressIndex) {
+        if (pfClean == nullptr && fAddressIndex) {
 
             for (unsigned int k = tx.vout.size(); k-- > 0;) {
                 const CTxOut &out = tx.vout[k];
@@ -1922,7 +1936,9 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                 CTxDestination dest;
                 if (ExtractDestination({hash, k}, out.scriptPubKey, dest)) {
                     valtype bytesID(boost::apply_visitor(DataVisitor(), dest));
-
+                    if(bytesID.empty()) {
+                        continue;
+                    }
                     // undo receiving activity
                     addressIndex.push_back(std::make_pair(CAddressIndexKey(dest.which(), uint160(bytesID), pindex->nHeight, i, hash, k, false), out.nValue));
                     // undo unspent index
@@ -1931,19 +1947,6 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
             }
         }
         ///////////////////////////////////////////////////////////
-
-        // Check that all outputs are available and match the outputs in the block itself
-        // exactly.
-        for (size_t o = 0; o < tx.vout.size(); o++) {
-            if (!tx.vout[o].scriptPubKey.IsUnspendable()) {
-                COutPoint out(hash, o);
-                Coin coin;
-                view.SpendCoin(out, &coin);
-                if (tx.vout[o] != coin.out) {
-                    fClean = false; // transaction output mismatch
-                }
-            }
-        }
 
         // restore inputs
         if (i > 0) { // not coinbases
@@ -1959,25 +1962,25 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
                 fClean = fClean && res != DISCONNECT_UNCLEAN;
 
                 const auto &undo = txundo.vprevout[j];
-                const bool isTxCoinStake = tx.IsCoinStake() || tx.IsCoinBase();
+                const bool isTxCoinStake = tx.IsCoinStake();
                 const CTxIn input = tx.vin[j];
-                if (fAddressIndex) {
-                    spentIndex.push_back(std::make_pair(CSpentIndexKey(input.prevout.hash, input.prevout.n), CSpentIndexValue()));
-
+                if (pfClean == nullptr && fAddressIndex) {
                     const CTxOut &prevout = view.GetOutputFor(input);
 
                     CTxDestination dest;
                     if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
                         valtype bytesID(boost::apply_visitor(DataVisitor(), dest));
-
+                        if(bytesID.empty()) {
+                            continue;
+                        }
                         // undo spending activity
-                        addressIndex.push_back(std::make_pair(CAddressIndexKey(dest.which(), uint160(bytesID), pindex->nHeight, i, hash, j, true), prevout.nValue * -1));                   
+                        addressIndex.push_back(std::make_pair(CAddressIndexKey(dest.which(), uint160(bytesID), pindex->nHeight, i, hash, j, true), prevout.nValue * -1));
                         // restore unspent index
                         addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(dest.which(), uint160(bytesID), input.prevout.hash, input.prevout.n), CAddressUnspentValue(prevout.nValue, prevout.scriptPubKey, undo.nHeight, isTxCoinStake)));
                     }
                 }
-                ///////////////////////////////////////////////////////////////////
             }
+            // At this point, all of txundo.vprevout should have been moved out.
         }
     }
 
@@ -1993,13 +1996,8 @@ static DisconnectResult DisconnectBlock(const CBlock& block, CValidationState& s
     }
     pblocktree->EraseStakeIndex(pindex->nHeight);
 
-    //if (pfClean) {
-    //    *pfClean = fClean;
-    //    return true;
-    //}
-
     //////////////////////////////////////////////////// // qtum
-    if (fAddressIndex) {
+    if (pfClean == nullptr && fAddressIndex) {
         if (!pblocktree->EraseAddressIndex(addressIndex)) {
             error("Failed to delete address index");
             return DISCONNECT_FAILED;
@@ -2733,7 +2731,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                     CTxDestination dest;
                     if (ExtractDestination(input.prevout, prevout.scriptPubKey, dest)) {
                         valtype bytesID(boost::apply_visitor(DataVisitor(), dest));
-    
+                        if(bytesID.empty()) {
+                            continue;
+                        }
                         addressIndex.push_back(std::make_pair(CAddressIndexKey(dest.which(), uint160(bytesID), pindex->nHeight, i, tx.GetHash(), j, true), prevout.nValue * -1));
                         
                         // remove address from unspent index
@@ -2933,7 +2933,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 CTxDestination dest;
                 if (ExtractDestination({tx.GetHash(), k}, out.scriptPubKey, dest)) {
                     valtype bytesID(boost::apply_visitor(DataVisitor(), dest));
-
+                    if(bytesID.empty()) {
+                        continue;
+                    }
                     // record receiving activity
                     addressIndex.push_back(std::make_pair(CAddressIndexKey(dest.which(), uint160(bytesID), pindex->nHeight, i, tx.GetHash(), k, false), out.nValue));
                     
