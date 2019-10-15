@@ -7,6 +7,7 @@
 
 #include <arith_uint256.h>
 #include <chain.h>
+#include <chainparams.h>
 #include <primitives/block.h>
 #include <uint256.h>
 
@@ -69,6 +70,11 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     int nActualTimespanShort = 0;
     int nActualTimespanMedium = 0;
     int nActualTimespanLong = 0;
+    int nPowTargetTimespan = params.nPowTargetTimespan;
+
+    // Set testnet time to be the same as mainnet
+    if (Params().NetworkIDString() == CBaseChainParams::TESTNET && nHeight >= params.nFixUTXOCacheHFHeight)
+        nPowTargetTimespan = 60;
 
     // Make sure there's enough PoW or PoS blocks for eHRC long sample
     const CBlockIndex* pindexCheck = pindexLast;
@@ -146,13 +152,13 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
 
     if (pindexLast->nHeight >= params.nDiffDamping) {
         // Apply .25 damping
-        nActualTimespan = nActualTimespan + (3 * params.nPowTargetTimespan);
+        nActualTimespan = nActualTimespan + (3 * nPowTargetTimespan);
         nActualTimespan /= 4;
     }
 
     // 9% difficulty limiter
-    int nActualTimespanMax = params.nPowTargetTimespan * 494 / 453;
-    int nActualTimespanMin = params.nPowTargetTimespan * 453 / 494;
+    int nActualTimespanMax = nPowTargetTimespan * 494 / 453;
+    int nActualTimespanMin = nPowTargetTimespan * 453 / 494;
 
     if(nActualTimespan < nActualTimespanMin)
         nActualTimespan = nActualTimespanMin;
@@ -163,7 +169,7 @@ unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Cons
     arith_uint256 bnNew;
     bnNew.SetCompact(pindexLast->nBits);
     bnNew *= nActualTimespan;
-    bnNew /= params.nPowTargetTimespan;
+    bnNew /= nPowTargetTimespan;
 
     if (bnNew <= 0 || bnNew > nTargetLimit)
         bnNew = nTargetLimit;
