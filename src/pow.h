@@ -17,6 +17,8 @@ class uint256;
 const CBlockIndex* GetLastBlockIndex(const CBlockIndex* pindex, bool fProofOfStake);
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params&, bool fProofOfStake = false);
 unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, const Consensus::Params&, bool fProofOfStake = false);
+unsigned int CalculateNextWorkRequired_QTUM(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params);
+unsigned int CalculateNextWorkRequired_Dash(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params);
 
 /** Check whether a block hash satisfies the proof-of-work requirement specified by nBits */
 bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&, bool fProofOfStake = false);
