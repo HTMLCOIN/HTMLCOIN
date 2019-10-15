@@ -77,6 +77,8 @@ public:
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 15120; // 95% of 2016
         consensus.nMinerConfirmationWindow = 20160; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nDiffAdjustChange = 7700;
+        consensus.nDiffDamping = 106000;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -190,6 +192,8 @@ public:
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nDiffAdjustChange = 1000;
+        consensus.nDiffDamping = 1100;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008

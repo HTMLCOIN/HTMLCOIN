@@ -140,6 +140,7 @@ void UnloadWallet(std::shared_ptr<CWallet>&& wallet)
 
 std::shared_ptr<CWallet> LoadWallet(interfaces::Chain& chain, const WalletLocation& location, std::string& error, std::string& warning)
 {
+
     if (!CWallet::Verify(chain, location, false, error, warning)) {
         error = "Wallet file verification failed: " + error;
         return nullptr;
@@ -3535,24 +3536,13 @@ bool CWallet::CreateCoinStake(interfaces::Chain::Lock& locked_chain, const CKeyS
     }
 
     const Consensus::Params& consensusParams = Params().GetConsensus();
-    int64_t nRewardPiece = 0;
     // Calculate reward
     {
         int64_t nReward = nTotalFees + GetBlockSubsidy(pindexPrev->nHeight + 1, consensusParams);
         if (nReward < 0)
             return false;
 
-        if(pindexPrev->nHeight < consensusParams.nFirstMPoSBlock)
-        {
-            // Keep whole reward
-            nCredit += nReward;
-        }
-        else
-        {
-            // Split the reward when mpos is used
-            nRewardPiece = nReward / consensusParams.nMPoSRewardRecipients;
-            nCredit += nRewardPiece + nReward % consensusParams.nMPoSRewardRecipients;
-        }
+        nCredit += nReward;
    }
 
     if (nCredit >= GetStakeSplitThreshold())
@@ -3571,12 +3561,6 @@ bool CWallet::CreateCoinStake(interfaces::Chain::Lock& locked_chain, const CKeyS
     }
     else
         txNew.vout[1].nValue = nCredit;
-
-    if(pindexPrev->nHeight >= consensusParams.nFirstMPoSBlock)
-    {
-        if(!CreateMPoSOutputs(txNew, nRewardPiece, pindexPrev->nHeight, consensusParams))
-            return error("CreateCoinStake : failed to create MPoS reward outputs");
-    }
 
     // Append the Refunds To Sender to the transaction outputs
     for(unsigned int i = 2; i < tx.vout.size(); i++)

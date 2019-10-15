@@ -69,6 +69,8 @@ struct Params {
     /** Proof of work parameters */
     uint256 powLimit;
     uint256 posLimit;
+    int nDiffAdjustChange;
+    int nDiffDamping;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
@@ -77,8 +79,6 @@ struct Params {
     int64_t DifficultyAdjustmentInterval() const { return nPowTargetTimespan / nPowTargetSpacing; }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
-    int nFirstMPoSBlock;
-    int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
     int nEnableHeaderSignatureHeight;
 };

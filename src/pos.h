@@ -64,8 +64,4 @@ unsigned int GetStakeSplitOutputs();
 
 int64_t GetStakeSplitThreshold();
 
-bool GetMPoSOutputScripts(std::vector<CScript> &mposScroptList, int nHeight, const Consensus::Params& consensusParams);
-
-bool CreateMPoSOutputs(CMutableTransaction& txNew, int64_t nRewardPiece, int nHeight, const Consensus::Params& consensusParams);
-
 #endif // QUANTUM_POS_H
