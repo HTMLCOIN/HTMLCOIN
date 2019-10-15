@@ -53,7 +53,7 @@
        <item>
         <widget class="QToolButton" name="labelTokenStatus">
          <property name="toolTip">
-          <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Qtum network after a connection is established, but this process has not completed yet.</string>
+          <string>The displayed information may be out of date. Your wallet automatically synchronizes with the HTMLCOIN network after a connection is established, but this process has not completed yet.</string>
          </property>
          <property name="text">
           <string/>
@@ -479,7 +479,7 @@
           <bool>true</bool>
          </property>
          <property name="toolTip">
-          <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Qtum network after a connection is established, but this process has not completed yet.</string>
+          <string>The displayed information may be out of date. Your wallet automatically synchronizes with the HTMLCOIN network after a connection is established, but this process has not completed yet.</string>
          </property>
          <property name="text">
           <string/>
@@ -567,7 +567,7 @@
         <bool>true</bool>
        </property>
        <property name="toolTip">
-        <string>The displayed information may be out of date. Your wallet automatically synchronizes with the Qtum network after a connection is established, but this process has not completed yet.</string>
+        <string>The displayed information may be out of date. Your wallet automatically synchronizes with the HTMLCOIN network after a connection is established, but this process has not completed yet.</string>
        </property>
        <property name="text">
         <string/>

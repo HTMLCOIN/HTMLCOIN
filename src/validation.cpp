@@ -56,7 +56,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Qtum cannot be compiled without assertions."
+# error "HTMLCOIN cannot be compiled without assertions."
 #endif
 
 #define MICRO 0.000001
@@ -286,7 +286,7 @@ std::atomic_bool g_is_mempool_loaded{false};
 /** Constant stuff for coinbase transactions we create: */
 CScript COINBASE_FLAGS;
 
-const std::string strMessageMagic = "Qtum Signed Message:\n";
+const std::string strMessageMagic = "HTMLCOIN Signed Message:\n";
 
 // Internal stuff
 namespace {
