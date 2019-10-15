@@ -649,7 +649,7 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, true, chainActive.Tip()->nHeight>=Params().GetConsensus().nLastPOWBlock?true:false);
+        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, true);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 
