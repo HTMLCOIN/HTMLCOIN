@@ -62,12 +62,12 @@
         <translation>Ontvanger adresse</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>Hierdie is die adresse vanwaar u Qtum betalings stuur. U moet altyd die bedrag en die adres van die ontvanger nagaan voordat u enige munte stuur.</translation>
+        <source>These are your HTMLCOIN addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <translation>Hierdie is die adresse vanwaar u HTMLCOIN betalings stuur. U moet altyd die bedrag en die adres van die ontvanger nagaan voordat u enige munte stuur.</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>Hierdie is die adresse waar u Qtums sal ontvang. Ons beveel aan dat u 'n nuwe adres kies vir elke transaksie</translation>
+        <source>These are your HTMLCOIN addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <translation>Hierdie is die adresse waar u HTMLCOINs sal ontvang. Ons beveel aan dat u 'n nuwe adres kies vir elke transaksie</translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -322,8 +322,8 @@
         <translation>Besig met herindeksering van blokke op hardeskyf...</translation>
     </message>
     <message>
-        <source>Send coins to a Qtum address</source>
-        <translation>Stuur munte na 'n Qtum adres</translation>
+        <source>Send coins to a HTMLCOIN address</source>
+        <translation>Stuur munte na 'n HTMLCOIN adres</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -346,8 +346,8 @@
         <translation>&amp;Verifieer boodskap...</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>HTMLCOIN</source>
+        <translation>HTMLCOIN</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -370,12 +370,12 @@
         <translation>Kodifiseer die private sleutes wat aan jou beursie gekoppel is.</translation>
     </message>
     <message>
-        <source>Sign messages with your Qtum addresses to prove you own them</source>
-        <translation>Onderteken boodskappe met u Qtum adresse om u eienaarskap te bewys</translation>
+        <source>Sign messages with your HTMLCOIN addresses to prove you own them</source>
+        <translation>Onderteken boodskappe met u HTMLCOIN adresse om u eienaarskap te bewys</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Qtum addresses</source>
-        <translation>Verifieër boodskappe om seker te maak dat dit met die gespesifiseerde Qtum adresse</translation>
+        <source>Verify messages to ensure they were signed with specified HTMLCOIN addresses</source>
+        <translation>Verifieër boodskappe om seker te maak dat dit met die gespesifiseerde HTMLCOIN adresse</translation>
     </message>
     <message>
         <source>&amp;File</source>
@@ -394,8 +394,8 @@
         <translation>Orebalk</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
-        <translation>Versoek betalings (genereer QR-kodes en qtum: URI's)</translation>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
+        <translation>Versoek betalings (genereer QR-kodes en htmlcoin: URI's)</translation>
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
@@ -406,8 +406,8 @@
         <translation>Vertoon die lys van gebruikte ontvangers-adresse en etikette</translation>
     </message>
     <message>
-        <source>Open a qtum: URI or payment request</source>
-        <translation>Skep 'n qtum: URI of betalingsversoek</translation>
+        <source>Open a htmlcoin: URI or payment request</source>
+        <translation>Skep 'n htmlcoin: URI of betalingsversoek</translation>
     </message>
     <message>
         <source>&amp;Command-line options</source>
@@ -504,8 +504,8 @@
         <translation>Inkomende transaksie</translation>
     </message>
     <message>
-        <source>A fatal error occurred. Qtum can no longer continue safely and will quit.</source>
-        <translation>'N fatale fout het voorgekom. Qtum kan nie meer veilig voortgaan nie en sal nou toemaak.</translation>
+        <source>A fatal error occurred. HTMLCOIN can no longer continue safely and will quit.</source>
+        <translation>'N fatale fout het voorgekom. HTMLCOIN kan nie meer veilig voortgaan nie en sal nou toemaak.</translation>
     </message>
 </context>
 <context>
@@ -640,7 +640,7 @@
     </message>
     <message>
         <source>This label turns red if any recipient receives an amount smaller than the current dust threshold.</source>
-        <translation>Hierdie etiket raak rooi as enige ontvanger 'n bedrag kleiner as die huidige stof drempel ontvang.</translation>
+        <translation>Hierdie etiket raak rooi as enige ontvanger 'n bedrag kleiner as die huidige stof drempel ontvang.</translation>
     </message>
     <message>
         <source>Can vary +/- %1 satoshi(s) per input.</source>
@@ -694,8 +694,8 @@
         <translation>Wysig stuur adres</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Qtum address.</source>
-        <translation>Die ingevoerde adres "%1" is nie 'n geldige Qtum adres nie.</translation>
+        <source>The entered address "%1" is not a valid HTMLCOIN address.</source>
+        <translation>Die ingevoerde adres "%1" is nie 'n geldige HTMLCOIN adres nie.</translation>
     </message>
     <message>
         <source>Could not unlock wallet.</source>
@@ -767,8 +767,8 @@
         <translation>Gebruik 'n persoonlike data gids:</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>HTMLCOIN</source>
+        <translation>HTMLCOIN</translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -949,7 +949,7 @@
     </message>
     <message>
         <source>Whether to show coin control features or not.</source>
-        <translation>Of om munt beheer funksies te wys of nie.</translation>
+        <translation>Of om munt beheer funksies te wys of nie.</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -1063,11 +1063,11 @@
     </message>
     <message>
         <source>Payment request network doesn't match client network.</source>
-        <translation>Betalings versoek netwerk stem nie ooreen met die kliënt netwerk nie.</translation>
+        <translation>Betalings versoek netwerk stem nie ooreen met die kliënt netwerk nie.</translation>
     </message>
     <message>
         <source>Payment request expired.</source>
-        <translation>Betalings versoek verstryk.</translation>
+        <translation>Betalings versoek verstryk.</translation>
     </message>
     <message>
         <source>Payment request is not initialized.</source>
@@ -1120,8 +1120,8 @@
         <translation>Bedrag</translation>
     </message>
     <message>
-        <source>Enter a Qtum address (e.g. %1)</source>
-        <translation>Voer in 'n Qtum adres (bv. %1)</translation>
+        <source>Enter a HTMLCOIN address (e.g. %1)</source>
+        <translation>Voer in 'n HTMLCOIN adres (bv. %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -1694,11 +1694,11 @@ transaksievertragingsrisiko.</translation>
     </message>
     <message>
         <source>Payment request expired.</source>
-        <translation>Betalings versoek verstryk.</translation>
+        <translation>Betalings versoek verstryk.</translation>
     </message>
     <message>
-        <source>Warning: Invalid Qtum address</source>
-        <translation>Waarskuwing: Ongeldige Qtumadres</translation>
+        <source>Warning: Invalid HTMLCOIN address</source>
+        <translation>Waarskuwing: Ongeldige HTMLCOINadres</translation>
     </message>
     <message>
         <source>The address you selected for change is not part of this wallet. Any or all funds in your wallet may be sent to this address. Are you sure?</source>
@@ -1730,8 +1730,8 @@ Is u seker?</translation>
         <translation>Hierdie is 'n gewone betaling</translation>
     </message>
     <message>
-        <source>The Qtum address to send the payment to</source>
-        <translation>Die Qtumadres waarheen die betaling gestuur word</translation>
+        <source>The HTMLCOIN address to send the payment to</source>
+        <translation>Die HTMLCOINadres waarheen die betaling gestuur word</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -1746,7 +1746,7 @@ Is u seker?</translation>
         <translation>Verwyder hierdie inskrywing</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less qtums than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less HTMLCOIN than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>De fooi word afgetrek van die gestuurde bedrag.
 Die ontvanger sal minder ontvang as wat u in die 
 bedrag opgee. As daar meer as een ontvanger is,
@@ -2039,8 +2039,8 @@ word die fooi eweredig verdeel.</translation>
 <context>
     <name>qtum-core</name>
     <message>
-        <source>Qtum Core</source>
-        <translation>Qtum Kern</translation>
+        <source>HTMLCOIN Core</source>
+        <translation>HTMLCOIN Kern</translation>
     </message>
     <message>
         <source>Error loading %s</source>
@@ -2100,7 +2100,7 @@ word die fooi eweredig verdeel.</translation>
     </message>
     <message>
         <source>Transaction has too long of a mempool chain</source>
-        <translation>Transaksie se mempool ketting is te lank</translation>
+        <translation>Transaksie se mempool ketting is te lank</translation>
     </message>
     <message>
         <source>Transaction must have at least one recipient</source>
@@ -2108,7 +2108,7 @@ word die fooi eweredig verdeel.</translation>
     </message>
     <message>
         <source>Unknown network specified in -onlynet: '%s'</source>
-        <translation>Onbekende netwerk gespesifiseer in -onlynet: '%s'</translation>
+        <translation>Onbekende netwerk gespesifiseer in -onlynet: '%s'</translation>
     </message>
     <message>
         <source>Insufficient funds</source>

@@ -122,7 +122,7 @@
         <translation>Оношилгоо ба засварын консолыг онгойлго</translation>
     </message>
     <message>
-        <source>Qtum</source>
+        <source>HTMLCOIN</source>
         <translation>Биткойн</translation>
     </message>
     <message>
@@ -221,7 +221,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Qtum</source>
+        <source>HTMLCOIN</source>
         <translation>Биткойн</translation>
     </message>
     <message>

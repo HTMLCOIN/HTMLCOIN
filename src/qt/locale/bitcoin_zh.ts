@@ -42,11 +42,11 @@
         <translation>接收地址</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
+        <source>These are your HTMLCOIN addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
         <translation>这些是你的QTUM支付地址。在发送之前，一定要核对金额和接收地址。</translation>
     </message>
     <message>
-        <source>These are your Qtum addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
+        <source>These are your HTMLCOIN addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
         <translation>这些是您的QTUM接收地址。建议每个交易使用一个新的接收地址。</translation>
     </message>
     <message>
@@ -152,7 +152,7 @@
         <translation>加密钱包</translation>
     </message>
     <message>
-        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your qtums from being stolen by malware infecting your computer.</source>
+        <source>Your wallet is now encrypted. Remember that encrypting your wallet cannot fully protect your HTMLCOIN from being stolen by malware infecting your computer.</source>
         <translation>您的钱包现在加密了。记住，加密您的钱包并不能完全保护您的QTUM不被恶意软件窃取。</translation>
     </message>
     <message>
@@ -258,7 +258,7 @@
         <translation>启用代理:%1</translation>
     </message>
     <message>
-        <source>Send coins to a Qtum address</source>
+        <source>Send coins to a HTMLCOIN address</source>
         <translation>发送QTUM到一个QTUM地址</translation>
     </message>
     <message>
@@ -282,8 +282,8 @@
         <translation>&amp;验证消息...</translation>
     </message>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>HTMLCOIN</source>
+        <translation>HTMLCOIN</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -306,11 +306,11 @@
         <translation>加密您的钱包私钥</translation>
     </message>
     <message>
-        <source>Sign messages with your Qtum addresses to prove you own them</source>
+        <source>Sign messages with your HTMLCOIN addresses to prove you own them</source>
         <translation>用您的QTUM地址签名信息，以证明拥有它们</translation>
     </message>
     <message>
-        <source>Verify messages to ensure they were signed with specified Qtum addresses</source>
+        <source>Verify messages to ensure they were signed with specified HTMLCOIN addresses</source>
         <translation>验证消息，确保它们是用指定的QTUM地址签名的</translation>
     </message>
     <message>
@@ -330,7 +330,7 @@
         <translation>标签工具栏</translation>
     </message>
     <message>
-        <source>Request payments (generates QR codes and qtum: URIs)</source>
+        <source>Request payments (generates QR codes and htmlcoin: URIs)</source>
         <translation>请求支付(生成二维码和QTUM链接)</translation>
     </message>
     <message>
@@ -346,7 +346,7 @@
         <translation>&amp;命令行选项</translation>
     </message>
     <message numerus="yes">
-        <source>%n active connection(s) to Qtum network</source>
+        <source>%n active connection(s) to HTMLCOIN network</source>
         <translation><numerusform>%n 活动的QTUM网络连接</numerusform></translation>
     </message>
     <message>
@@ -386,8 +386,8 @@
         <translation>&amp;接受地址</translation>
     </message>
     <message>
-        <source>Show the %1 help message to get a list with possible Qtum command-line options</source>
-        <translation>显示%1帮助消息以获得可能包含Qtum命令行选项的列表</translation>
+        <source>Show the %1 help message to get a list with possible HTMLCOIN command-line options</source>
+        <translation>显示%1帮助消息以获得可能包含HTMLCOIN命令行选项的列表</translation>
     </message>
     <message>
         <source>&amp;Window</source>
@@ -442,8 +442,8 @@
         <translation>钱包是&lt;b&gt;加密的&lt;/b&gt;，目前&lt;b&gt;已锁定&lt;/b&gt;</translation>
     </message>
     <message>
-        <source>A fatal error occurred. Qtum can no longer continue safely and will quit.</source>
-        <translation>发生了致命错误。Qtum无法继续安全运行，将退出。</translation>
+        <source>A fatal error occurred. HTMLCOIN can no longer continue safely and will quit.</source>
+        <translation>发生了致命错误。HTMLCOIN无法继续安全运行，将退出。</translation>
     </message>
 </context>
 <context>
@@ -512,7 +512,7 @@
         <translation>与此地址列表项关联的地址。只能修改为发送地址。</translation>
     </message>
     <message>
-        <source>The entered address "%1" is not a valid Qtum address.</source>
+        <source>The entered address "%1" is not a valid HTMLCOIN address.</source>
         <translation>输入的地址"%1"不是有效的QTUM地址。</translation>
     </message>
     <message>
@@ -529,8 +529,8 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Qtum</source>
-        <translation>Qtum</translation>
+        <source>HTMLCOIN</source>
+        <translation>HTMLCOIN</translation>
     </message>
     <message>
         <source>Error</source>
@@ -654,7 +654,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>粉尘：</translation>
     </message>
     <message>
-        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for qtum transactions than the network can process.</source>
+        <source>When there is less transaction volume than space in the blocks, miners as well as relaying nodes may enforce a minimum fee. Paying only this minimum fee is just fine, but be aware that this can result in a never confirming transaction once there is more demand for HTMLCOIN transactions than the network can process.</source>
         <translation>当交易量小于块的空间时，矿工和中继节点可以强制执行最低费用。只付最低费用就可以了，但注意，一旦QTUM交易的需求超出网络的处理能力，就可能导致交易无法确认。</translation>
     </message>
     <message>
@@ -726,7 +726,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation><numerusform>估计在%n块内确认。</numerusform></translation>
     </message>
     <message>
-        <source>Warning: Invalid Qtum address</source>
+        <source>Warning: Invalid HTMLCOIN address</source>
         <translation>警告：QTUM地址无效</translation>
     </message>
     <message>
@@ -749,11 +749,11 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>这是一个标准的付款方式。</translation>
     </message>
     <message>
-        <source>The Qtum address to send the payment to</source>
+        <source>The HTMLCOIN address to send the payment to</source>
         <translation>支付到的QTUM地址</translation>
     </message>
     <message>
-        <source>The fee will be deducted from the amount being sent. The recipient will receive less qtums than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
+        <source>The fee will be deducted from the amount being sent. The recipient will receive less HTMLCOIN than you enter in the amount field. If multiple recipients are selected, the fee is split equally.</source>
         <translation>手续费将从发出的总额中扣除。接受者收到的QTUM将少于你输入的金额字段。如果选择了多个接受者，手续费将平均分配。</translation>
     </message>
     <message>
@@ -765,7 +765,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>输入此地址的标签，将其添加到使用的地址列表中</translation>
     </message>
     <message>
-        <source>A message that was attached to the qtum: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the Qtum network.</source>
+        <source>A message that was attached to the htmlcoin: URI which will be stored with the transaction for your reference. Note: This message will not be sent over the HTMLCOIN network.</source>
         <translation>附在QTUM上的消息:URI将与交易一起存储，供参考。注意：此信息不会通过QTUM网络发送。</translation>
     </message>
     <message>
