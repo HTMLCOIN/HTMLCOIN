@@ -1257,11 +1257,10 @@ void CWallet::MarkConflicted(const uint256& hashBlock, const uint256& hashTx)
 }
 
 void CWallet::SyncTransaction(const CTransactionRef& ptx, const uint256& block_hash, int posInBlock, bool update_tx) {
-
+    const CTransaction& tx = *ptx;
     if (block_hash.IsNull() && posInBlock == -1)
     {
         // wallets need to refund inputs when disconnecting coinstake
-        const CTransaction& tx = *ptx;
         if (tx.IsCoinStake() && IsFromMe(tx))
         {
             auto locked_chain = chain().lock();
@@ -1270,13 +1269,22 @@ void CWallet::SyncTransaction(const CTransactionRef& ptx, const uint256& block_h
         }
     }
 
+    bool isMine = true;
+
     if (!AddToWalletIfInvolvingMe(ptx, block_hash, posInBlock, update_tx))
-        return; // Not one of ours
+        isMine = false; // Not one of ours
 
     // If a transaction changes 'conflicted' state, that changes the balance
     // available of the outputs it spends. So force those to be
     // recomputed, also:
-    MarkInputsDirty(ptx);
+    if (isMine == true) {
+        for (const CTxIn& txin : tx.vin) {
+            auto it = mapWallet.find(txin.prevout.hash);
+            if (it != mapWallet.end()) {
+                it->second.MarkDirty();
+            }
+        }
+    }
 }
 
 void CWallet::TransactionAddedToMempool(const CTransactionRef& ptx) {
