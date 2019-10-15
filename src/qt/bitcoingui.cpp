@@ -285,7 +285,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setStatusTip(sendCoinsAction->statusTip());
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
     receiveCoinsAction = new QAction(platformStyle->MultiStatesIcon(":/icons/receive_from"), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and qtum: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and htmlcoin: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_3));
@@ -402,7 +402,7 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(platformStyle->MenuColorIcon(":/icons/open"), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a qtum: URI or payment request"));
+    openAction->setStatusTip(tr("Open a htmlcoin: URI or payment request"));
 
     m_open_wallet_action = new QAction(tr("Open Wallet"), this);
     m_open_wallet_action->setEnabled(false);

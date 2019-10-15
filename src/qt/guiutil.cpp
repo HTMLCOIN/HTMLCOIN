@@ -114,7 +114,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // return if URI is not valid or is no bitcoin: URI
-    if(!uri.isValid() || uri.scheme() != QString("qtum"))
+    if(!uri.isValid() || uri.scheme() != QString("htmlcoin"))
         return false;
 
     SendCoinsRecipient rv;
@@ -176,7 +176,7 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("qtum:%1").arg(info.address);
+    QString ret = QString("htmlcoin:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
