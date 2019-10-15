@@ -213,6 +213,7 @@ void Shutdown(InitInterfaces& interfaces)
     StopHTTPRPC();
     StopREST();
     StopRPC();
+    ShutdownRPCMining();
     StopHTTPServer();
     for (const auto& client : interfaces.chain_clients) {
         client->flush();
@@ -1905,6 +1906,9 @@ bool AppInitMain(InitInterfaces& interfaces)
     if (!g_connman->Start(scheduler, connOptions)) {
         return false;
     }
+
+    // InitRPCMining is needed here so getwork in the GUI debug console works properly.
+    InitRPCMining();
 
     // ********************************************************* Step 13: finished
 

@@ -21,6 +21,7 @@
 
 class CBlockIndex;
 class CChainParams;
+class CReserveKey;
 class CScript;
 
 namespace Consensus { struct Params; };
@@ -58,6 +59,13 @@ struct CBlockTemplate
     std::vector<int64_t> vTxSigOpsCost;
     std::vector<unsigned char> vchCoinbaseCommitment;
 };
+
+/** ByteReverse Function used by GetWork */
+uint32_t ByteReverse(uint32_t value);
+/** Do mining precalculation */
+void FormatHashBuffers(CBlock* pblock, char* pdata);
+/** Check mined block */
+bool CheckWork(const CChainParams& chainparams, CBlock* pblock, CReserveKey& reservekey);
 
 // Container for tracking updates to ancestor feerate as we include (parent)
 // transactions in a block
@@ -258,7 +266,7 @@ public:
     int32_t nTimeLimit;
 
     /** Construct a new block template with coinbase to scriptPubKeyIn */
-    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0, int32_t nTimeLimit=0);
+    std::unique_ptr<CBlockTemplate> CreateNewBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0, int32_t nTimeLimit=0, bool externalGBT = false);
     std::unique_ptr<CBlockTemplate> CreateEmptyBlock(const CScript& scriptPubKeyIn, bool fMineWitnessTx=true, bool fProofOfStake=false, int64_t* pTotalFees = 0, int32_t nTime=0);
 
     static Optional<int64_t> m_last_block_num_txs;
@@ -271,13 +279,13 @@ private:
     /** Add a tx to the block */
     void AddToBlock(CTxMemPool::txiter iter);
 
-    bool AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64_t minGasPrice);
+    bool AttemptToAddContractToBlock(CTxMemPool::txiter iter, uint64_t minGasPrice, bool externalGBT = false);
 
     // Methods for how to add transactions to a block.
     /** Add transactions based on feerate including unconfirmed ancestors
       * Increments nPackagesSelected / nDescendantsUpdated with corresponding
       * statistics from the package selection (for logging statistics). */
-    void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated, uint64_t minGasPrice) EXCLUSIVE_LOCKS_REQUIRED(mempool.cs);
+    void addPackageTxs(int &nPackagesSelected, int &nDescendantsUpdated, uint64_t minGasPrice, bool externalGBT = false) EXCLUSIVE_LOCKS_REQUIRED(mempool.cs);
 
     /** Rebuild the coinbase/coinstake transaction to account for new gas refunds **/
     void RebuildRefundTransaction();
