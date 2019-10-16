@@ -3079,7 +3079,7 @@
         <translation>HTTP sunucusu başlatılamadı. Ayrıntılar için debug.log dosyasına bakınız.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>HTMLCOIN Çekirdeği</translation>
     </message>
     <message>

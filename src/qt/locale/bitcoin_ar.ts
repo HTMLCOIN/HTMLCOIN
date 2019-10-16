@@ -2911,7 +2911,7 @@
         <translation>غير قادر على بدء خادم ال HTTP. راجع سجل تصحيح الأخطاء للحصول على التفاصيل.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>جوهر بيتكوين</translation>
     </message>
     <message>

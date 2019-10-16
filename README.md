@@ -53,14 +53,14 @@ Then install [Homebrew](https://brew.sh).
 
 NOTE: Building with Qt4 is still supported, however, could result in a broken UI. Building with Qt5 is recommended.
 
-#### Build HTMLCOIN Core
+#### Build HTMLCOIN CORE
 
 1. Clone the HTMLCOIN source code and cd into `HTMLCOIN`
 
         git clone --recursive https://github.com/HTMLCOIN/HTMLCOIN
         cd HTMLCOIN
 
-2.  Build HTMLCOIN Core:
+2.  Build HTMLCOIN CORE:
 
     Configure and build the HTMLCOIN binaries as well as the GUI (if Qt is found).
 

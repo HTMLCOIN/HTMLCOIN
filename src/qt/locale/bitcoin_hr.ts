@@ -3134,8 +3134,8 @@ Napomena: Budući da se naknada računa po bajtu, naknada od "100 satošija po k
         <translation>Ne može se pokrenuti HTTP server. Vidite debug.log za više detalja.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
-        <translation>HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation>HTMLCOIN CORE</translation>
     </message>
     <message>
         <source>The %s developers</source>

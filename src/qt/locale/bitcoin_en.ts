@@ -4190,8 +4190,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
     <message>
         <location line="-170"/>
-        <source>HTMLCOIN Core</source>
-        <translation type="unfinished">HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation type="unfinished">HTMLCOIN CORE</translation>
     </message>
     <message>
         <location line="+1"/>

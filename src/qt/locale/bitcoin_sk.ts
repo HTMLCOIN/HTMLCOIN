@@ -3252,8 +3252,8 @@ Poznámka: Keďže poplatok je počítaný za bajt, poplatok o hodnote "100 sato
         <translation>Nepodarilo sa spustiť HTTP server. Pre viac detailov zobrazte debug log.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
-        <translation>HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation>HTMLCOIN CORE</translation>
     </message>
     <message>
         <source>The %s developers</source>

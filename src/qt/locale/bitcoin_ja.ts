@@ -3247,7 +3247,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of "100 satoshis p
         <translation>HTTPサーバを開始できませんでした。詳細は debug.log を参照してください。</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>HTMLCOIN コア</translation>
     </message>
     <message>

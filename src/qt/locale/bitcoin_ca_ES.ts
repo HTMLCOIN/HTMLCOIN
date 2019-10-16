@@ -2709,8 +2709,8 @@
         <translation>No s'ha pogut iniciar el servidor HTTP. Vegeu debug.log per a més detalls.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
-        <translation>HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation>HTMLCOIN CORE</translation>
     </message>
     <message>
         <source>This is a pre-release test build - use at your own risk - do not use for mining or merchant applications</source>

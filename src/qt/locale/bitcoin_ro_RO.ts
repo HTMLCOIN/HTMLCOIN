@@ -3139,7 +3139,7 @@ Nota: Cum taxa este calculata per byte, o taxa de "100 satoshi per kB" pentru o 
         <translation>Imposibil de pornit serverul HTTP. Pentru detalii vezi logul de depanare.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>Nucleul HTMLCOIN</translation>
     </message>
     <message>

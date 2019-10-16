@@ -3211,8 +3211,8 @@ Note: Siden gebyret er kalkuleret på en per-byte basis, et gebyr på "100 satos
         <translation>Kunne ikke starte HTTP-server. Se fejlretningslog for detaljer.</translation>
     </message>
     <message>
-        <source>HTMLCOIN Core</source>
-        <translation>HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation>HTMLCOIN CORE</translation>
     </message>
     <message>
         <source>The %s developers</source>

@@ -1878,8 +1878,8 @@ Exportar los datos en la pestaña actual a un archivo</translation>
 <context>
     <name>qtum-core</name>
     <message>
-        <source>HTMLCOIN Core</source>
-        <translation>HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation>HTMLCOIN CORE</translation>
     </message>
     <message>
         <source>This is the transaction fee you may discard if change is smaller than dust at this level</source>

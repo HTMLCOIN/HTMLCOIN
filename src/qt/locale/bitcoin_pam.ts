@@ -735,7 +735,7 @@
 <context>
     <name>qtum-core</name>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>Kapilubluban ning HTMLCOIN</translation>
     </message>
     <message>

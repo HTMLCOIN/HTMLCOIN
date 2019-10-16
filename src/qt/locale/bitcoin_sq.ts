@@ -787,7 +787,7 @@
 <context>
     <name>qtum-core</name>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>Berthama HTMLCOIN</translation>
     </message>
     <message>

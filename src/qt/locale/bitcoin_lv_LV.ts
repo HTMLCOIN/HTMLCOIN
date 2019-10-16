@@ -1187,8 +1187,8 @@
 <context>
     <name>qtum-core</name>
     <message>
-        <source>HTMLCOIN Core</source>
-        <translation>HTMLCOIN Core</translation>
+        <source>HTMLCOIN CORE</source>
+        <translation>HTMLCOIN CORE</translation>
     </message>
     <message>
         <source>Error loading block database</source>

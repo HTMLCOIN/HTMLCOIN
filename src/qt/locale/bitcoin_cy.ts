@@ -1025,7 +1025,7 @@
 <context>
     <name>qtum-core</name>
     <message>
-        <source>HTMLCOIN Core</source>
+        <source>HTMLCOIN CORE</source>
         <translation>Craidd HTMLCOIN</translation>
     </message>
     <message>
