@@ -215,10 +215,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_SEGWIT].nTimeout = 999999999999ULL;
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000042d96d1fbba9348aca"); // qtum
+        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000bdcc9a15a16a572d96307");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00000000000128796ee387cf110ccb9d2f36cffaf7f73079c995377c65ac0dcc"); // 320000
+        consensus.defaultAssumeValid = uint256S("0x9920f63f4fe6d1ee164b0313f702405d790440357b4cfd7e9242a960ac16275b"); // 1146000
 
         pchMessageStart[0] = 0x2f;
         pchMessageStart[1] = 0x3e;
@@ -257,19 +257,15 @@ public:
 
         checkpointData = {
             {
-                {0, uint256S("000013694772f8aeb88efeb2829fe5d71fbca3e23d5043baa770726f204f528c")},
-                {5000, uint256S("000000302bc22f2f65995506e757fff5c824545db5413e871d57d27a0997e8a0")}, //last PoW block
-                {77000, uint256S("f41e2e8d09bca38827c23cad46ed6d434902da08415d2314d0c8ce285b1970cb")},
-                {230000, uint256S("cd17baf80fa817dd543b83897ccb1e07350019e5b812f4956f69efe855d62601")},
-                {343000, uint256S("ac66f1de1a5fa473b5097b313c203e97d45669485e4c235a32a0f80df64f6948")},
+               {1146000, uint256S("9920f63f4fe6d1ee164b0313f702405d790440357b4cfd7e9242a960ac16275b")},
             }
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 2820e75dd90210a1dcf59efe839a1e5f212e272c6bcb7fd94e749f5e01822813 (height 239905)
-            0,
-            0,
-            0
+            // Data as of block 9920f63f4fe6d1ee164b0313f702405d790440357b4cfd7e9242a960ac16275b (height 1146000)
+            1571178976,
+            2139045,
+            0.03200413608657793
         };
 
         /* enable fallback fee on testnet */
