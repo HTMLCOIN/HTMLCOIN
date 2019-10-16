@@ -1900,7 +1900,7 @@ DisconnectResult CChainState::DisconnectBlock(const CBlock& block, const CBlockI
 
 #ifdef ENABLE_BITCORE_RPC
                 const auto &undo = txundo.vprevout[j];
-                const bool isTxCoinStake = tx.IsCoinStake();
+                const bool isTxCoinStake = tx.IsCoinStake() || tx.IsCoinBase();
                 const CTxIn input = tx.vin[j];
                 if (pfClean == NULL && fAddressIndex) {
                     const CTxOut &prevout = view.GetOutputFor(input);
@@ -3076,7 +3076,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
 
             for (unsigned int k = 0; k < tx.vout.size(); k++) {
                 const CTxOut &out = tx.vout[k];
-                const bool isTxCoinStake = tx.IsCoinStake();
+                const bool isTxCoinStake = tx.IsCoinStake() || tx.IsCoinBase();
 
                 CTxDestination dest;
                 if (ExtractDestination({tx.GetHash(), k}, out.scriptPubKey, dest)) {
