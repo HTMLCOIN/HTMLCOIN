@@ -1688,6 +1688,12 @@ bool AppInitMain(InitInterfaces& interfaces)
                 }
             }
 
+            uiInterface.InitMessage(_("Checking ACP ..."));
+            if (!CheckCheckpointPubKey()) {
+                strLoadError = _("Checking ACP pubkey failed");
+                break;
+            }
+
             try {
                 LOCK(cs_main);
                 if (!is_coinsview_empty) {
