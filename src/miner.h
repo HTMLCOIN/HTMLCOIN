@@ -65,7 +65,7 @@ uint32_t ByteReverse(uint32_t value);
 /** Do mining precalculation */
 void FormatHashBuffers(CBlock* pblock, char* pdata);
 /** Check mined block */
-bool CheckWork(const CChainParams& chainparams, CBlock* pblock, CReserveKey& reservekey);
+bool CheckWork(const CChainParams& chainparams, CBlock* pblock);
 
 // Container for tracking updates to ancestor feerate as we include (parent)
 // transactions in a block

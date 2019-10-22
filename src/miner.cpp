@@ -107,7 +107,7 @@ void FormatHashBuffers(CBlock* pblock, char* pdata)
     memcpy(pdata, &tmp.block, 192); // 192 // 128
 }
 
-bool CheckWork(const CChainParams& chainparams, CBlock* pblock, CReserveKey& reservekey)
+bool CheckWork(const CChainParams& chainparams, CBlock* pblock)
 {
     uint256 hash = pblock->GetHash();
     arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);

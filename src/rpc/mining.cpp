@@ -40,38 +40,6 @@
 #include <memory>
 #include <stdint.h>
 
-#ifdef ENABLE_WALLET
-// Key used by getwork miners.
-// Allocated in InitRPCMining, free'd in ShutdownRPCMining
-static CReserveKey* pMiningKey = nullptr;
-
-void InitRPCMining()
-{
-    if (HasWallets())
-        return;
-
-    std::vector<std::shared_ptr<CWallet>> wallets = GetWallets();
-
-    // getwork/getblocktemplate mining rewards paid here:
-    pMiningKey = new CReserveKey(wallets[0].get());
-}
-
-void ShutdownRPCMining()
-{
-    if (!pMiningKey)
-        return;
-
-    delete pMiningKey; pMiningKey = nullptr;
-}
-#else
-void InitRPCMining()
-{
-}
-void ShutdownRPCMining()
-{
-}
-#endif
-
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
  * or from the last difficulty change if 'lookup' is nonpositive.
@@ -613,7 +581,7 @@ UniValue getwork(const JSONRPCRequest& request)
         pblock->vtx = mapNewTransaction[block.hashMerkleRoot];
         LogPrintf("%s: getwork Block submitted: %s", __func__, pblock->ToString().c_str());
 
-        return CheckWork(chainParams, pblock, *pMiningKey);
+        return CheckWork(chainParams, pblock);
     }
 }
 
