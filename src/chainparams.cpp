@@ -75,7 +75,7 @@ public:
         consensus.nPosTargetTimespan = 15 * 60;
         consensus.nPowTargetTimespan = 120;
         consensus.nPowTargetSpacing = 120;
-        consensus.checkpointPubKey = "0406dfb9b5f8ac06d9fc671e6f25120f5b2ba78273ab290a639badf6a9d12c820d9f67beed7147bfb4d2c1e1274228666e8ebec98d126638ca38a5f61882fc745a";
+        consensus.checkpointPubKey = "041dd4a81665947a5f077732779b8bc304f5425f2977a99ef6d58ccd71967661b8b778db9f542778fbd7354563524272ab764ee8feab08240b4ebd324c33cd80d5";
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 15120; // 95% of 2016
