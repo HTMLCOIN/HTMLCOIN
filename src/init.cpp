@@ -1127,11 +1127,6 @@ bool AppInitParameterInteraction()
         }
     }
 
-    if (mapMultiArgs.count("-checkpointkey")) // Checkpoint master priv key
-    {
-        if (!SetCheckpointPrivKey(GetArg("-checkpointkey", "")))
-            return InitError(_("Unable to sign checkpoint, wrong checkpointkey?"));
-    }
     return true;
 }
 

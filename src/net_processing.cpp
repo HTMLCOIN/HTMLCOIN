@@ -1395,9 +1395,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         pfrom->nTimeOffset = nTimeOffset;
         AddTimeData(pfrom->addr, nTimeOffset);
 
-        if (!IsInitialBlockDownload())
-            AskForPendingSyncCheckpoint(pfrom);
-
         // Feeler connections exist only to verify if address is online.
         if (pfrom->fFeeler) {
             assert(pfrom->fInbound == false);
@@ -2544,23 +2541,6 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
         if (bPingFinished) {
             pfrom->nPingNonceSent = 0;
-        }
-    }
-
-    else if (strCommand == NetMsgType::CHECKPOINT) // Synchronized checkpoint
-    {
-        CSyncCheckpoint checkpoint;
-        vRecv >> checkpoint;
-
-        if (checkpoint.ProcessSyncCheckpoint(pfrom))
-        {
-            LogPrintf("%s: hashCheckpoint=%s\n", __func__, checkpoint.hashCheckpoint.ToString().c_str());
-
-            // Relay checkpoint
-            pfrom->hashCheckpointKnown = checkpoint.hashCheckpoint;
-            g_connman->ForEachNode([checkpoint](CNode* pnode) {
-                checkpoint.RelayTo(pnode);
-            });
         }
     }
 
