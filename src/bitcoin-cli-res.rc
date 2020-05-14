@@ -16,14 +16,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "Qtum"
-            VALUE "FileDescription",    "qtum-cli (JSON-RPC client for " PACKAGE_NAME ")"
+            VALUE "CompanyName",        "HTMLCOIN"
+            VALUE "FileDescription",    "htmlcoin-cli (JSON-RPC client for " PACKAGE_NAME ")"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "qtum-cli"
+            VALUE "InternalName",       "htmlcoin-cli"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "qtum-cli.exe"
-            VALUE "ProductName",        "qtum-cli"
+            VALUE "OriginalFilename",   "htmlcoin-cli.exe"
+            VALUE "ProductName",        "htmlcoin-cli"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

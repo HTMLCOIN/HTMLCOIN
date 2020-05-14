@@ -2,11 +2,11 @@
 
 *.exe
 *.pdb
-src/bitcoin
-src/bitcoind
-src/bitcoin-cli
-src/bitcoin-tx
-src/bitcoin-wallet
+src/htmlcoin
+src/htmlcoind
+src/htmlcoin-cli
+src/htmlcoin-tx
+src/htmlcoin-wallet
 src/test/test_bitcoin
 src/test/test_bitcoin_fuzzy
 src/qt/test/test_bitcoin-qt
@@ -88,8 +88,8 @@ src/qt/bitcoin-qt.includes
 *.qm
 Makefile
 !depends/Makefile
-bitcoin-qt
-Bitcoin-Qt.app
+htmlcoin-qt
+HTMLCOIN-Qt.app
 background.tiff*
 
 # Qt Creator
@@ -97,7 +97,7 @@ Makefile.am.user
 
 # Unit-tests
 Makefile.test
-bitcoin-qt_test
+htmlcoin-qt_test
 
 # Resources cpp
 qrc_*.cpp

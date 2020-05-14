@@ -33,7 +33,6 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
 {
     // set sizes
     int logoSize                = 50;
-    int logoImageSize           = logoSize - 13;
     int packageTextHeight       = 30;
     int versionTextHeight       = 20;
     int statusHeight            = 30;
@@ -44,9 +43,9 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
     devicePixelRatio = static_cast<QGuiApplication*>(QCoreApplication::instance())->devicePixelRatio();
 
     // define text to place
-    QString titleText       = PACKAGE_NAME;
+    QString titleText       = tr(PACKAGE_NAME);
     QString versionText     = QString("%1").arg(QString::fromStdString(FormatFullVersion()));
-    QString copyrightText   = QString::fromUtf8(CopyrightHolders(strprintf("\xc2\xA9 %u ", COPYRIGHT_YEAR)).c_str());
+    QString copyrightText   = QString::fromUtf8(CopyrightHolders(strprintf("\xc2\xA9 %u-%u ", 2014, COPYRIGHT_YEAR)).c_str());
     QString titleAddText    = networkStyle->getTitleAddText();
 
     QString font            = QApplication::font().toString();
@@ -74,15 +73,6 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
     pixPaint.drawPixmap(rectBg, bg);
 
     QRect logoRect(splashSize.width() - logoSize - 20, 20, logoSize, logoSize);
-    QPainterPath logoPath;
-    logoPath.addRoundedRect(logoRect, logoSize / 2, logoSize / 2);
-    pixPaint.setRenderHint(QPainter::Antialiasing);
-    pixPaint.setPen(logo_frame_color);
-    pixPaint.drawPath(logoPath);
-
-    QPixmap logo = PlatformStyle::SingleColorIcon(":/icons/bitcoin", foreground_color).pixmap(QSize(logoImageSize, logoImageSize));
-    pixPaint.drawPixmap(logoRect.x() + 6, logoRect.y() + 6, logo);
-
     pixPaint.setPen(foreground_color);
 
     pixPaint.setFont(QFont(font, 22 * fontFactor, QFont::Bold));
@@ -106,7 +96,7 @@ SplashScreen::SplashScreen(interfaces::Node& node, Qt::WindowFlags f, const Netw
 
     QRect welcomeRect(0, splashSize.height() - statusHeight - welcomeTextHeight - 40, splashSize.width() -20, welcomeTextHeight);
     pixPaint.setFont(QFont(font, 10 * fontFactor, QFont::Bold));
-    pixPaint.drawText(welcomeRect, Qt::AlignRight | Qt::AlignTop, "Qtum-Qt Wallet");
+    pixPaint.drawText(welcomeRect, Qt::AlignRight | Qt::AlignTop, "HTMLCOIN-Qt Wallet");
 
     // draw copyright stuff
     QFont statusFont = QApplication::font();
