@@ -48,21 +48,10 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     return genesis;
 }
 
-/**
- * Build the genesis block. Note that the output of its generation
- * transaction cannot be spent since it did not originally exist in the
- * database.
- *
- * CBlock(hash=000000000019d6, ver=1, hashPrevBlock=00000000000000, hashMerkleRoot=4a5e1e, nTime=1231006505, nBits=1d00ffff, nNonce=2083236893, vtx=1)
- *   CTransaction(hash=4a5e1e, ver=1, vin.size=1, vout.size=1, nLockTime=0)
- *     CTxIn(COutPoint(000000, -1), coinbase 04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73)
- *     CTxOut(nValue=50.00000000, scriptPubKey=0x5F1DF16B2B704C8A578D0B)
- *   vMerkleTree: 4a5e1e
- */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Sep 02, 2017 Bitcoin breaks $5,000 in latest price frenzy";
-    const CScript genesisOutputScript = CScript() << ParseHex("040d61d8653448c98731ee5fffd303c15e71ec2057b77f11ab3601979728cdaff2d68afbba14e4fa0bc44f2072b0b23ef63717f8cdfbe58dcd33f32b6afe98741a") << OP_CHECKSIG;
+    const char* pszTimestamp = "BBC 9/24/2017 Germany election Merkel wins fourth term";
+    const CScript genesisOutputScript = CScript() << ParseHex("04e67225ab32299deaf6312b5b77f0cd2a5264f3757c9663f8dc401ff8b3ad8b012fde713be690ab819f977f84eaef078767168aeb1cb1287941b6319b76d8e582") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -73,113 +62,106 @@ class CMainParams : public CChainParams {
 public:
     CMainParams() {
         strNetworkID = "main";
-        consensus.nSubsidyHalvingInterval = 985500; // qtum halving every 4 years
-        consensus.BIP16Exception = uint256S("0x000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c");
+        consensus.nSubsidyHalvingInterval = 7680000; // HTMLCOIN halving every 14.6 years
+        consensus.BIP16Exception = uint256();
         consensus.BIP34Height = 0;
-        consensus.BIP34Hash = uint256S("0x000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c");
-        consensus.BIP65Height = 0; // 000000000000000004c2b624ed5d7756c508d90fd0da2c7c679febfa6c4735f0
-        consensus.BIP66Height = 0; // 00000000000000000379eaa19dce8c9b722d46ae6a57c2f1a988119488b50931
-        consensus.CSVHeight = 6048; // 000000000000000004a1b34462cb8aeebd5799177f7a29cf28f2d1961716b5b5
-        consensus.SegwitHeight = 6048; // 0000000000000000001c8018d9cb3b742ef25114f27563e3fc4a1902167f9893
-        consensus.MinBIP9WarningHeight = 8064; // segwit activation height + miner confirmation window
-        consensus.QIP5Height = 466600;
-        consensus.QIP6Height = 466600;
-        consensus.QIP7Height = 466600;
-        consensus.QIP9Height = 466600;
+        consensus.BIP34Hash = uint256();
+        consensus.BIP65Height = 0;
+        consensus.BIP66Height = 0;
+        consensus.CSVHeight = 60480;
+        consensus.SegwitHeight = 60480;
+        consensus.MinBIP9WarningHeight = 80640;
+        consensus.QIP5Height = 1277000;
+        consensus.QIP6Height = 1277000;
+        consensus.QIP7Height = 1277000;
+        consensus.QIP9Height = 1277000;
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
+        consensus.nPowTargetTimespan = 15 * 60; // 16 minutes
         consensus.nPowTargetTimespanV2 = 4000;
-        consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetSpacing = 120;
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = true;
+        consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
-        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 15120; // 95% of 2016
+        consensus.nMinerConfirmationWindow = 20160; // nPowTargetTimespan / nPowTargetSpacing
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x0000000000000000000000000000000000000000000001588da875a3a3951783"); // qtum
+        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000007c1000e6995955fe7f91a");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x497f28fd4b1dadc9ff6dd2ac771483acfd16e4c4664eb45d0a6008dc33811418"); // 498000
+        consensus.defaultAssumeValid = uint256S("0x00000000000f9073f18564f8d0c3059e61d0617735bc500d9837799a0354f8d4");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
-        pchMessageStart[0] = 0xf1;
-        pchMessageStart[1] = 0xcf;
-        pchMessageStart[2] = 0xa6;
-        pchMessageStart[3] = 0xd3;
-        nDefaultPort = 3888;
+        pchMessageStart[0] = 0x1f;
+        pchMessageStart[1] = 0x2e;
+        pchMessageStart[2] = 0x3d;
+        pchMessageStart[3] = 0x4c;
+        nDefaultPort = 4888;
         nPruneAfterHeight = 100000;
-        m_assumed_blockchain_size = 8;
+        m_assumed_blockchain_size = 2;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock(1504695029, 8026361, 0x1f00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1506211200, 94371, 0x1f00ffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0"));
+        assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         // Note that of those which support the service bits prefix, most only support a subset of
         // possible options.
         // This is fine at runtime as we'll fall back to using them as a oneshot if they don't support the
         // service bits we want, but we should get them updated to support all service bits wanted by any
         // release ASAP to avoid it where possible.
-        vSeeds.emplace_back("qtum3.dynu.net"); // Qtum mainnet
-        vSeeds.emplace_back("qtum5.dynu.net"); // Qtum mainnet
-        vSeeds.emplace_back("qtum6.dynu.net"); // Qtum mainnet
-        vSeeds.emplace_back("qtum7.dynu.net"); // Qtum mainnet
+        vSeeds.emplace_back("seed1.htmlcoin.com"); // mainnet
+        vSeeds.emplace_back("seed2.htmlcoin.com"); // mainnet
+        vSeeds.emplace_back("seed3.htmlcoin.com"); // mainnet
+        vSeeds.emplace_back("seed4.htmlcoin.com"); // mainnet
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,58);
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,50);
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
-        base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
-        base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,41);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,100);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,169);
+        base58Prefixes[EXT_PUBLIC_KEY] = {0x13, 0x97, 0xC1, 0x0D};
+        base58Prefixes[EXT_SECRET_KEY] = {0x13, 0x97, 0xBC, 0xF3};
 
-        bech32_hrp = "qc";
+        bech32_hrp = "hc";
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
 
+        fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         m_is_test_chain = false;
 
         checkpointData = {
             {
-                { 0, uint256S("000075aef83cf2853580f8ae8ce6f8c3096cfa21d98334d6e3f95e5582ed986c")},
-                { 5000, uint256S("00006a5338e5647872bd91de1d291365e941e14dff1939b5f16d1804d1ce61cd")}, //last PoW block
-                { 45000, uint256S("060c6af680f6975184c7a17059f2ff4970544fcfd4104e73744fe7ab7be14cfc")},
-                { 90000, uint256S("66fcf426b0aa6f2c9e3330cb2775e9e13c4a2b8ceedb50f8931ae0e12078ad50")},
-                { 245000, uint256S("ed79607feeadcedf5b94f1c43df684af5106e79b0989a008a88f9dc2221cc12a")},
-                { 353000, uint256S("d487896851fed42b07771f950fcc4469fbfa79211cfefed800f6d7806255e23f")},
-                { 367795, uint256S("1209326b73e38e44ec5dc210f51dc5d8c3494e9c698521032dd754747d4c1685")},
-                { 445709, uint256S("814e7d91aac6c577e4589b76918f44cf80020212159d39709fbad3f219725c9f")},
-                { 498000, uint256S("497f28fd4b1dadc9ff6dd2ac771483acfd16e4c4664eb45d0a6008dc33811418")},
+                {       0, uint256S("0000bf23c6424c270a24a17a3db723361c349e0f966d7b55a6bca4bfb2d951b0")},
+                {     798, uint256S("00002847d05b6fe46570b754815309123bedcb84a5ac2ae58fa1d38957ccb772")},
+                {  211401, uint256S("00000000000a2142cf5781b89170e7fd2d1fb22b92a7f3878e8199378e32a54b")},
+                {  308971, uint256S("000000000002e13479422a602499ceff5699ae3bb21bc5ebf2b12257d3da7b4e")},
+                {  526446, uint256S("00000000000eb8bd8570a6249d2592a2747bb1c8d3f9f1a7e9d668353825e7b2")},
+                {  950000, uint256S("1cceb9762ceae24c7a1e5b67e6e22122f561fc95effee4ae94a730763b04c10c")},
+                { 1231400, uint256S("00000000000f9073f18564f8d0c3059e61d0617735bc500d9837799a0354f8d4")},
             }
         };
 
         chainTxData = ChainTxData{
-            // Data as of block 5c0215809068d3e8520997febc84ca578b4ddf3f8917a86b6c7f5e1deecb5c32 (height 499049)
-            1575479072, // * UNIX timestamp of last known number of transactions
-            3614626, // * total number of transactions between genesis and that timestamp
+            // Data from RPC: getchaintxstats 4096 00000000000f9073f18564f8d0c3059e61d0617735bc500d9837799a0354f8d4
+            1589500983, // * UNIX timestamp of last known number of transactions
+            2198623, // * total number of transactions between genesis and that timestamp
             //   (the tx=... number in the SetBestChain debug.log lines)
-            0.03358921219453481 // * estimated number of transactions per second after that timestamp
+            0.02387811940904145 // * estimated number of transactions per second after that timestamp
         };
 
-        consensus.nLastPOWBlock = 5000;
-        consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                    consensus.nMPoSRewardRecipients + 
-                                    COINBASE_MATURITY;
-
-        consensus.nFixUTXOCacheHFHeight = 100000;
-        consensus.nEnableHeaderSignatureHeight = 399100;
+        consensus.nFixUTXOCacheHFHeight=251000;
+        consensus.nEnableHeaderSignatureHeight = 997655;
         consensus.nCheckpointSpan = COINBASE_MATURITY;
     }
 };
@@ -191,27 +173,27 @@ class CTestNetParams : public CChainParams {
 public:
     CTestNetParams() {
         strNetworkID = "test";
-        consensus.nSubsidyHalvingInterval = 985500; // qtum halving every 4 years
-        consensus.BIP16Exception = uint256S("0x0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222");
+        consensus.nSubsidyHalvingInterval = 7680000; // HTMLCOIN halving every 14.6 years
+        consensus.BIP16Exception = uint256();
         consensus.BIP34Height = 0;
-        consensus.BIP34Hash = uint256S("0x0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222");
-        consensus.BIP65Height = 0; // 00000000007f6655f22f98e72ed80d8b06dc761d5da09df0fa1dc4be4f861eb6
-        consensus.BIP66Height = 0; // 000000002104c8c45e99a8853285a3b592602a3ccde2b832481da85e9e4ba182
-        consensus.CSVHeight = 6048; // 00000000025e930139bac5c6c31a403776da130831ab85be56578f3fa75369bb
-        consensus.SegwitHeight = 6048; // 00000000002b980fcd729daaa248fd9316a5200e9b367f4ff2c42453e84201ca
-        consensus.MinBIP9WarningHeight = 8064; // segwit activation height + miner confirmation window
-        consensus.QIP5Height = 446320;
-        consensus.QIP6Height = 446320;
-        consensus.QIP7Height = 446320;
-        consensus.QIP9Height = 446320;
+        consensus.BIP34Hash = uint256();
+        consensus.BIP65Height = 0;
+        consensus.BIP66Height = 0;
+        consensus.CSVHeight = 60480;
+        consensus.SegwitHeight = 60480;
+        consensus.MinBIP9WarningHeight = 80640;
+        consensus.QIP5Height = std::numeric_limits<int>::max();
+        consensus.QIP6Height = std::numeric_limits<int>::max();
+        consensus.QIP7Height = std::numeric_limits<int>::max();
+        consensus.QIP9Height = std::numeric_limits<int>::max();
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes
+        consensus.nPowTargetTimespan = 15 * 60; // 16 minutes
         consensus.nPowTargetTimespanV2 = 4000;
-        consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetSpacing = 10;
         consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = true;
+        consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
         consensus.nRuleChangeActivationThreshold = 1512; // 75% for testchains
         consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
@@ -220,31 +202,31 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x000000000000000000000000000000000000000000000054b076851886f682c5"); // qtum
+        consensus.nMinimumChainWork = uint256S("0x00");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x4a5ab88811edba9f43fe6fe1ca9f529fb363ed2f0725ae9797bb5bdd9220cb7a"); // 421632
+        consensus.defaultAssumeValid = uint256S("0x00");
 
-        pchMessageStart[0] = 0x0d;
-        pchMessageStart[1] = 0x22;
-        pchMessageStart[2] = 0x15;
-        pchMessageStart[3] = 0x06;
-        nDefaultPort = 13888;
+        pchMessageStart[0] = 0x2f;
+        pchMessageStart[1] = 0x3e;
+        pchMessageStart[2] = 0x4d;
+        pchMessageStart[3] = 0x5c;
+        nDefaultPort = 14888;
         nPruneAfterHeight = 1000;
-        m_assumed_blockchain_size = 2;
+        m_assumed_blockchain_size = 1;
         m_assumed_chain_state_size = 1;
 
-        genesis = CreateGenesisBlock(1504695029, 7349697, 0x1f00ffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1506212200, 102232, 0x1f00ffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000013694772f8aeb88efeb2829fe5d71fbca3e23d5043baa770726f204f528c"));
+        assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         vFixedSeeds.clear();
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-        vSeeds.emplace_back("qtum4.dynu.net"); // Qtum testnet
+        vSeeds.emplace_back("testnet-seed1.htmlcoin.com"); // Qtum testnet
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,120);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,100);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,110);
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
@@ -254,6 +236,7 @@ public:
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
 
+        fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = false;
         m_is_test_chain = true;
@@ -261,31 +244,19 @@ public:
 
         checkpointData = {
             {
-                {0, uint256S("0000e803ee215c0684ca0d2f9220594d3f828617972aad66feb2ba51f5e14222")},
-                {5000, uint256S("000000302bc22f2f65995506e757fff5c824545db5413e871d57d27a0997e8a0")}, //last PoW block
-                {77000, uint256S("f41e2e8d09bca38827c23cad46ed6d434902da08415d2314d0c8ce285b1970cb")},
-                {230000, uint256S("cd17baf80fa817dd543b83897ccb1e07350019e5b812f4956f69efe855d62601")},
-                {343000, uint256S("ac66f1de1a5fa473b5097b313c203e97d45669485e4c235a32a0f80df64f6948")},
-                {441632, uint256S("2cb93f74cb3e47ec05b745a445f90a023b7136a68f94e9bff7fb49819155ccd8")},
-                {491300, uint256S("75a7db2865423d3af5f0dfd70cfef6053b91f3c018c4b28a4e28c09a8c011e78")},
+                {1146000, uint256S("9920f63f4fe6d1ee164b0313f702405d790440357b4cfd7e9242a960ac16275b")},
             }
         };
 
         chainTxData = ChainTxData{
-            // Data as of block babfd02d9dd271a12a2fd1b8ba95a0c73aca9a0b25889d3340a7ca3fb406a2cf (height 496333)
-            1575478816,
-            1080030,
-            0.01624824080589608
+            // Data as of block 9920f63f4fe6d1ee164b0313f702405d790440357b4cfd7e9242a960ac16275b (height 1146000)
+            1571178976,
+            2139045,
+            0.03200413608657793
         };
 
-        consensus.nLastPOWBlock = 5000;
-        consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                    consensus.nMPoSRewardRecipients + 
-                                    COINBASE_MATURITY;
-
-        consensus.nFixUTXOCacheHFHeight = 84500;
-        consensus.nEnableHeaderSignatureHeight = 391993;
+        consensus.nFixUTXOCacheHFHeight=340480;
+        consensus.nEnableHeaderSignatureHeight = 1169889;
         consensus.nCheckpointSpan = COINBASE_MATURITY;
     }
 };
@@ -298,9 +269,9 @@ public:
     explicit CRegTestParams(const ArgsManager& args) {
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
-        consensus.BIP16Exception = uint256S("0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943");
+        consensus.BIP16Exception = uint256();
         consensus.BIP34Height = 0; // BIP34 activated on regtest (Used in functional tests)
-        consensus.BIP34Hash = uint256S("0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943");
+        consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 0; // BIP65 activated on regtest (Used in functional tests)
         consensus.BIP66Height = 0; // BIP66 activated on regtest (Used in functional tests)
         consensus.CSVHeight = 432; // CSV activated on regtest (Used in rpc activation tests)
@@ -313,9 +284,9 @@ public:
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.QIP9PosLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
-        consensus.nPowTargetTimespan = 16 * 60; // 16 minutes (960 = 832 + 128; multiplier is 832)
+        consensus.nPowTargetTimespan = 15 * 60; // 16 minutes (960 = 832 + 128; multiplier is 832)
         consensus.nPowTargetTimespanV2 = 4000;
-        consensus.nPowTargetSpacing = 2 * 64;
+        consensus.nPowTargetSpacing = 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.fPoSNoRetargeting = true;
@@ -331,32 +302,33 @@ public:
         // By default assume that the signatures in ancestors of this block are valid.
         consensus.defaultAssumeValid = uint256S("0x00");
 
-        pchMessageStart[0] = 0xfd;
-        pchMessageStart[1] = 0xdd;
-        pchMessageStart[2] = 0xc6;
-        pchMessageStart[3] = 0xe1;
-        nDefaultPort = 23888;
+        pchMessageStart[0] = 0x3f;
+        pchMessageStart[1] = 0x4e;
+        pchMessageStart[2] = 0x5d;
+        pchMessageStart[3] = 0x6c;
+        nDefaultPort = 24888;
         nPruneAfterHeight = 1000;
         m_assumed_blockchain_size = 0;
         m_assumed_chain_state_size = 0;
 
         UpdateActivationParametersFromArgs(args);
 
-        genesis = CreateGenesisBlock(1504695029, 17, 0x207fffff, 1, 50 * COIN);
+        genesis = CreateGenesisBlock(1506213200, 2, 0x207fffff, 1, 1 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed34050eb5909ee535fcb07af292ea55f3d2f291187617b44d3282231405b96d"));
+        assert(consensus.hashGenesisBlock == uint256S("0x03c80d2399e1fe481a51e122ac55159a4e5fe635494a7fd368f3e440241fccb2"));
+        assert(genesis.hashMerkleRoot == uint256S("0xb07b60977e6f1ebfc23c074fb319c654e38dba5d7db16902863a4a98dd981f68"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
 
+        fMiningRequiresPeers = false;
         fDefaultConsistencyChecks = true;
         fRequireStandard = true;
         m_is_test_chain = true;
 
         checkpointData = {
             {
-                {0, uint256S("665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943")},
+                {0, uint256S("03c80d2399e1fe481a51e122ac55159a4e5fe635494a7fd368f3e440241fccb2")},
             }
         };
 
@@ -365,9 +337,6 @@ public:
             0,
             0
         };
-        consensus.nLastPOWBlock = 0x7fffffff;
-        consensus.nMPoSRewardRecipients = 10;
-        consensus.nFirstMPoSBlock = 5000;
 
         consensus.nFixUTXOCacheHFHeight=0;
         consensus.nEnableHeaderSignatureHeight = 0;
