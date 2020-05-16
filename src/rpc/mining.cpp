@@ -57,7 +57,7 @@ static UniValue GetNetworkHashPS(int lookup, int height) {
 
     // If lookup is -1, then use blocks since last difficulty change.
     if (lookup <= 0)
-        lookup = pb->nHeight % Params().GetConsensus().DifficultyAdjustmentInterval(pb->nHeight) + 1;
+        lookup = 1000;
 
     // If lookup is larger than chain, then set it to chain length.
     if (lookup > pb->nHeight)
@@ -108,6 +108,9 @@ static UniValue getnetworkhashps(const JSONRPCRequest& request)
 
 static UniValue generateBlocks(const CScript& coinbase_script, int nGenerate, uint64_t nMaxTries)
 {
+    if (Params().MiningRequiresPeers() && g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Client not connected");
+
     int nHeightEnd = 0;
     int nHeight = 0;
 
@@ -632,7 +635,7 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, true, ::ChainActive().Tip()->nHeight>=Params().GetConsensus().nLastPOWBlock?true:false);
+        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, false, false, nullptr, 0, 0);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 

@@ -511,11 +511,6 @@ void CChainParams::UpdateDifficultyChangeBlockHeight(int nHeight)
     consensus.fPowAllowMinDifficultyBlocks = false;
     consensus.fPowNoRetargeting = true;
     consensus.fPoSNoRetargeting = false;
-    consensus.nLastPOWBlock = 5000;
-    consensus.nMPoSRewardRecipients = 10;
-    consensus.nFirstMPoSBlock = consensus.nLastPOWBlock + 
-                                consensus.nMPoSRewardRecipients + 
-                                COINBASE_MATURITY;
 }
 
 void UpdateDifficultyChangeBlockHeight(int nHeight)

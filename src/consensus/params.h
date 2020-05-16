@@ -98,7 +98,6 @@ struct Params {
     }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
-    int nLastPOWBlock;
     int nFirstMPoSBlock;
     int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;

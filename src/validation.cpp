@@ -5083,13 +5083,7 @@ static bool ContextualCheckBlock(const CBlock& block, CValidationState& state, c
 
 bool CChainState::UpdateHashProof(const CBlock& block, CValidationState& state, const Consensus::Params& consensusParams, CBlockIndex* pindex, CCoinsViewCache& view)
 {
-    int nHeight = pindex->nHeight;
     uint256 hash = block.GetHash();
-
-    //reject proof of work at height consensusParams.nLastPOWBlock
-    if (block.IsProofOfWork() && nHeight > consensusParams.nLastPOWBlock)
-        return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, error("UpdateHashProof() : reject proof-of-work at height %d", nHeight), REJECT_INVALID, "reject-pow");
-    
     // Check coinstake timestamp
     if (block.IsProofOfStake() && !CheckCoinStakeTimestamp(block.GetBlockTime()))
         return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, error("UpdateHashProof() : coinstake timestamp violation nTimeBlock=%d", block.GetBlockTime()), REJECT_INVALID, "timestamp-invalid");
@@ -5232,14 +5226,10 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, CValidationState
                 }
             }
         }
-
-        // Reject proof of work at height consensusParams.nLastPOWBlock
-        int nHeight = pindexPrev->nHeight + 1;
-        if (block.IsProofOfWork() && nHeight > chainparams.GetConsensus().nLastPOWBlock)
-            return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, false, REJECT_INVALID, "reject-pow", strprintf("reject proof-of-work at height %d", nHeight));
-
         if(block.IsProofOfStake())
         {
+            int nHeight = pindexPrev->nHeight + 1;
+
             // Reject proof of stake before height COINBASE_MATURITY
             if (nHeight < COINBASE_MATURITY)
                 return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, false, REJECT_INVALID, "reject-pos", strprintf("reject proof-of-stake at height %d", nHeight));
@@ -5384,11 +5374,6 @@ bool CChainState::AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CVali
 
     // Get block height
     int nHeight = pindex->nHeight;
-
-    // Check for the last proof of work block
-    if (block.IsProofOfWork() && nHeight > chainparams.GetConsensus().nLastPOWBlock)
-        return state.Invalid(ValidationInvalidReason::BLOCK_INVALID_HEADER, error("%s: reject proof-of-work at height %d", __func__, nHeight), REJECT_INVALID, "reject-pow");
-
     // Check that the block satisfies synchronized checkpoint
     if (!Checkpoints::CheckSync(nHeight))
         return error("AcceptBlock() : rejected by synchronized checkpoint");
