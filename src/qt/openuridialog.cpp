@@ -20,7 +20,7 @@ OpenURIDialog::OpenURIDialog(QWidget *parent) :
     SetObjectStyleSheet(ui->buttonBox->button(QDialogButtonBox::Cancel), StyleSheetNames::ButtonLight);
     SetObjectStyleSheet(ui->buttonBox->button(QDialogButtonBox::Ok), StyleSheetNames::ButtonGray);
 
-    ui->uriEdit->setPlaceholderText("qtum:");
+    ui->uriEdit->setPlaceholderText("htmlcoin:");
 }
 
 OpenURIDialog::~OpenURIDialog()
@@ -51,5 +51,5 @@ void OpenURIDialog::on_selectFileButton_clicked()
     if(filename.isEmpty())
         return;
     QUrl fileUri = QUrl::fromLocalFile(filename);
-    ui->uriEdit->setText("qtum:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
+    ui->uriEdit->setText("htmlcoin:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
 }

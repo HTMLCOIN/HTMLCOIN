@@ -1,4 +1,4 @@
-<!-- This issue tracker is only for technical issues related to Qtum Core. -->
+<!-- This issue tracker is only for technical issues related to HTMLCOIN CORE. -->
 
 <!-- Describe the issue -->
 <!--- What behavior did you expect? -->
@@ -7,7 +7,7 @@
 
 <!--- How reliably can you reproduce the issue, what are the steps to do so? -->
 
-<!-- What version of Qtum Core are you using, where did you get it (website, self-compiled, etc)? -->
+<!-- What version of HTMLCOIN CORE are you using, where did you get it (website, self-compiled, etc)? -->
 
 <!-- What type of machine are you observing the error on (OS/CPU and disk type)? -->
 

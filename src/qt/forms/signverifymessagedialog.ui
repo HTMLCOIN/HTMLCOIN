@@ -352,7 +352,7 @@
            <item>
             <widget class="QValidatedLineEdit" name="addressIn_VM">
              <property name="toolTip">
-              <string>The Qtum address the message was signed with</string>
+              <string>The HTML address the message was signed with</string>
              </property>
             </widget>
            </item>
@@ -460,7 +460,7 @@
           <item>
            <widget class="QtumPushButton" name="verifyMessageButton_VM">
             <property name="toolTip">
-             <string>Verify the message to ensure it was signed with the specified Qtum address</string>
+             <string>Verify the message to ensure it was signed with the specified HTML address</string>
             </property>
             <property name="text">
              <string>Verify &amp;Message</string>
