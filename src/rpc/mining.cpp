@@ -7,20 +7,24 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <consensus/consensus.h>
+#include <consensus/merkle.h>
 #include <consensus/params.h>
 #include <consensus/validation.h>
 #include <core_io.h>
 #include <key_io.h>
 #include <miner.h>
 #include <net.h>
+#include <outputtype.h>
 #include <policy/fees.h>
 #include <pow.h>
 #include <pos.h>
+#include <primitives/transaction.h>
 #include <rpc/blockchain.h>
 #include <rpc/server.h>
 #include <rpc/util.h>
 #include <script/script.h>
 #include <shutdown.h>
+#include <script/standard.h>
 #include <txmempool.h>
 #include <univalue.h>
 #include <util/fees.h>
@@ -40,6 +44,32 @@
 #endif
 #include <memory>
 #include <stdint.h>
+
+#ifdef ENABLE_WALLET
+static CScript getwork_coinbase_script;
+
+void InitRPCMining()
+{
+    if (HasWallets())
+        return;
+
+    std::shared_ptr<CWallet> pwallet = GetWallets()[0];
+
+    LOCK(pwallet->cs_wallet);
+
+    if (pwallet->CanGetAddresses()) {
+        CTxDestination dest;
+        std::string label;
+        std::string error;
+        pwallet->GetNewDestination(OutputType::LEGACY, label, dest, error);
+        getwork_coinbase_script = GetScriptForDestination(dest);
+    }
+}
+#else
+void InitRPCMining()
+{
+}
+#endif
 
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
@@ -410,6 +440,168 @@ static std::string gbt_vb_name(const Consensus::DeploymentPos pos) {
     return s;
 }
 
+#ifdef ENABLE_WALLET
+UniValue getwork(const JSONRPCRequest& request)
+{
+    if (request.fHelp || request.params.size() > 1)
+        throw std::runtime_error(
+            "getwork ( \"data\" )\n"
+            "\nIf 'data' is not specified, it returns the formatted hash data to work on.\n"
+            "If 'data' is specified, tries to solve the block and returns true if it was successful.\n"
+            "\nArguments:\n"
+            "1. \"data\"       (string, optional) The hex encoded data to solve\n"
+            "\nResult (when 'data' is not specified):\n"
+            "{\n"
+            "  \"data\" : \"xxxxx\",      (string) The block data\n"
+            "  \"target\" : \"xxxx\"      (string) The little endian hash target\n"
+            "}\n"
+            "\nResult (when 'data' is specified):\n"
+            "true|false       (boolean) If solving the block specified in the 'data' was successfull\n"
+            "\nExamples:\n"
+            + HelpExampleCli("getwork", "")
+            + HelpExampleRpc("getwork", "")
+        );
+
+    if(!g_connman)
+        throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
+
+    if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, PACKAGE_NAME " is not connected!");
+
+    if (::ChainstateActive().IsInitialBlockDownload())
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, PACKAGE_NAME " is downloading blocks...");
+
+    std::shared_ptr<CWallet> const pwallet = GetWalletForJSONRPCRequest(request);
+
+    typedef std::map<uint256, std::pair<CBlock*, CScript> > mapNewBlock_t;
+    static mapNewBlock_t mapNewBlock;    // FIXME: thread safety
+
+    typedef std::map<uint256, std::vector<CTransactionRef> > mapNewTransaction_t;
+    static mapNewTransaction_t mapNewTransaction;    // FIXME: thread safety
+
+    static std::vector<CBlockTemplate*> vNewBlockTemplate;
+
+    if (request.params.size() == 0)
+    {
+        // Update block
+        static unsigned int nTransactionsUpdatedLast;
+        static CBlockIndex* pindexPrev;
+        static int64_t nStart;
+        static std::unique_ptr<CBlockTemplate> pblocktemplate;
+
+        if (pindexPrev != ::ChainActive().Tip() ||
+            (mempool.GetTransactionsUpdated() != nTransactionsUpdatedLast && GetTime() - nStart > 5))
+        {
+            if (pindexPrev != ::ChainActive().Tip())
+            {
+                // Deallocate old blocks since they're obsolete now
+                mapNewBlock.clear();
+                mapNewTransaction.clear();
+
+                for (auto & pblocktemplate : vNewBlockTemplate)
+                    delete pblocktemplate;
+                vNewBlockTemplate.clear();
+            }
+
+            // Clear pindexPrev so future calls make a new block, despite any failures from here on
+            pindexPrev = nullptr;
+
+            // Store the ::ChainActive().Tip() used before CreateNewBlock, to avoid races
+            nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
+            CBlockIndex* pindexPrevNew = ::ChainActive().Tip();
+            nStart = GetTime();
+
+            // Create new block
+            pblocktemplate = BlockAssembler(Params()).CreateNewBlock(getwork_coinbase_script, false);
+            if (!pblocktemplate)
+                throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
+
+            // Need to update only after we know CreateNewBlock succeeded
+            pindexPrev = pindexPrevNew;
+        }
+
+        CBlock* pblock = &pblocktemplate->block; // pointer for convenience
+        const Consensus::Params& consensusParams = Params().GetConsensus();
+
+        // Update nTime
+        UpdateTime(pblock, consensusParams, pindexPrev);
+        pblock->nNonce = 0;
+
+        // Update nExtraNonce
+        static unsigned int nExtraNonce = 0;
+        IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
+
+        // Save
+        //LogPrintf("%s: mapNewBlock save hashMerkleRoot: %s, with extraNonce: %i, total: %i\n", __func__, pblock->hashMerkleRoot.ToString().c_str(), nExtraNonce, mapNewBlock.size());
+        mapNewBlock[pblock->hashMerkleRoot] = std::make_pair(pblock, pblock->vtx[0]->vin[0].scriptSig);
+
+        mapNewTransaction[pblock->hashMerkleRoot] = pblock->vtx;
+
+        //LogPrintf("%s: getwork Block created: %s\n", __func__, pblock->ToString().c_str());
+
+        // Pre-build hash buffers
+        char pdata[192];
+        FormatHashBuffers(pblock, pdata);
+
+        arith_uint256 hashTarget = arith_uint256().SetCompact(pblock->nBits);
+
+        UniValue result(UniValue::VOBJ);
+        result.pushKV("data",     HexStr(BEGIN(pdata), END(pdata)));
+        result.pushKV("target",   HexStr(BEGIN(hashTarget), END(hashTarget)));
+        return result;
+    }
+    else
+    {
+        struct unnamed2
+        {
+            int nVersion;
+            uint256 hashPrevBlock;
+            uint256 hashMerkleRoot;
+            unsigned int nTime;
+            unsigned int nBits;
+            unsigned int nNonce;
+            uint256 hashStateRoot; // qtum
+            uint256 hashUTXORoot; // qtum
+            unsigned char workpadding[37];
+        } block;
+
+        // Parse parameters
+        std::vector<unsigned char> vchData = ParseHex(request.params[0].get_str());
+
+        if (vchData.size() != 192) {
+            LogPrintf("%s: Invalid parameter vchData.size(): %u\n", __func__, vchData.size());
+            throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter");
+        }
+        memset(&block, 0, sizeof(block));
+        memcpy(&block, &vchData[0], 181);
+
+        for (unsigned int i = 0; i < 180/4; i++) // sizeof(tmp)/4
+            ((unsigned int*)&block)[i] = ByteReverse(((unsigned int*)&block)[i]);
+        if (!mapNewBlock.count(block.hashMerkleRoot)) {
+            LogPrintf("%s: Previous block contents not found. hashMerkleRoot: %s\n", __func__, block.hashMerkleRoot.ToString().c_str());
+            throw JSONRPCError(RPC_VERIFY_ERROR, "Previous block contents not found");
+        }
+
+        CBlock* pblock = mapNewBlock[block.hashMerkleRoot].first;
+
+        pblock->nTime = block.nTime;
+        pblock->nNonce = block.nNonce;
+        pblock->hashMerkleRoot = block.hashMerkleRoot;
+
+        const CChainParams& chainParams = Params();
+
+        pblock->vtx = mapNewTransaction[block.hashMerkleRoot];
+        LogPrintf("%s: getwork Block submitted: %s", __func__, pblock->ToString().c_str());
+
+        bool success = CheckWork(chainParams, pblock);
+        if (success)
+            InitRPCMining();
+
+        return success;
+    }
+}
+#endif
+
 static UniValue getblocktemplate(const JSONRPCRequest& request)
 {
             RPCHelpMan{"getblocktemplate",
@@ -474,6 +666,8 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
             "     ,...\n"
             "  ],\n"
             "  \"noncerange\" : \"00000000ffffffff\",(string) A range of valid nonces\n"
+            "  \"hashstateroot\" : \"XXX\",(string) Block hash state root\n"
+            "  \"hashutxoroot\" : \"XXX\",(string) Block hash utxo root\n"
             "  \"sigoplimit\" : n,                 (numeric) limit of sigops in blocks\n"
             "  \"sizelimit\" : n,                  (numeric) limit of block size\n"
             "  \"weightlimit\" : n,                (numeric) limit of block weight\n"
@@ -635,7 +829,7 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
 
         // Create new block
         CScript scriptDummy = CScript() << OP_TRUE;
-        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, false, false, nullptr, 0, 0);
+        pblocktemplate = BlockAssembler(Params()).CreateNewBlock(scriptDummy, true, false, nullptr, 0, 0, true);
         if (!pblocktemplate)
             throw JSONRPCError(RPC_OUT_OF_MEMORY, "Out of memory");
 
@@ -770,6 +964,9 @@ static UniValue getblocktemplate(const JSONRPCRequest& request)
     result.pushKV("mintime", (int64_t)pindexPrev->GetMedianTimePast()+1);
     result.pushKV("mutable", aMutable);
     result.pushKV("noncerange", "00000000ffffffff");
+    result.pushKV("hashstateroot", pblock->hashStateRoot.GetHex());
+    result.pushKV("hashutxoroot", pblock->hashUTXORoot.GetHex());
+
     int64_t nSigOpLimit = dgpMaxBlockSigOps;
     int64_t nSizeLimit = dgpMaxBlockSerSize;
     if (fPreSegWit) {
@@ -1087,6 +1284,9 @@ static const CRPCCommand commands[] =
     { "mining",             "getmininginfo",          &getmininginfo,          {} },
     { "mining",             "prioritisetransaction",  &prioritisetransaction,  {"txid","dummy","fee_delta"} },
     { "mining",             "getblocktemplate",       &getblocktemplate,       {"template_request"} },
+#ifdef ENABLE_WALLET
+    { "mining",             "getwork",	              &getwork,                {"data"} },
+#endif
     { "mining",             "submitblock",            &submitblock,            {"hexdata","dummy"} },
     { "mining",             "submitheader",           &submitheader,           {"hexdata"} },
 

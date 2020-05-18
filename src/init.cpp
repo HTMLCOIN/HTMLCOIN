@@ -2005,6 +2005,9 @@ bool AppInitMain(InitInterfaces& interfaces)
         return false;
     }
 
+    // InitRPCMining is needed here so getwork works properly.
+    InitRPCMining();
+
     // ********************************************************* Step 13: finished
 
     SetRPCWarmupFinished();
