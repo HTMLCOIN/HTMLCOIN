@@ -223,7 +223,7 @@
 <context>
     <name>Intro</name>
     <message>
-        <source>Qtum</source>
+        <source>HTMLCOIN</source>
         <translation>Биткойн</translation>
     </message>
     <message>
