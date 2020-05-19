@@ -85,6 +85,8 @@ struct Params {
     uint256 powLimit;
     uint256 posLimit;
     uint256 QIP9PosLimit;
+    int nDiffAdjustChange;
+    int nDiffDamping;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
@@ -98,8 +100,6 @@ struct Params {
     }
     uint256 nMinimumChainWork;
     uint256 defaultAssumeValid;
-    int nFirstMPoSBlock;
-    int nMPoSRewardRecipients;
     int nFixUTXOCacheHFHeight;
     int nEnableHeaderSignatureHeight;
     /** Block sync-checkpoint span*/
