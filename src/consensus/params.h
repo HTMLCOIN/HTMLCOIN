@@ -87,15 +87,18 @@ struct Params {
     uint256 QIP9PosLimit;
     int nDiffAdjustChange;
     int nDiffDamping;
+    unsigned int nDiffChange;
     bool fPowAllowMinDifficultyBlocks;
     bool fPowNoRetargeting;
     bool fPoSNoRetargeting;
     int64_t nPowTargetSpacing;
     int64_t nPowTargetTimespan;
-    int64_t nPowTargetTimespanV2;
+    int64_t nPosTargetTimespan;
+    int64_t nPosTargetTimespanV2;
+
     int64_t DifficultyAdjustmentInterval(int height) const
     {
-        int64_t targetSpacing = height < QIP9Height ? nPowTargetTimespan : nPowTargetTimespanV2;
+        int64_t targetSpacing = height < QIP9Height ? nPosTargetTimespan : nPosTargetTimespanV2;
         return targetSpacing / nPowTargetSpacing;
     }
     uint256 nMinimumChainWork;
