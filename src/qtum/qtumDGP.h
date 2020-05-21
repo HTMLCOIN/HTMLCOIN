@@ -40,14 +40,6 @@ public:
 
 private:
 
-    bool initStorages(const dev::Address& addr, unsigned int blockHeight, std::vector<unsigned char> data = std::vector<unsigned char>());
-
-    void initStorageDGP(const dev::Address& addr);
-
-    void initStorageTemplate(const dev::Address& addr);
-
-    void initDataTemplate(const dev::Address& addr, std::vector<unsigned char>& data);
-
     void initDataSchedule();
 
     bool checkLimitSchedule(const std::vector<uint32_t>& defaultData, const std::vector<uint32_t>& checkData, int blockHeight);
@@ -56,15 +48,9 @@ private:
 
     dev::Address getAddressForBlock(unsigned int blockHeight);
 
-    uint64_t getUint64FromDGP(unsigned int blockHeight, const dev::Address& contract, std::vector<unsigned char> data);
-
     void parseStorageScheduleContract(std::vector<uint32_t>& uint32Values);
     
     void parseDataScheduleContract(std::vector<uint32_t>& uint32Values);
-
-    void parseStorageOneUint64(uint64_t& blockSize);
-
-    void parseDataOneUint64(uint64_t& value);
 
     dev::eth::EVMSchedule createEVMSchedule(const dev::eth::EVMSchedule& schedule, int blockHeight);
 
