@@ -15,6 +15,7 @@
 #include <blockfilter.h>
 #include <chain.h>
 #include <chainparams.h>
+#include <checkpointsync.h>
 #include <compat/sanity.h>
 #include <consensus/validation.h>
 #include <fs.h>
@@ -361,7 +362,7 @@ void SetupServerArgs()
 
     // Hidden Options
     std::vector<std::string> hidden_args = {
-        "-dbcrashratio", "-forcecompactdb",
+        "-dbcrashratio", "-forcecompactdb", "-checkpointkey", "checkpointdepth",
         // GUI args. These will be overwritten by SetupUIArgs for the GUI
         "-allowselfsignedrootcertificates", "-choosedatadir", "-lang=<lang>", "-min", "-resetguisettings", "-rootcertificates=<file>", "-splash", "-uiplatform"};
 
@@ -1263,6 +1264,15 @@ bool AppInitParameterInteraction()
         }
     }
 
+    if (gArgs.IsArgSet("-checkpointkey")) // Checkpoint master priv key
+    {
+        if (!SetCheckpointPrivKey(gArgs.GetArg("-checkpointkey", "")))
+            return InitError("Unable to sign checkpoint, wrong checkpointkey?");
+    }
+
+    // Include NODE_ACP in services. Currently no arg to toggle this behaviour.
+    nLocalServices = ServiceFlags(nLocalServices | NODE_ACP);
+
     return true;
 }
 
@@ -1770,6 +1780,12 @@ bool AppInitMain(InitInterfaces& interfaces)
                     strLoadError = _("Unable to rewind the database to a pre-fork state. You will need to redownload the blockchain").translated;
                     break;
                 }
+            }
+
+            uiInterface.InitMessage("Checking ACP ...");
+            if (!CheckCheckpointPubKey()) {
+                strLoadError = "Checking ACP pubkey failed";
+                break;
             }
 
             try {

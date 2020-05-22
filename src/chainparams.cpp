@@ -84,6 +84,7 @@ public:
         consensus.nPosTargetTimespanV2 = 4000;
         consensus.nPowTargetTimespan = 120;
         consensus.nPowTargetSpacing = 120;
+        consensus.checkpointPubKey = "041dd4a81665947a5f077732779b8bc304f5425f2977a99ef6d58ccd71967661b8b778db9f542778fbd7354563524272ab764ee8feab08240b4ebd324c33cd80d5";
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = false;
@@ -207,6 +208,7 @@ public:
         consensus.nDiffAdjustChange = 0;
         consensus.nDiffDamping = 0;
         consensus.nDiffChange = -1;
+        consensus.checkpointPubKey = "0480459f232f2d35f250708d162571a0450bc5b56967c721970a0f53bd74ae2977c16d87fae1b4e4b5cc0e90584cd3c38b6e0e2bfb8c123e750b3007c62fabe78b";
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -299,6 +301,7 @@ public:
         consensus.nPowTargetTimespan = 60;
         consensus.nPowTargetSpacing = 60;
         consensus.nPowTargetSpacing = 60;
+        consensus.checkpointPubKey = "048b4b3a2b6a072b0bfa7986d6ce73e2b9896a8559fca2063d4cabb83e05e9b8268cb00b8229edb4a2fd15fa32bd2238102268cc96b52e6727a4b23c339d5908ff";
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.fPoSNoRetargeting = true;

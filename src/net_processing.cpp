@@ -10,6 +10,7 @@
 #include <arith_uint256.h>
 #include <blockencodings.h>
 #include <chainparams.h>
+#include <checkpointsync.h>
 #include <consensus/validation.h>
 #include <hash.h>
 #include <validation.h>
@@ -2190,6 +2191,9 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
             State(pfrom->GetId())->fHaveWitness = true;
         }
 
+        if((nServices & NODE_ACP))
+            pfrom->supportACPMessages = true;
+
         // Potentially mark this peer as a preferred download peer.
         {
         LOCK(cs_main);
@@ -2221,6 +2225,13 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
                 pfrom->fGetAddr = true;
             }
             connman->MarkAddressGood(pfrom->addr);
+        }
+
+        // Relay sync-checkpoint
+        {
+            LOCK(cs_main);
+            if (!checkpointMessage.IsNull())
+                checkpointMessage.RelayTo(pfrom);
         }
 
         std::string remoteAddr;
@@ -3304,6 +3315,22 @@ bool static ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStr
         }
         if (bPingFinished) {
             pfrom->nPingNonceSent = 0;
+        }
+        return true;
+    }
+
+    else if (strCommand == NetMsgType::CHECKPOINT) // Synchronized checkpoint
+    {
+        CSyncCheckpoint checkpoint;
+        vRecv >> checkpoint;
+
+        if (checkpoint.ProcessSyncCheckpoint())
+        {
+            // Relay checkpoint
+            pfrom->hashCheckpointKnown = checkpoint.hashCheckpoint;
+            g_connman->ForEachNode([checkpoint](CNode* pnode) {
+                checkpoint.RelayTo(pnode);
+            });
         }
         return true;
     }

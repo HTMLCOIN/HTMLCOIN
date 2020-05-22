@@ -9,6 +9,7 @@
 #include <chain.h>
 #include <chainparams.h>
 #include <checkpoints.h>
+#include <checkpointsync.h>
 #include <checkqueue.h>
 #include <consensus/consensus.h>
 #include <consensus/merkle.h>
@@ -2880,6 +2881,9 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: expected hardened checkpoint at height %d", __func__, pindex->nHeight), REJECT_CHECKPOINT, "bad-fork-hardened-checkpoint");
     }
 
+    // Check that the block satisfies checkpoint sync
+    if (!CheckSyncCheckpoint(pindex))
+        return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
 
     // Move this check from CheckBlock to ConnectBlock as it depends on DGP values
     if (block.vtx.empty() || block.vtx.size() > dgpMaxBlockSize || ::GetSerializeSize(block, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > dgpMaxBlockSize) // qtum
@@ -4969,6 +4973,11 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
         }
     }
 
+    // Check that the block satisfies checkpoint sync
+    if (!CheckSyncCheckpoint(nullptr, block.GetHash(), nHeight)) {
+        return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
+    }
+
     // Check that the block satisfies synchronized checkpoint
     if (!Checkpoints::CheckSync(nHeight))
         return state.Invalid(ValidationInvalidReason::BLOCK_HEADER_SYNC, error("%s: forked chain older than synchronized checkpoint (height %d)", __func__, nHeight), REJECT_CHECKPOINT, "bad-fork-prior-to-synch-checkpoint");
@@ -5261,6 +5270,9 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, CValidationState
     if (pindex == nullptr)
         pindex = AddToBlockIndex(block);
 
+    // Check if pending checkpoint relates to the block just added
+    AcceptPendingSyncCheckpoint();
+
     if (ppindex)
         *ppindex = pindex;
 
@@ -5527,6 +5539,10 @@ bool ProcessNewBlock(const CChainParams& chainparams, const std::shared_ptr<cons
     CValidationState state; // Only used to report errors, not invalidity - ignore it
     if (!::ChainstateActive().ActivateBestChain(state, chainparams, pblock))
         return error("%s: ActivateBestChain failed (%s)", __func__, FormatStateMessage(state));
+
+    // If responsible for sync-checkpoint send it
+    if (!CSyncCheckpoint::strMasterPrivKey.empty())
+        SendSyncCheckpoint(AutoSelectSyncCheckpoint());
 
     return true;
 }
@@ -5862,6 +5878,12 @@ bool static LoadBlockIndexDB(const CChainParams& chainparams) EXCLUSIVE_LOCKS_RE
             break;
         }
     }
+
+    // Load hashSyncCheckpoint
+    if (!pblocktree->ReadSyncCheckpoint(hashSyncCheckpoint))
+         LogPrintf("LoadBlockIndexDB(): synchronized checkpoint not read\n");
+    else
+         LogPrintf("LoadBlockIndexDB(): synchronized checkpoint %s\n", hashSyncCheckpoint.ToString());
 
     // Check presence of blk files
     LogPrintf("Checking all blk files are present...\n");
