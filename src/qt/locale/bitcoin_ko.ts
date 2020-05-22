@@ -1576,7 +1576,7 @@
         <translation type="unfinished">지갑 백업 안내</translation>
     </message>
     <message>
-        <source>Please backup your wallet as soon
+        <source>Please backup your wallet as soon as possible.
 Please make sure to keep an updated antivirus and operating system. We can not recover Your funds if you visit phishing site or lose your backup. Please make sure to keep backups of your private keys or files. We do not store your private keys on this wallet. And you as a user, are entirely responsible for your funds and your own security.</source>
         <translation type="unfinished"></translation>
     </message>
