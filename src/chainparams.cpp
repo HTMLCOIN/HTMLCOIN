@@ -73,10 +73,10 @@ public:
         consensus.CSVHeight = 60480;
         consensus.SegwitHeight = 60480;
         consensus.MinBIP9WarningHeight = 80640;
-        consensus.QIP5Height = 1277000;
-        consensus.QIP6Height = 1277000;
-        consensus.QIP7Height = 1277000;
-        consensus.QIP9Height = 1277000;
+        consensus.QIP5Height = 1284400;
+        consensus.QIP6Height = 1284400;
+        consensus.QIP7Height = 1284400;
+        consensus.QIP9Height = 1284400;
         consensus.powLimit = uint256S("0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.posLimit = uint256S("00000000ffffffffffffffffffffffffffffffffffffffffffffffffffffffff");
         consensus.QIP9PosLimit = uint256S("0000000000001fffffffffffffffffffffffffffffffffffffffffffffffffff"); // The new POS-limit activated after QIP9
