@@ -2882,7 +2882,7 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
     }
 
     // Check that the block satisfies checkpoint sync
-    if (!CheckSyncCheckpoint(pindex))
+    if (!IsInitialBlockDownload() && !CheckSyncCheckpoint(pindex))
         return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
 
     // Move this check from CheckBlock to ConnectBlock as it depends on DGP values
@@ -4974,7 +4974,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     }
 
     // Check that the block satisfies checkpoint sync
-    if (!CheckSyncCheckpoint(nullptr, block.GetHash(), nHeight)) {
+    if (!::ChainstateActive().IsInitialBlockDownload() && !CheckSyncCheckpoint(nullptr, block.GetHash(), nHeight)) {
         return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
     }
 
@@ -5271,7 +5271,8 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, CValidationState
         pindex = AddToBlockIndex(block);
 
     // Check if pending checkpoint relates to the block just added
-    AcceptPendingSyncCheckpoint();
+    if (!::ChainstateActive().IsInitialBlockDownload())
+        AcceptPendingSyncCheckpoint();
 
     if (ppindex)
         *ppindex = pindex;
