@@ -45,32 +45,6 @@
 #include <memory>
 #include <stdint.h>
 
-#ifdef ENABLE_WALLET
-static CScript getwork_coinbase_script;
-
-void InitRPCMining()
-{
-    if (HasWallets())
-        return;
-
-    std::shared_ptr<CWallet> pwallet = GetWallets()[0];
-
-    LOCK(pwallet->cs_wallet);
-
-    if (pwallet->CanGetAddresses()) {
-        CTxDestination dest;
-        std::string label;
-        std::string error;
-        pwallet->GetNewDestination(OutputType::LEGACY, label, dest, error);
-        getwork_coinbase_script = GetScriptForDestination(dest);
-    }
-}
-#else
-void InitRPCMining()
-{
-}
-#endif
-
 /**
  * Return average network hashes per second based on the last 'lookup' blocks,
  * or from the last difficulty change if 'lookup' is nonpositive.
@@ -443,6 +417,19 @@ static std::string gbt_vb_name(const Consensus::DeploymentPos pos) {
 }
 
 #ifdef ENABLE_WALLET
+CScript getwork_coinbase_script;
+
+void GenerateCoinbaseAddress(std::shared_ptr<CWallet> const pwallet) {
+    // Create address for reward
+    CTxDestination dest;
+    std::string label;
+    std::string error;
+    pwallet->GetNewDestination(OutputType::LEGACY, label, dest, error);
+    CScript getwork_coinbase_script = GetScriptForDestination(dest);
+
+    LogPrintf("Address generated: %s\n", EncodeDestination(dest));
+}
+
 UniValue getwork(const JSONRPCRequest& request)
 {
     if (request.fHelp || request.params.size() > 1)
@@ -512,6 +499,10 @@ UniValue getwork(const JSONRPCRequest& request)
             nTransactionsUpdatedLast = mempool.GetTransactionsUpdated();
             CBlockIndex* pindexPrevNew = ::ChainActive().Tip();
             nStart = GetTime();
+
+            if (getwork_coinbase_script.empty()) {
+                GenerateCoinbaseAddress(pwallet);
+            }
 
             // Create new block
             pblocktemplate = BlockAssembler(Params()).CreateNewBlock(getwork_coinbase_script, false);
@@ -596,8 +587,9 @@ UniValue getwork(const JSONRPCRequest& request)
         LogPrintf("%s: getwork Block submitted: %s", __func__, pblock->ToString().c_str());
 
         bool success = CheckWork(chainParams, pblock);
-        if (success)
-            InitRPCMining();
+        if (success){
+            GenerateCoinbaseAddress(pwallet);
+        }
 
         return success;
     }
