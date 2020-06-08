@@ -425,9 +425,7 @@ void GenerateCoinbaseAddress(std::shared_ptr<CWallet> const pwallet) {
     std::string label;
     std::string error;
     pwallet->GetNewDestination(OutputType::LEGACY, label, dest, error);
-    CScript getwork_coinbase_script = GetScriptForDestination(dest);
-
-    LogPrintf("Address generated: %s\n", EncodeDestination(dest));
+    getwork_coinbase_script = GetScriptForDestination(dest);
 }
 
 UniValue getwork(const JSONRPCRequest& request)
@@ -502,6 +500,11 @@ UniValue getwork(const JSONRPCRequest& request)
 
             if (getwork_coinbase_script.empty()) {
                 GenerateCoinbaseAddress(pwallet);
+
+                // Log to make sure that the global getwork_coinbase_script is set, remove in future.
+                CTxDestination dest;
+                ExtractDestination(getwork_coinbase_script, dest);
+                LogPrintf("Address generated: %s\n", EncodeDestination(dest));
             }
 
             // Create new block
