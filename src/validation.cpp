@@ -2881,9 +2881,9 @@ bool CChainState::ConnectBlock(const CBlock& block, CValidationState& state, CBl
         return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: expected hardened checkpoint at height %d", __func__, pindex->nHeight), REJECT_CHECKPOINT, "bad-fork-hardened-checkpoint");
     }
 
-    // Check that the block satisfies checkpoint sync
-    if (!IsInitialBlockDownload() && !CheckSyncCheckpoint(pindex))
-        return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
+    // Check that the block satisfies synchronized checkpoint
+    if (!IsInitialBlockDownload() && !CheckSyncCheckpoint(block.GetHash(), pindex->nHeight))
+        return state.Invalid(ValidationInvalidReason::NONE, error("%s: Block rejected by synchronized checkpoint", __func__), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
 
     // Move this check from CheckBlock to ConnectBlock as it depends on DGP values
     if (block.vtx.empty() || block.vtx.size() > dgpMaxBlockSize || ::GetSerializeSize(block, PROTOCOL_VERSION | SERIALIZE_TRANSACTION_NO_WITNESS) > dgpMaxBlockSize) // qtum
@@ -4974,7 +4974,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     }
 
     // Check that the block satisfies checkpoint sync
-    if (!::ChainstateActive().IsInitialBlockDownload() && !CheckSyncCheckpoint(nullptr, block.GetHash(), nHeight)) {
+    if (!::ChainstateActive().IsInitialBlockDownload() && !CheckSyncCheckpoint(block.GetHash(), nHeight)) {
         return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
     }
 
@@ -5270,10 +5270,6 @@ bool BlockManager::AcceptBlockHeader(const CBlockHeader& block, CValidationState
     if (pindex == nullptr)
         pindex = AddToBlockIndex(block);
 
-    // Check if pending checkpoint relates to the block just added
-    if (!::ChainstateActive().IsInitialBlockDownload())
-        AcceptPendingSyncCheckpoint();
-
     if (ppindex)
         *ppindex = pindex;
 
@@ -5485,6 +5481,9 @@ bool CChainState::AcceptBlock(const std::shared_ptr<const CBlock>& pblock, CVali
     FlushStateToDisk(chainparams, state, FlushStateMode::NONE);
 
     CheckBlockIndex(chainparams.GetConsensus());
+
+    if (!IsInitialBlockDownload())
+        AcceptPendingSyncCheckpoint();
 
     return true;
 }

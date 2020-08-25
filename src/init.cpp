@@ -1264,12 +1264,6 @@ bool AppInitParameterInteraction()
         }
     }
 
-    if (gArgs.IsArgSet("-checkpointkey")) // Checkpoint master priv key
-    {
-        if (!SetCheckpointPrivKey(gArgs.GetArg("-checkpointkey", "")))
-            return InitError("Unable to sign checkpoint, wrong checkpointkey?");
-    }
-
     // Include NODE_ACP in services. Currently no arg to toggle this behaviour.
     nLocalServices = ServiceFlags(nLocalServices | NODE_ACP);
 
@@ -1303,6 +1297,13 @@ bool AppInitSanityChecks()
     // Sanity check
     if (!InitSanityCheck())
         return InitError(strprintf(_("Initialization sanity check failed. %s is shutting down.").translated, PACKAGE_NAME));
+
+    // Run after ECC_Start for mock key signing
+    if (gArgs.IsArgSet("-checkpointkey")) // Checkpoint master priv key
+    {
+        if (!SetCheckpointPrivKey(gArgs.GetArg("-checkpointkey", "")))
+            return InitError("Unable to sign checkpoint, wrong checkpointkey?");
+    }
 
     // Probe the data directory lock to give an early error message, if possible
     // We cannot hold the data directory lock here, as the forking for daemon() hasn't yet happened,
@@ -1782,10 +1783,13 @@ bool AppInitMain(InitInterfaces& interfaces)
                 }
             }
 
-            uiInterface.InitMessage("Checking ACP ...");
-            if (!CheckCheckpointPubKey()) {
-                strLoadError = "Checking ACP pubkey failed";
-                break;
+            {
+                LOCK(cs_main);
+                uiInterface.InitMessage("Checking ACP ...");
+                if (!CheckCheckpointPubKey()) {
+                    strLoadError = "Checking ACP pubkey failed";
+                    break;
+                }
             }
 
             try {
