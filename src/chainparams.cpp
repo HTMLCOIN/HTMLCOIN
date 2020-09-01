@@ -186,9 +186,9 @@ public:
         consensus.BIP34Hash = uint256();
         consensus.BIP65Height = 0;
         consensus.BIP66Height = 0;
-        consensus.CSVHeight = 60480;
-        consensus.SegwitHeight = 60480;
-        consensus.MinBIP9WarningHeight = 80640;
+        consensus.CSVHeight = 6048;
+        consensus.SegwitHeight = 6048;
+        consensus.MinBIP9WarningHeight = 8064;
         consensus.QIP5Height = std::numeric_limits<int>::max();
         consensus.QIP6Height = std::numeric_limits<int>::max();
         consensus.QIP7Height = std::numeric_limits<int>::max();
