@@ -4974,7 +4974,7 @@ static bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationSta
     }
 
     // Check that the block satisfies checkpoint sync
-    if (!::ChainstateActive().IsInitialBlockDownload() && !CheckSyncCheckpoint(block.GetHash(), nHeight)) {
+    if (!::ChainstateActive().IsInitialBlockDownload() && !CheckSyncCheckpoint(block.GetHash(), nHeight, pindexPrev)) {
         return state.Invalid(ValidationInvalidReason::BLOCK_CHECKPOINT, error("%s: rejected by checkpoint sync %s", __func__, block.GetHash().ToString()), REJECT_CHECKPOINT, "bad-block-checkpoint-sync");
     }
 
