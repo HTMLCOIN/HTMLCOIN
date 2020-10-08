@@ -16,6 +16,7 @@
 #include <net.h>
 #include <outputtype.h>
 #include <policy/fees.h>
+#include <policy/policy.h> // DEFAULT_BLOCK_MIN_TX_FEE
 #include <pow.h>
 #include <pos.h>
 #include <primitives/transaction.h>
@@ -1159,12 +1160,11 @@ static UniValue estimatesmartfee(const JSONRPCRequest& request)
     UniValue errors(UniValue::VARR);
     FeeCalculation feeCalc;
     CFeeRate feeRate = ::feeEstimator.estimateSmartFee(conf_target, &feeCalc, conservative);
-    if (feeRate != CFeeRate(0)) {
-        result.pushKV("feerate", ValueFromAmount(feeRate.GetFeePerK()));
-    } else {
-        errors.push_back("Insufficient data or no feerate found");
-        result.pushKV("errors", errors);
+    auto minFee = CFeeRate(DEFAULT_BLOCK_MIN_TX_FEE);
+    if (feeRate < minFee) {
+        feeRate = minFee;
     }
+    result.pushKV("feerate", ValueFromAmount(feeRate.GetFeePerK()));
     result.pushKV("blocks", feeCalc.returnedTarget);
     return result;
 }
