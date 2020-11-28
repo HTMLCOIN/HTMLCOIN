@@ -98,10 +98,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000007c1000e6995955fe7f91a");
+        consensus.nMinimumChainWork = uint256S("0x00000000000000000000000000000000000000000008be020ba1b67100fd42b5");
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0x00000000000f9073f18564f8d0c3059e61d0617735bc500d9837799a0354f8d4");
+        consensus.defaultAssumeValid = uint256S("0x000000000019cc24a160aadde531daf265a05409ddcde3fd91233fd2bd0343d4");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -160,11 +160,11 @@ public:
         };
 
         chainTxData = ChainTxData{
-            // Data from RPC: getchaintxstats 4096 00000000000f9073f18564f8d0c3059e61d0617735bc500d9837799a0354f8d4
-            1589500983, // * UNIX timestamp of last known number of transactions
-            2198623, // * total number of transactions between genesis and that timestamp
+            // Data from RPC: getchaintxstats 4096 000000000019cc24a160aadde531daf265a05409ddcde3fd91233fd2bd0343d4
+            1606542406, // * UNIX timestamp of last known number of transactions
+            2649651, // * total number of transactions between genesis and that timestamp
             //   (the tx=... number in the SetBestChain debug.log lines)
-            0.02387811940904145 // * estimated number of transactions per second after that timestamp
+            0.0250995719483205 // * estimated number of transactions per second after that timestamp
         };
 
         consensus.nFixUTXOCacheHFHeight=251000;
