@@ -208,8 +208,12 @@ bool CheckSyncCheckpoint(const uint256 hashBlock, const int nHeight, const CBloc
     const CBlockIndex* pindexSync;
     {
         LOCK2(cs_main, cs_hashSyncCheckpoint);
-        // sync-checkpoint should always be accepted block
-        assert(::BlockIndex().count(hashSyncCheckpoint));
+        // sync-checkpoint should always be accepted block, if not top
+        // of chain might have been rolled back due to abrupt shutdown.
+        // Return true while blocks resync.
+        if (!::BlockIndex().count(hashSyncCheckpoint)) {
+            return true;
+        }
         pindexSync = ::BlockIndex()[hashSyncCheckpoint];
     }
 
