@@ -56,8 +56,8 @@ inline arith_uint256 GetLimit(int nHeight, const Consensus::Params& params, bool
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, bool fProofOfStake)
 {
-    unsigned int  nTargetLimit = GetLimit(pindexLast ? pindexLast->nHeight+1 : 0, params, fProofOfStake).GetCompact();
-    const unsigned int nHeight = pindexLast->nHeight + 1;
+    const unsigned int nHeight = pindexLast ? pindexLast->nHeight + 1 : 0;
+    unsigned int  nTargetLimit = GetLimit(nHeight, params, fProofOfStake).GetCompact();
 
     // genesis block
     if (pindexLast == nullptr)
