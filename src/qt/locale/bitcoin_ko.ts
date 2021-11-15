@@ -148,11 +148,11 @@
     </message>
     <message>
         <source>These are your HTML addresses for sending payments. Always check the amount and the receiving address before sending coins.</source>
-        <translation>송금이 가능한 QTUM 주소입니다. 송금 전에 반드시 주소와 금액이 정확한지 확인해주세요. </translation>
+        <translation>송금이 가능한 HTMLCOIN 주소입니다. 송금 전에 반드시 주소와 금액이 정확한지 확인해주세요. </translation>
     </message>
     <message>
         <source>These are your HTML addresses for receiving payments. It is recommended to use a new receiving address for each transaction.</source>
-        <translation>QTUM을 받을 수 있는 주소입니다. 거래 마다 새로운 주소를 사용할 것을 권장 드립니다. </translation>
+        <translation>HTMLCOIN을 받을 수 있는 주소입니다. 거래 마다 새로운 주소를 사용할 것을 권장 드립니다. </translation>
     </message>
     <message>
         <source>&amp;Copy Address</source>
@@ -257,8 +257,8 @@
         <translation>지갑 암호화 확인</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR QTUMS&lt;/b&gt;!</source>
-        <translation>경고: 암호화 이후 비밀번호를 잃어버리면 &lt;b&gt;지갑에 있는 모든 QTUM을 잃게됩니다&lt;/b&gt;！</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR HTMLCOINS&lt;/b&gt;!</source>
+        <translation>경고: 암호화 이후 비밀번호를 잃어버리면 &lt;b&gt;지갑에 있는 모든 HTMLCOIN을 잃게됩니다&lt;/b&gt;！</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
@@ -329,7 +329,7 @@
     </message>
 </context>
 <context>
-    <name>QtumGUI</name>
+    <name>HTMLCOINGUI</name>
     <message>
         <source>A fatal error occurred. HTMLCOIN can no longer continue safely and will quit.</source>
         <translation type="unfinished">심각한 에러가 발생하여 클라이언트가 안전하게 실행될 수 없어 종료될 예정입니다. </translation>
@@ -348,7 +348,7 @@
     </message>
     <message>
         <source>Send coins to a HTML address</source>
-        <translation type="unfinished">QTUM 주소로 QTUM 코인 보내기</translation>
+        <translation type="unfinished">HTMLCOIN 주소로 HTMLCOIN 코인 보내기</translation>
     </message>
     <message>
         <source>&amp;Receive</source>
@@ -496,7 +496,7 @@
     </message>
     <message>
         <source>Sign messages with your HTML addresses to prove you own them</source>
-        <translation type="unfinished">소유하고 있는 QTUM 주소의 키로 메시지 서명을 하여 해당 QTUM 주소의 소유권을 증명하세요. </translation>
+        <translation type="unfinished">소유하고 있는 HTMLCOIN 주소의 키로 메시지 서명을 하여 해당 HTMLCOIN 주소의 소유권을 증명하세요. </translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
@@ -629,7 +629,7 @@
     <message numerus="yes">
         <source>%n active connection(s) to HTMLCOIN network</source>
         <translation type="unfinished">
-            <numerusform>QTUM네트워크에 대한 활성화된 연결은 %n 개입니다.</numerusform>
+            <numerusform>HTMLCOIN네트워크에 대한 활성화된 연결은 %n 개입니다.</numerusform>
         </translation>
     </message>
     <message>
@@ -696,7 +696,7 @@
     </message>
     <message>
         <source>HTMLCOIN</source>
-        <translation type="unfinished">QTUM</translation>
+        <translation type="unfinished">HTMLCOIN</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1297,8 +1297,8 @@
         <translation type="unfinished">가스 상한액. 디폴트 = %1, 최고 = %2.</translation>
     </message>
     <message>
-        <source>Gas price: QTUM price per gas unit. Default = %1, Min = %2</source>
-        <translation type="unfinished">가스 단가: 가스 유닛에 대한 QTUM 가격. 디폴트 = %1, 최저 = %2.</translation>
+        <source>Gas price: HTMLCOIN price per gas unit. Default = %1, Min = %2</source>
+        <translation type="unfinished">가스 단가: 가스 유닛에 대한 HTMLCOIN 가격. 디폴트 = %1, 최저 = %2.</translation>
     </message>
 </context>
 <context>
@@ -1337,7 +1337,7 @@
     </message>
     <message>
         <source>The entered address &quot;%1&quot; is not a valid HTML address.</source>
-        <translation>입력한 주소 %1는 유효한 QTUM 주소가 아닙니다. </translation>
+        <translation>입력한 주소 %1는 유효한 HTMLCOIN 주소가 아닙니다. </translation>
     </message>
     <message>
         <source>Address &quot;%1&quot; already exists as a receiving address with label &quot;%2&quot; and so cannot be added as a sending address.</source>
@@ -1478,7 +1478,7 @@
     </message>
     <message>
         <source>HTMLCOIN</source>
-        <translation>QTUM</translation>
+        <translation>HTMLCOIN</translation>
     </message>
     <message>
         <source>At least %1 GB of data will be stored in this directory, and it will grow over time.</source>
@@ -1490,7 +1490,7 @@
     </message>
     <message>
         <source>%1 will download and store a copy of the HTMLCOIN block chain.</source>
-        <translation>%1이 QTUM 블록체인을 다운로드 및 저장할 예정입니다. </translation>
+        <translation>%1이 HTMLCOIN 블록체인을 다운로드 및 저장할 예정입니다. </translation>
     </message>
     <message>
         <source>The wallet will also be stored in this directory.</source>
@@ -1533,7 +1533,7 @@
     </message>
     <message>
         <source>Attempting to spend HTMLCOIN that are affected by not-yet-displayed transactions will not be accepted by the network.</source>
-        <translation>네트워크는 미확인된 거래에 속한 QTUM 사용을 승인하지 않습니다 </translation>
+        <translation>네트워크는 미확인된 거래에 속한 HTMLCOIN 사용을 승인하지 않습니다 </translation>
     </message>
     <message>
         <source>Number of blocks left</source>
@@ -1748,7 +1748,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     </message>
     <message>
         <source>Connect to the HTMLCOIN network through a SOCKS5 proxy.</source>
-        <translation type="vanished">SOCKS5 프록시를 통해 QTUM 네트워크 연결</translation>
+        <translation type="vanished">SOCKS5 프록시를 통해 HTMLCOIN 네트워크 연결</translation>
     </message>
     <message>
         <source>&amp;Connect through SOCKS5 proxy (default proxy):</source>
@@ -2207,7 +2207,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     </message>
     <message>
         <source>Enter a HTML address (e.g. %1)</source>
-        <translation>QTUM 주소를 입력해주세요 (예시, %1)</translation>
+        <translation>HTMLCOIN 주소를 입력해주세요 (예시, %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2392,7 +2392,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     </message>
 </context>
 <context>
-    <name>QtumGUI</name>
+    <name>HTMLCOINGUI</name>
     <message>
         <source>Sign &amp;message...</source>
         <translation type="vanished">메시지 서명</translation>
@@ -2495,7 +2495,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     </message>
     <message>
         <source>Send coins to a HTML address</source>
-        <translation type="vanished">QTUM 주소로 QTUM 코인 보내기</translation>
+        <translation type="vanished">HTMLCOIN 주소로 HTMLCOIN 코인 보내기</translation>
     </message>
     <message>
         <source>Backup wallet to another location</source>
@@ -2519,7 +2519,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     </message>
     <message>
         <source>HTMLCOIN</source>
-        <translation type="vanished">QTUM</translation>
+        <translation type="vanished">HTMLCOIN</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -2543,7 +2543,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     </message>
     <message>
         <source>Sign messages with your HTML addresses to prove you own them</source>
-        <translation type="vanished">소유하고 있는 QTUM 주소의 키로 메시지 서명을 하여 해당 QTUM 주소의 소유권을 증명하세요. </translation>
+        <translation type="vanished">소유하고 있는 HTMLCOIN 주소의 키로 메시지 서명을 하여 해당 HTMLCOIN 주소의 소유권을 증명하세요. </translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified HTML addresses</source>
@@ -2588,7 +2588,7 @@ Please make sure to keep an updated antivirus and operating system. We can not r
     <message numerus="yes">
         <source>%n active connection(s) to HTMLCOIN network</source>
         <translation type="vanished">
-            <numerusform>QTUM네트워크에 대한 활성화된 연결은 %n 개입니다.</numerusform>
+            <numerusform>HTMLCOIN네트워크에 대한 활성화된 연결은 %n 개입니다.</numerusform>
         </translation>
     </message>
     <message>
@@ -3654,7 +3654,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
     <message>
         <source>Warning: Invalid HTML address</source>
-        <translation>경고: 무효한 QTUM 주소</translation>
+        <translation>경고: 무효한 HTMLCOIN 주소</translation>
     </message>
     <message>
         <source>Warning: Unknown change address</source>
@@ -3858,8 +3858,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished">자금과 데이터를 받을 컨트랙트 주소</translation>
     </message>
     <message>
-        <source>The amount in QTUM to send. Default = 0.</source>
-        <translation type="unfinished">보낼 QTUM 개수. 디폴트는 0</translation>
+        <source>The amount in HTMLCOIN to send. Default = 0.</source>
+        <translation type="unfinished">보낼 HTMLCOIN 개수. 디폴트는 0</translation>
     </message>
     <message>
         <source>The HTML address that will be used as sender.</source>
@@ -3898,8 +3898,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished">가스 상한액. 디폴트 = %1, 최고 = %2.</translation>
     </message>
     <message>
-        <source>Gas price: QTUM price per gas unit. Default = %1, Min = %2</source>
-        <translation type="unfinished">가스 단가: 가스 유닛에 대한 QTUM 가격. 디폴트 = %1, 최저 = %2.</translation>
+        <source>Gas price: HTMLCOIN price per gas unit. Default = %1, Min = %2</source>
+        <translation type="unfinished">가스 단가: 가스 유닛에 대한 HTMLCOIN 가격. 디폴트 = %1, 최저 = %2.</translation>
     </message>
 </context>
 <context>
@@ -3957,8 +3957,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished">가스 상한액. 디폴트 = %1, 최고 = %2.</translation>
     </message>
     <message>
-        <source>Gas price: QTUM price per gas unit. Default = %1, Min = %2</source>
-        <translation type="unfinished">가스 단가: 가스 유닛에 대한 QTUM 가격. 디폴트 = %1, 최저 = %2.</translation>
+        <source>Gas price: HTMLCOIN price per gas unit. Default = %1, Min = %2</source>
+        <translation type="unfinished">가스 단가: 가스 유닛에 대한 HTMLCOIN 가격. 디폴트 = %1, 최저 = %2.</translation>
     </message>
     <message>
         <source>Are you sure you want to send? &lt;br /&gt;&lt;br /&gt;</source>
@@ -4004,7 +4004,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
     <message>
         <source>You can sign messages/agreements with your addresses to prove you can receive HTMLCOIN sent to them. Be careful not to sign anything vague or random, as phishing attacks may try to trick you into signing your identity over to them. Only sign fully-detailed statements you agree to.</source>
-        <translation>소유하고 계신 주소로 메시지/협의에 대해 서명하여 해당 주소를 통해 QTUM을 받을 수 있음을 증명할 수 있습니다. 피싱 공격을 예방하기 위해 명확하지 않은 내용 또는 랜덤 메시지에 대한 서명은 삼가 하시고 메시지에 대해 충분히 동의할 경우에만 서명하세요. </translation>
+        <translation>소유하고 계신 주소로 메시지/협의에 대해 서명하여 해당 주소를 통해 HTMLCOIN을 받을 수 있음을 증명할 수 있습니다. 피싱 공격을 예방하기 위해 명확하지 않은 내용 또는 랜덤 메시지에 대한 서명은 삼가 하시고 메시지에 대해 충분히 동의할 경우에만 서명하세요. </translation>
     </message>
     <message>
         <source>The HTML address to sign the message with</source>
@@ -4157,8 +4157,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished">스테이킹</translation>
     </message>
     <message>
-        <source>0.000 000 00 QTUM</source>
-        <translation type="unfinished">0.000 000 00 QTUM</translation>
+        <source>0.000 000 00 HTMLCOIN</source>
+        <translation type="unfinished">0.000 000 00 HTMLCOIN</translation>
     </message>
     <message>
         <source>Staking</source>
@@ -4177,8 +4177,8 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
         <translation type="unfinished">블록 보상</translation>
     </message>
     <message>
-        <source>4 QTUM/Block</source>
-        <translation type="unfinished">4 QTUM / 블록</translation>
+        <source>4 HTMLCOIN/Block</source>
+        <translation type="unfinished">4 HTMLCOIN / 블록</translation>
     </message>
     <message>
         <source>Network weight:</source>
@@ -5087,7 +5087,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
 </context>
 <context>
-    <name>qtum-core</name>
+    <name>HTMLCOIN-core</name>
     <message>
         <source>HTMLCOIN CORE</source>
         <translation type="unfinished">HTMLCOIN CORE</translation>
@@ -5600,7 +5600,7 @@ Note:  Since the fee is calculated on a per-byte basis, a fee of &quot;100 satos
     </message>
 </context>
 <context>
-    <name>qtum-core</name>
+    <name>HTMLCOIN-core</name>
     <message>
         <source>Distributed under the MIT software license, see the accompanying file %s or %s</source>
         <translation type="vanished">MIT 소프트웨어 라이센스를 통해 배포합니다. 첨부된 %s 파일 또는 %s 를 확인하세요. </translation>
