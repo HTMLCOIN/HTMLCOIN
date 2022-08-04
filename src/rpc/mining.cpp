@@ -16,7 +16,7 @@
 #include <net.h>
 #include <outputtype.h>
 #include <policy/fees.h>
-#include <policy/policy.h> // DEFAULT_BLOCK_MIN_TX_FEE
+#include <policy/policy.h> // DEFAULT_BLOCK_FALLBACK_FEE
 #include <pow.h>
 #include <pos.h>
 #include <primitives/transaction.h>
@@ -1160,7 +1160,7 @@ static UniValue estimatesmartfee(const JSONRPCRequest& request)
     UniValue errors(UniValue::VARR);
     FeeCalculation feeCalc;
     CFeeRate feeRate = ::feeEstimator.estimateSmartFee(conf_target, &feeCalc, conservative);
-    auto minFee = CFeeRate(DEFAULT_BLOCK_MIN_TX_FEE);
+    const auto minFee = CFeeRate(DEFAULT_BLOCK_FALLBACK_FEE);
     if (feeRate < minFee) {
         feeRate = minFee;
     }

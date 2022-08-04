@@ -95,6 +95,9 @@ background.tiff*
 # Qt Creator
 Makefile.am.user
 
+# JetBrains
+.idea/
+
 # Unit-tests
 Makefile.test
 htmlcoin-qt_test
